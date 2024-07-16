@@ -7,7 +7,7 @@ const Navbar = () => {
       <div className="container-Navbar">
         <div className="content flex">
           <div className="Left">
-            <h1 className="text-6xl text-red-500">Ini Logo atau Judul</h1>
+            <h1 className="text-6xl text-red-500">Ini atau Judul</h1>
           </div>
           <div className="Left">
             <a href="#">home</a>
