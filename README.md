@@ -15,4 +15,7 @@ ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda
 9. npm install dotenv
 10. npm install nodemon
 
-test
+# Sebelum run start dibawah ini
+
+1. node server/app.js
+2. npm run dev
