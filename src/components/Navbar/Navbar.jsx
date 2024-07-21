@@ -18,7 +18,7 @@ const Navbar = () => {
             </a>
             <a href="#">Location</a>
             <a href="#">Contact</a>
-            <button className="bg-button-gray text-white py-2 px-4 rounded-lg">
+            <button className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
               <a href="#">Sign In</a>
             </button>
           </div>
