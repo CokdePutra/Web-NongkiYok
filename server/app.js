@@ -34,7 +34,29 @@ app.get("/items", (req, res) => {
     }
   });
 });
-
+app.get("/card/:sort", (req, res) => {
+  if (req.params.sort === "up") {
+    const query = `SELECT * FROM places ORDER BY Price ASC`;
+    db.query(query, (err, results) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json(results);
+      }
+    });
+  } else if (req.params.sort === "down") {
+    const query = `SELECT * FROM places ORDER BY Price DESC`;
+    db.query(query, (err, results) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json(results);
+      }
+    });
+  } else {
+    res.status(500).send("Invalid sort parameter");
+  }
+});
 app.post("/items", (req, res) => {
   const query = "INSERT INTO users (name) VALUES (?)";
   const values = [req.body.name];
