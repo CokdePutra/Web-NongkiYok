@@ -1,3 +1,84 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* kodcharan style */
+.kodchasan-extralight {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.kodchasan-light {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.kodchasan-regular {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.kodchasan-medium {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.kodchasan-semibold {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.kodchasan-bold {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.kodchasan-extralight-italic {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 200;
+  font-style: italic;
+}
+
+.kodchasan-light-italic {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.kodchasan-regular-italic {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.kodchasan-medium-italic {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.kodchasan-semibold-italic {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.kodchasan-bold-italic {
+  font-family: "Kodchasan", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+/* jura style */
+.jura-medium {
+  font-family: "Jura", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
