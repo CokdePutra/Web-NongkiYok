@@ -121,7 +121,8 @@ app.get("/items", (req, res) => {
 
 app.get("/card/:sort", (req, res) => {
   if (req.params.sort === "up") {
-    const query = `SELECT * FROM places ORDER BY Price ASC`;
+    console.log("sort harga naik");
+    const query = `SELECT * FROM places ORDER BY AVG_Price ASC`;
     db.query(query, (err, results) => {
       if (err) {
         res.status(500).send(err);
@@ -130,7 +131,8 @@ app.get("/card/:sort", (req, res) => {
       }
     });
   } else if (req.params.sort === "down") {
-    const query = `SELECT * FROM places ORDER BY Price DESC`;
+    console.log("sort harga turun");
+    const query = `SELECT * FROM places ORDER BY AVG_Price DESC`;
     db.query(query, (err, results) => {
       if (err) {
         res.status(500).send(err);
