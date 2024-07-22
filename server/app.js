@@ -10,6 +10,7 @@ dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -28,39 +29,39 @@ db.connect((err) => {
 });
 // ===== Middleware =====
 // auth
-const authenticateJWT = (req, res, next) => {
-  const token = req.headers.authorization;
-  if (token) {
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-      if (err) {
-        return res.sendStatus(403);
-      }
-      req.user = user;
-      next();
-    });
-  } else {
-    res.sendStatus(401);
-  }
-};
+// const authenticateJWT = (req, res, next) => {
+//   const token = req.headers.authorization;
+//   if (token) {
+//     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+//       if (err) {
+//         return res.sendStatus(403);
+//       }
+//       req.user = user;
+//       next();
+//     });
+//   } else {
+//     res.sendStatus(401);
+//   }
+// };
 // role-based authorization
-const authorizeRole = (roles) => {
-  return (req, res, next) => {
-    if (roles.includes(req.user.role)) {
-      next();
-    } else {
-      res.sendStatus(403);
-    }
-  };
-};
-// Protected route for admin
-app.get(
-  "/dashboard",
-  authenticateJWT,
-  authorizeRole(["Admin"], ["Guide"]),
-  (req, res) => {
-    res.redirect("/"); //redirect
-  }
-);
+// const authorizeRole = (roles) => {
+//   return (req, res, next) => {
+//     if (roles.includes(req.user.role)) {
+//       next();
+//     } else {
+//       res.sendStatus(403);
+//     }
+//   };
+// };
+// // Protected route for admin
+// app.get(
+//   "/dashboard",
+//   authenticateJWT,
+//   authorizeRole(["Admin"], ["Guide"]),
+//   (req, res) => {
+//     res.redirect("/"); //redirect
+//   }
+// );
 
 // REGISTER
 app.post("/register", (req, res) => {
@@ -82,25 +83,23 @@ app.post("/register", (req, res) => {
 });
 // LOGIN
 app.post("/login", (req, res) => {
-  const { Email, Password } = req.body;
+  const { email, password } = req.body;
   const query = "SELECT * FROM users WHERE Email = ?";
-  db.query(query, [Email], (err, results) => {
+  db.query(query, [email], (err, results) => {
     if (err) {
       res.status(500).send("Server Error");
     } else if (results.length === 0) {
       res.status(404).send("User not found");
     } else {
       const user = results[0];
-      const passwordIsValid = bcrypt.compareSync(Password, user.password);
-      if (!passwordIsValid) {
+      if (password !== user.Password) {
+        // Direct comparison without bcrypt
         res.status(401).send("Invalid Password");
       } else {
         const token = jwt.sign(
-          { id: user.id, role: user.role },
+          { id: user.Id_User, role: user.Role },
           process.env.JWT_SECRET,
-          {
-            expiresIn: 86400, // 24 hours
-          }
+          { expiresIn: 86400 } // 24 hours
         );
         res.status(200).send({ token });
       }
