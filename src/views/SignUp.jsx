@@ -2,19 +2,33 @@ import React from "react";
 import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
 
-function Login() {
+function SignUp() {
   return (
     <>
       <div className="container-Login h-screen flex justify-center items-center">
         <div className="content kodchasan-bold w-1/4 flex flex-col items-center">
-          <h1 className="text-color-yellow text-7xl m-3">LOGIN</h1>
+          <h1 className="text-color-yellow text-7xl m-3">SIGN UP</h1>
           <div className="border-b-4 border-color-yellow m-5 h-2 w-full"></div>
           <UserInput
-            type="text"
-            id="usernameLogin"
-            placeholder="Username..."
+            type="email"
+            id="emailSignUp"
+            placeholder="Email..."
             className="w-full"
           />
+          <div className="flex w-full space-x-2">
+            <UserInput
+              type="text"
+              id="namaSignUp"
+              placeholder="Nama..."
+              className="w-full"
+            />
+            <UserInput
+              type="text"
+              id="usernameSignUp"
+              placeholder="Username..."
+              className="w-full"
+            />
+          </div>
           <UserInput
             type="password"
             id="passwordLogin"
@@ -24,7 +38,7 @@ function Login() {
           <a href="" className="text-color-yellow m-2">
             Forgot Password?..
           </a>
-          <ButtonLogin text="Login" className="w-1/2" />
+          <ButtonLogin text="Sign-In" className="w-1/2" />
           <a
             href="./"
             className="absolute hover:text-white left-5 bottom-5 text-color-primary ">
@@ -55,4 +69,4 @@ function Login() {
     </>
   );
 }
-export default Login;
+export default SignUp;
