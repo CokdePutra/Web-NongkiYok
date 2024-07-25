@@ -15,18 +15,20 @@ const Hero = () => {
     <>
       <div className="container-Hero max-h-screen place-items-center">
         <div class="content flex jura-medium">
-          <div class="left w-1/2 flex flex-col justify-center h-dvh mx-10 p-4 ">
-            <div class="title text-6xl text-color-yellow kodchasan-bold my-2">
-              Nongki-Yok
-            </div>
-            <div className="sub-title text-lg text-white my-1">
-              Nongki-Yok: Temukan Kedai Kopi Asyik Buat Nongkrong!
-            </div>
-            <div class="description text-base text-white text-justify my-1">
-              Capek sama hiruk-pikuk kota? Pengen cari tempat ngopi yang asik
-              buat nongkrong bareng teman atau sendirian? Aplikasi Nongki-Yok
-              hadir sebagai solusi buat kamu yang pengen menemukan kedai kopi
-              tersembunyi dengan suasana yang asik dan kopi yang nikmat!
+          <div class="left w-1/2 flex h-[80vh] mx-10 p-4 ">
+            <div class="flex flex-col justify-center">
+              <div class="title text-6xl text-color-yellow kodchasan-bold my-2">
+                Nongki-Yok
+              </div>
+              <div className="sub-title text-lg text-white my-1">
+                Nongki-Yok: Temukan Kedai Kopi Asyik Buat Nongkrong!
+              </div>
+              <div class="description text-base text-white text-justify my-1">
+                Capek sama hiruk-pikuk kota? Pengen cari tempat ngopi yang asik
+                buat nongkrong bareng teman atau sendirian? Aplikasi Nongki-Yok
+                hadir sebagai solusi buat kamu yang pengen menemukan kedai kopi
+                tersembunyi dengan suasana yang asik dan kopi yang nikmat!
+              </div>
             </div>
           </div>
           <div class="right w-1/2 flex flex-col justify-center h-screen mx-10 p-4">

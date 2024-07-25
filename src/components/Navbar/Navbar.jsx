@@ -4,7 +4,7 @@ import "./Navbar.css";
 const Navbar = () => {
   return (
     <>
-      <div className="container-Navbar sticky top-0 w-full">
+      <div className="container-Navbar sticky top-0 w-full z-[999]">
         <div className="content flex m-5 justify-between bg-navbar-color rounded-lg overflow-hidden">
           <div className="Left m-5">
             <h1 className="text-4xl text-color-yellow kodchasan-bold">
@@ -19,7 +19,7 @@ const Navbar = () => {
             <a href="#">Location</a>
             <a href="#">Contact</a>
             <button className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-              <a href="#">Sign In</a>
+              <a href="/login">Sign In</a>
             </button>
           </div>
         </div>
