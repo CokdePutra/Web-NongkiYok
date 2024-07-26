@@ -19,7 +19,7 @@ const Navbar = () => {
             <a href="#">Location</a>
             <a href="#">Contact</a>
             <button className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-              <a href="/login">Sign In</a>
+              <a href="/login">Login</a>
             </button>
           </div>
         </div>
