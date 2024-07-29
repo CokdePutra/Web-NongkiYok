@@ -3,7 +3,7 @@ import React from "react";
 const UserInput = ({ type = "text", id, placeholder, className }) => {
   return (
     <>
-      <div className="formInput">
+      <div className="formInput w-full">
         <input
           type={type}
           id={id}

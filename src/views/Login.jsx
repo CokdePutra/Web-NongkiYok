@@ -25,6 +25,9 @@ function Login() {
             Forgot Password?..
           </a>
           <ButtonLogin text="Login" className="w-1/2" />
+          <a href="" className="text-white m-2">
+            Don't have account? Make Account..
+          </a>
           <a
             href="./"
             className="absolute hover:text-white left-5 bottom-5 text-color-primary ">
