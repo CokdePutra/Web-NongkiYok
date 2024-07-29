@@ -2,7 +2,7 @@ import React from "react";
 import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
 
-function Login() {
+const Login = () => {
   return (
     <>
       <div className="container-Login h-screen flex justify-center items-center">
@@ -25,8 +25,8 @@ function Login() {
             Forgot Password?..
           </a>
           <ButtonLogin text="Login" className="w-1/2" />
-          <a href="" className="text-white m-2">
-            Don't have account? Make Account..
+          <a href="/sign-up" className="text-white m-2">
+            Don't have account? Make Account...
           </a>
           <a
             href="./"
@@ -57,5 +57,5 @@ function Login() {
       </div>
     </>
   );
-}
+};
 export default Login;

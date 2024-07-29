@@ -2,10 +2,10 @@ import React from "react";
 import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
 
-function SignUp() {
+const SignUp = () => {
   return (
     <>
-      <div className="container-Login h-screen flex justify-center items-center">
+      <div className="container-SignUp h-screen flex justify-center items-center">
         <div className="content kodchasan-bold w-1/4 flex flex-col items-center">
           <h1 className="text-color-yellow text-7xl m-3">SIGN UP</h1>
           <div className="border-b-4 border-color-yellow m-5 h-2 w-full"></div>
@@ -35,10 +35,10 @@ function SignUp() {
             placeholder="Password..."
             className="w-full"
           />
-          <a href="" className="text-color-yellow m-2">
-            Forgot Password?..
+          <ButtonLogin text="Sign-In" className="w-1/2 my-4" />
+          <a href="/login" className="text-white m-2">
+            Already Have account? Login...
           </a>
-          <ButtonLogin text="Sign-In" className="w-1/2" />
           <a
             href="./"
             className="absolute hover:text-white left-5 bottom-5 text-color-primary ">
@@ -68,5 +68,5 @@ function SignUp() {
       </div>
     </>
   );
-}
+};
 export default SignUp;
