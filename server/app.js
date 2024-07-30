@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import mysql from "mysql";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+const saltRounds = 10;
 
 dotenv.config();
 const app = express();
@@ -65,21 +66,25 @@ db.connect((err) => {
 
 // REGISTER
 app.post("/register", (req, res) => {
-  const { email, password, role } = req.body;
-  const hashedPassword = bcrypt.hashSync(password, 8);
-  const query =
-    "INSERT INTO users (Email, Name, Username, Password, Role) VALUES (?, ?, ?, ?, User)";
-  db.query(
-    query,
-    [Email, Name, Username, hashedPassword, role],
-    (err, result) => {
-      if (err) {
-        res.status(500).send("Server Error");
-      } else {
-        res.status(201).send("User registered");
-      }
+  const { name, email, password, role, username } = req.body;
+
+  // Hash the password before storing it in the database
+  bcrypt.hash(password, saltRounds, (err, hash) => {
+    if (err) {
+      return res.status(500).send("Server Error");
     }
-  );
+
+    const query =
+      "INSERT INTO users (Name, Email, Password, Role, Username) VALUES (?, ?, ?, ?, ?)";
+    db.query(query, [name, email, hash, role, username], (err, results) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send("Error creating user");
+      }
+      console.log("succes");
+      res.status(201).send("User registered");
+    });
+  });
 });
 // LOGIN
 app.post("/login", (req, res) => {
