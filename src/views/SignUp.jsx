@@ -19,18 +19,21 @@ const SignUp = () => {
             <UserInput
               type="text"
               id="namaSignUp"
+              name="nama"
               placeholder="Nama..."
               className="w-full"
             />
             <UserInput
               type="text"
               id="usernameSignUp"
+              name="username"
               placeholder="Username..."
               className="w-full"
             />
           </div>
           <UserInput
             type="password"
+            name="password"
             id="passwordLogin"
             placeholder="Password..."
             className="w-full"
@@ -41,7 +44,7 @@ const SignUp = () => {
           </a>
           <a
             href="./"
-            className="absolute hover:text-white left-5 bottom-5 text-color-primary ">
+            className="absolute hover:text-color-yellow left-5 bottom-5 text-color-primary ">
             Back
           </a>
         </div>
