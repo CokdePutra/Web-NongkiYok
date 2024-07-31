@@ -4,6 +4,8 @@ const UserInput = ({ type = "text", id, name, placeholder, value, onChange, clas
   return (
     <div className="formInput w-full">
       <input
+        autoComplete="off"
+        required
         type={type}
         id={id}
         name={name}

@@ -28,41 +28,6 @@ db.connect((err) => {
   }
   console.log("Connected to the database");
 });
-// ===== Middleware =====
-// auth
-// const authenticateJWT = (req, res, next) => {
-//   const token = req.headers.authorization;
-//   if (token) {
-//     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-//       if (err) {
-//         return res.sendStatus(403);
-//       }
-//       req.user = user;
-//       next();
-//     });
-//   } else {
-//     res.sendStatus(401);
-//   }
-// };
-// role-based authorization
-// const authorizeRole = (roles) => {
-//   return (req, res, next) => {
-//     if (roles.includes(req.user.role)) {
-//       next();
-//     } else {
-//       res.sendStatus(403);
-//     }
-//   };
-// };
-// // Protected route for admin
-// app.get(
-//   "/dashboard",
-//   authenticateJWT,
-//   authorizeRole(["Admin"], ["Guide"]),
-//   (req, res) => {
-//     res.redirect("/"); //redirect
-//   }
-// );
 
 // REGISTER
 app.post("/register", (req, res) => {
