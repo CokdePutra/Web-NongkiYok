@@ -5,14 +5,24 @@ import dotenv from "dotenv";
 import mysql from "mysql";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import bodyParser from "body-parser";
+import session from "express-session";
+
 const saltRounds = 10;
 
 dotenv.config();
 const app = express();
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: "AKJHKJ13231!09949398kjSS", // Gantilah 'your-secret-key' dengan kunci rahasia yang lebih kuat
+    resave: false, // Apakah session akan disimpan kembali walaupun tidak ada perubahan
+    saveUninitialized: true, // Apakah session baru yang belum diinisialisasi akan disimpan
+    cookie: { secure: false }, // Gunakan secure: true saat menggunakan HTTPS
+  })
+);
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -51,31 +61,42 @@ app.post("/register", (req, res) => {
     });
   });
 });
+
 // LOGIN
 app.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  const query = "SELECT * FROM users WHERE Email = ?";
-  db.query(query, [email], (err, results) => {
-    if (err) {
-      res.status(500).send("Server Error");
-    } else if (results.length === 0) {
-      res.status(404).send("User not found");
-    } else {
-      const user = results[0];
-      if (password !== user.Password) {
-        // Direct comparison without bcrypt
-        res.status(401).send("Invalid Password");
+  const { username, password } = req.body;
+  console.log(username, password);
+  const query = "SELECT * FROM users WHERE Username = ?";
+  db.query(query, [username], (err, results) => {
+    if (err) return res.status(500).send("Server Error");
+    if (results.length === 0) return res.status(401).send("User not found");
+
+    const user = results[0];
+    bcrypt.compare(password, user.Password, (err, result) => {
+      if (err) return res.status(500).send("Server Error");
+      if (!result) return res.status(401).send("Invalid password");
+
+      // Store user info in session
+      req.session.user = {
+        id: user.Id_User,
+        email: user.Email,
+        username: user.Username,
+        role: user.Role,
+      };
+      ``;
+
+      // Redirect based on user role
+      if (user.Role === "guide") {
+        res
+          .status(200)
+          .json({ message: "Login successful", redirectUrl: "/dashboard" });
       } else {
-        const token = jwt.sign(
-          { id: user.Id_User, role: user.Role },
-          process.env.JWT_SECRET,
-          { expiresIn: 86400 } // 24 hours
-        );
-        res.status(200).send({ token });
+        res.status(200).json({ message: "Login successful", redirectUrl: "/" });
       }
-    }
+    });
   });
 });
+
 //===== LOGIC =====
 app.get("/items", (req, res) => {
   const query = "SELECT * FROM users";
@@ -118,4 +139,19 @@ app.get("/card/:sort", (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+app.get("/some-protected-route", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send("Not authorized");
+  }
+
+  // Access user session data
+  res.send(`Hello, ${user.username}! Your email is ${user.email}`);
+});
+
+app.get("/session", (req, res) => {
+  const user = req.session.user;
+  console.log(user);
+  res.json(user);
 });

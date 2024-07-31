@@ -6,7 +6,7 @@ ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda
 
 1. npm install -D tailwindcss postcss autoprefixer
 2. npx tailwindcss init -p
-3. npm install react-router-dom
+3. npm install react-router-dom@latest
 4. npm install @google/generative-ai
 5. npm install express
 6. npm install axios
@@ -17,6 +17,8 @@ ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda
 11. npm install jwt-decode
 12. npm install bcryptjs
 13. npm install jsonwebtoken
+14. npm install body-parser
+15. npm install express-session
 
 # Sebelum run start dibawah ini
 
