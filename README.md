@@ -19,6 +19,7 @@ ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda
 13. npm install jsonwebtoken
 14. npm install body-parser
 15. npm install express-session
+16. npm install express-mysql-session
 
 # Sebelum run start dibawah ini
 
