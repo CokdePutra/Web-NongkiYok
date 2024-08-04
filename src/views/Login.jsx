@@ -13,7 +13,10 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5000/login', { username, password });
+      const response = await axios.post('http://localhost:5000/login', 
+        { username, password },
+        { withCredentials: true } // Tambahkan opsi ini
+      );
       if (response.status === 200) {
         const redirectUrl = response.data.redirectUrl;
         navigate(redirectUrl);

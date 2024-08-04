@@ -5,6 +5,7 @@ import Home from "./views/Home";
 import Login from "./views/Login";
 import SignUp from "./views/SignUp";
 import HomeCard from "./views/HomeCard";
+import SessionInfo from "./views/SessionInfo";
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/HomeCard" element={<HomeCard />} />
+          <Route path="/HomeCard" element={<HomeCard />} />
+          <Route path="/ss" element={<SessionInfo />} />
         </Routes>
       </Router>
     </>
