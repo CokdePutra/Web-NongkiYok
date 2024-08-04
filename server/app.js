@@ -13,7 +13,7 @@ const saltRounds = 10;
 
 // Configure CORS
 const corsOptions = {
-  origin: "http://localhost:5173", // Set this to your frontend URL
+  origin: process.env.FRONTEND_URL, // Set this to your frontend URL
   credentials: true, // This is important to allow sending credentials (cookies, etc.)
 };
 
@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   session({
-    secret: "AM68r517aCiyJxbixQkgUTVY9ofxKh2HxpKBqu4D1jI=", // Gantilah 'your-secret-key' dengan kunci rahasia yang lebih kuat
+    secret: process.env.JWT_SECRET, // Gantilah 'your-secret-key' dengan kunci rahasia yang lebih kuat
     resave: false, // Apakah session akan disimpan kembali walaupun tidak ada perubahan
     saveUninitialized: true, // Apakah session baru yang belum diinisialisasi akan disimpan
     cookie: { secure: false }, // Gunakan secure: true saat menggunakan HTTPS
@@ -106,8 +106,49 @@ app.get("/api/session", (req, res) => {
   res.json(req.session.user);
 });
 
+//===== LOGIC =====
+app.get("/items", (req, res) => {
+  const query = "SELECT * FROM users";
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+app.get("/card/:sort", (req, res) => {
+  if (req.params.sort === "up") {
+    console.log("sort harga naik");
+    const query = `SELECT * FROM places ORDER BY AVG_Price ASC`;
+    db.query(query, (err, results) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json(results);
+      }
+    });
+  } else if (req.params.sort === "down") {
+    console.log("sort harga turun");
+    const query = `SELECT * FROM places ORDER BY AVG_Price DESC`;
+    db.query(query, (err, results) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json(results);
+      }
+    });
+  } else {
+    res.status(500).send("Invalid sort parameter");
+  }
+});
+
 // check runing
 const PORT = process.env.PORT || 5000;
+app.get("/", (req, res) => {
+  res.send("Server running with ExpressJS");
+});
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port: http://localhost:${PORT}`);
 });
