@@ -21,6 +21,7 @@ ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda
 15. npm install express-session
 16. npm install express-mysql-session
 17. npm install leaflet
+18. npm install leaflet react-leaflet
 
 # Sebelum run start dibawah ini
 

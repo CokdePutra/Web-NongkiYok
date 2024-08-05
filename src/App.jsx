@@ -6,6 +6,7 @@ import Login from "./views/Login";
 import SignUp from "./views/SignUp";
 import HomeCard from "./views/HomeCard";
 import SessionInfo from "./views/SessionInfo";
+import MapComponent from './views/MapComponent';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/HomeCard" element={<HomeCard />} />
           {/* <Route path="/HomeCard" element={<HomeCard />} /> */}
           <Route path="/ss" element={<SessionInfo />} />
+          <Route path="/map" element={<MapComponent />} />
         </Routes>
       </Router>
     </>
