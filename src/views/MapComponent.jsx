@@ -16,8 +16,24 @@ L.Icon.Default.mergeOptions({
 
 const MapComponent = () => {
   const [locations, setLocations] = useState([]);
+  const [position, setPosition] = useState([-8.670984102338322, 115.21225631025192]); // Default position
 
   useEffect(() => {
+    // Attempt to get user's current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          setPosition([latitude, longitude]);
+        },
+        (err) => {
+          console.error('Error getting location:', err);
+          // Use default position if location access is denied
+          setPosition([-8.670984102338322, 115.21225631025192]);
+        }
+      );
+    }
+
     const fetchLocations = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/locations', {
@@ -31,8 +47,6 @@ const MapComponent = () => {
 
     fetchLocations();
   }, []);
-
-  const position = [-8.670984102338322, 115.21225631025192]; // Set the initial position of the map
 
   return (
     <div>
