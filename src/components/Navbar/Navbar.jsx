@@ -1,11 +1,11 @@
 import React from "react";
-import "./Navbar.css";
 
-const Navbar = () => {
+const Navbar = ({ className }) => {
   return (
     <>
       <div className="container-Navbar sticky top-0 w-full z-[999]">
-        <div className="content flex m-5 justify-between bg-navbar-color rounded-lg overflow-hidden">
+        <div
+          className={`content flex m-5 justify-between bg-navbar-color rounded-lg overflow-hidden ${className}`}>
           <div className="Left m-5">
             <h1 className="text-4xl text-color-yellow kodchasan-bold">
               Nongki-Yok
@@ -16,7 +16,7 @@ const Navbar = () => {
             <a href="/" className="">
               Home
             </a>
-            <a href="/homecard">Location</a>
+            <a href="/map">Location</a>
             <a href="#">Contact</a>
             <button className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
               <a href="/login">Login</a>
