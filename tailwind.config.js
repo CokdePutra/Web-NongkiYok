@@ -9,6 +9,8 @@ export default {
         "navbar-color": "#222831",
         "color-primary": "#393E46",
         "color-yellow": "#FCBC36",
+        "color-red": "#ff0f0f",
+        "color-green": "#00ff83",
       },
     },
   },

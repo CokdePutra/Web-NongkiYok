@@ -1,29 +1,39 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
 
 const SignUp = () => {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    name: "",
+    username: "",
+    password: "",
+  });
+  const [message, setMessage] = useState({ text: "", isError: false });
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post("http://localhost:5000/register", {
-        name,
-        email,
-        password,
-        role: "User", // Set default role as "User"
-        username,
+        ...formData,
+        role: "User",
       });
-      setMessage(response.data);
+      setMessage({ text: response.data, isError: false });
+      navigate("/login");
     } catch (error) {
       console.error("Error registering user:", error);
-      setMessage("Registration failed. Please try again.");
+      setMessage({
+        text: "Registration failed. Please try again.",
+        isError: true,
+      });
     }
   };
 
@@ -35,53 +45,56 @@ const SignUp = () => {
         <form onSubmit={handleSignUp} className="w-full">
           <UserInput
             type="email"
-            id="emailSignUp"
+            name="email"
             placeholder="Email..."
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={handleChange}
             className="w-full"
           />
           <div className="flex w-full space-x-2">
             <UserInput
               type="text"
-              id="namaSignUp"
               name="name"
               placeholder="Nama..."
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={formData.name}
+              onChange={handleChange}
               className="w-full"
             />
             <UserInput
               type="text"
-              id="usernameSignUp"
               name="username"
               placeholder="Username..."
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={formData.username}
+              onChange={handleChange}
               className="w-full"
             />
           </div>
           <UserInput
             type="password"
             name="password"
-            id="passwordSignUp"
             placeholder="Password..."
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
             className="w-full"
           />
           <div className="flex justify-center">
             <ButtonLogin text="Sign-Up" className="w-1/2 my-4" />
           </div>
         </form>
-        {message && <p className="text-white m-2">{message}</p>}
+        {message.text && (
+          <p
+            className={
+              message.isError ? "text-color-red m-2" : "text-color-green m-2"
+            }>
+            {message.text}
+          </p>
+        )}
         <a href="/login" className="text-white m-2">
           Already have an account? Login...
         </a>
         <a
           href="./"
-          className="absolute hover:text-color-yellow left-5 bottom-5 text-color-primary"
-        >
+          className="absolute hover:text-color-yellow left-5 bottom-5 text-color-primary">
           Back
         </a>
       </div>
