@@ -13,10 +13,10 @@ const Navbar = () => {
           </div>
           <div className="Right m-5 space-x-8 text-white jura-medium">
             <span className="text-2xl border-l-2 border-white"></span>
-            <a href="#" className="">
+            <a href="/" className="">
               Home
             </a>
-            <a href="#">Location</a>
+            <a href="/homecard">Location</a>
             <a href="#">Contact</a>
             <button className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
               <a href="/login">Login</a>

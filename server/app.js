@@ -92,7 +92,9 @@ app.post("/login", (req, res) => {
           .status(200)
           .json({ message: "Login successful", redirectUrl: "/dashboard" });
       } else {
-        res.status(200).json({ message: "Login successful", redirectUrl: "/" });
+        res
+          .status(200)
+          .json({ message: "Login successful", redirectUrl: "/dashboard" });
       }
     });
   });
