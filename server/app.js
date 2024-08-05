@@ -97,7 +97,15 @@ app.post("/login", (req, res) => {
     });
   });
 });
-
+// LOGOUT
+app.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).send("Failed to logout");
+    }
+    res.status(200).send("Logout successful");
+  });
+});
 // Route untuk mendapatkan data session
 app.get("/api/session", (req, res) => {
   if (!req.session.user) {
