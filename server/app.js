@@ -115,7 +115,16 @@ app.get("/api/session", (req, res) => {
   }
   res.json(req.session.user);
 });
-
+// Endpoint untuk mengambil data lokasi
+app.get("/api/locations", (req, res) => {
+  const query = "SELECT Latitude, Longtitude, name FROM places";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
 //===== LOGIC =====
 app.get("/items", (req, res) => {
   const query = "SELECT * FROM users";
