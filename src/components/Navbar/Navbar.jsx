@@ -1,6 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Navbar = ({ className }) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
   return (
     <>
       <div className="container-Navbar sticky top-0 w-full z-[999]">
@@ -16,7 +22,23 @@ const Navbar = ({ className }) => {
             <a href="/" className="">
               Home
             </a>
-            <a href="/homecard">Location</a>
+              <button onClick={toggleDropdown} className="focus:outline-none">
+                Location
+              </button>
+              {dropdownOpen && (
+                <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                  <a
+                    href="/homecard"
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                    List
+                  </a>
+                  <a
+                    href="/map"
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                    Map
+                  </a>
+                </div>
+              )}
             <a href="#">Contact</a>
             <button className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
               <a href="/login">Login</a>
