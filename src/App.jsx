@@ -17,8 +17,7 @@ function App() {
           <Route path="/data" element={<Data />} />
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/HomeCard" element={<HomeCard />} />
-          {/* <Route path="/HomeCard" element={<HomeCard />} /> */}
+          <Route path="/homecard" element={<HomeCard />} />
           <Route path="/ss" element={<SessionInfo />} />
           <Route path="/map" element={<MapComponent />} />
         </Routes>

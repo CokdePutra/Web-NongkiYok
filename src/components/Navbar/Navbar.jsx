@@ -16,7 +16,7 @@ const Navbar = ({ className }) => {
             <a href="/" className="">
               Home
             </a>
-            <a href="/map">Location</a>
+            <a href="/homecard">Location</a>
             <a href="#">Contact</a>
             <button className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
               <a href="/login">Login</a>
