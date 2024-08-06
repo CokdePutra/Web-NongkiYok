@@ -1,6 +1,6 @@
 import React from "react";
 
-const Card = ({ title, imgSrc, description, link, price }) => {
+const Card = ({ title, imgSrc, description, link, price,category }) => {
   // Fungsi untuk menghitung jumlah ikon uang berdasarkan harga
   const getMoneyIcons = (price) => {
     if (price < 35000) {
@@ -22,7 +22,10 @@ const Card = ({ title, imgSrc, description, link, price }) => {
         alt="img-card"
         className="rounded-t-lg w-full h-48 object-cover"
       />
-      <h1 className="title kodchasan-bold text-2xl mt-4 text-white">{title}</h1>
+      <span className="inline-flex mt-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+        {category}
+      </span>
+      <h1 className="title kodchasan-bold text-2xl mt-1 text-white">{title}</h1>
       <p className="description text-gray-300 mt-2">{description}</p>
       <div className="flex justify-between mt-4">
         <div className="icon-money flex items-center">

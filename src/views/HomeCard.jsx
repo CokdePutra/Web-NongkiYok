@@ -31,6 +31,7 @@ const HomeCard = () => {
             description={card.Description} 
             link={card.Link}
             price={card.AVG_Price} 
+            category={card.Category}
           />
         ))}
       </div>
