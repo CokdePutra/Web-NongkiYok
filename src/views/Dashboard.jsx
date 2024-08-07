@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "../components/Navbar/Navbar";
 import CardPlace from "../components/Card/CardPlace";
-
+import TableDashboard from "../components/Table/TableDashboard.jsx";
 const Dashboard = () => {
     return (
         <>
@@ -18,6 +18,7 @@ const Dashboard = () => {
         desc={"Tempat yang Populer"}
         />
         </div>
+        <TableDashboard/>
         </>
     )
 }

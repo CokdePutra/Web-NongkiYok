@@ -56,12 +56,12 @@ const Navbar = ({ className }) => {
               <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-10">
                 <a
                   href="/homecard"
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-                  List
+                  className="rounded-md block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  List Location
                 </a>
                 <a
                   href="/map"
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  className="rounded-md block px-4 py-2 text-gray-800 hover:bg-gray-200">
                   Map
                 </a>
               </div>
