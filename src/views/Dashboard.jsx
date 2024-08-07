@@ -6,6 +6,7 @@ const Dashboard = () => {
     return (
         <>
         <Navbar />
+        <div className="flex justify-center">
         <CardPlace 
         src={"./img/Card/heart.png"}
         title={"100"}
@@ -16,6 +17,7 @@ const Dashboard = () => {
         title={"100"}
         desc={"Tempat yang Populer"}
         />
+        </div>
         </>
     )
 }
