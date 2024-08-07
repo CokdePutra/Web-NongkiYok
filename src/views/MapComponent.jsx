@@ -9,8 +9,7 @@ import axios from "axios";
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl:
-    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
 });
@@ -55,12 +54,14 @@ const MapComponent = () => {
   }, []);
 
   return (
-    <div>
-      <Navbar className="m-0 p-5" />
+    <div className="relative h-screen w-screen">
+      <div className="absolute top-0 left-0 right-0 z-10">
+        <Navbar className="m-0 p-0" />
+      </div>
       <MapContainer
         center={position}
         zoom={13}
-        style={{ height: "calc(100vh - 60px)", width: "100%" }}>
+        className="absolute top-0 left-0 right-0 bottom-0 z-0">
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

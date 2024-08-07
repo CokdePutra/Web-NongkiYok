@@ -1,10 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Navbar = ({ className }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null); // State untuk menyimpan role pengguna
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
+  };
+
+  // Fetch session data on component mount
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/session", {
+          withCredentials: true,
+        });
+        setUserRole(response.data.role); // Set user role based on session data
+      } catch (error) {
+        console.error("Error fetching session data:", error);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:5000/logout", {}, { withCredentials: true });
+      setUserRole(null); // Clear user role after logout
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
   };
 
   return (
@@ -22,27 +49,52 @@ const Navbar = ({ className }) => {
             <a href="/" className="">
               Home
             </a>
-              <button onClick={toggleDropdown} className="focus:outline-none">
-                Location
-              </button>
-              {dropdownOpen && (
-                <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-                  <a
-                    href="/homecard"
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-                    List
-                  </a>
-                  <a
-                    href="/map"
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-                    Map
-                  </a>
-                </div>
-              )}
-            <a href="#">Contact</a>
-            <button className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-              <a href="/login">Login</a>
+            <button onClick={toggleDropdown} className="focus:outline-none">
+              Location
             </button>
+            {dropdownOpen && (
+              <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                <a
+                  href="/homecard"
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  List
+                </a>
+                <a
+                  href="/map"
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  Map
+                </a>
+              </div>
+            )}
+            <a href="#">Contact</a>
+            {userRole ? (
+  userRole == "User" ? (
+    <button
+      onClick={handleLogout}
+      className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+      Logout
+    </button>
+  ) : userRole == "Guide" ? (
+    <a
+      href="/dashboard-guide"
+      className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+      Home
+    </a>
+  ) : userRole == "Admin" ? (
+    <a
+      href="/dashboard-admin"
+      className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+      Home
+    </a>
+  ) : null
+) : (
+  <a
+    href="/login"
+    className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+    Login
+  </a>
+)}
+
           </div>
         </div>
       </div>
