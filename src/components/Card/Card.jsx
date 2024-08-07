@@ -7,7 +7,7 @@ const Card = ({ title, imgSrc, description, link, price,category }) => {
       return 1;
     } else if (price >= 35000 && price <= 60000) {
       return 2;
-    } else if (price < 80000) {
+    } else if (price <= 80000) {
       return 3;
     }
   };
