@@ -188,6 +188,54 @@ app.get("/api/places", (req, res) => {
     res.json(results);
   });
 });
+// favorite place end point
+app.get("/api/AllPlaces", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send("Not logged in");
+  }
+
+  const userId = req.session.user.id;
+  const query = "SELECT COUNT(*) as total FROM places where Id_User = ?";
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results[0]);
+  });
+});
+// favorite place end point
+app.get("/api/AllPlaces", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send("Not logged in");
+  }
+
+  const userId = req.session.user.id;
+  const query = "SELECT COUNT(*) as total FROM places where Id_User = ?";
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results[0]);
+  });
+});
+// favorite place end point
+app.get("/api/FavPlaces", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send("Not logged in");
+  }
+
+  const userId = req.session.user.id;
+  const query =
+    "SELECT SUM((SELECT COUNT(*) FROM favorite WHERE Id_Places = places.Id_Places)) AS total_favorites FROM places WHERE EXISTS (SELECT 1 FROM favorite WHERE Id_Places = places.Id_Places AND Id_User = ?);";
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results[0]);
+  });
+});
 
 // check runing
 const PORT = process.env.PORT || 5000;
