@@ -9,13 +9,13 @@ const Dashboard = () => {
         <div className="flex justify-center">
         <CardPlace 
         src={"./img/Card/heart.png"}
-        title={"100"}
+        title={"1"}
         desc={"Tempat yang Populer"}
         />
         <CardPlace 
-        src={"./img/Card/approved.png"}
-        title={"100"}
-        desc={"Tempat yang Populer"}
+        src={"./img/Card/placeholder.png"}
+        title={"3"}
+        desc={"Tempat yang ditambahkan"}
         />
         </div>
         <TableDashboard/>

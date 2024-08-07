@@ -172,6 +172,22 @@ app.get("/card/:sort", (req, res) => {
     res.status(500).send("Invalid sort parameter");
   }
 });
+// guide end point
+app.get("/api/places", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send("Not logged in");
+  }
+
+  const userId = req.session.user.id;
+  const query = "SELECT * FROM places WHERE Id_User = ?";
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
 
 // check runing
 const PORT = process.env.PORT || 5000;
