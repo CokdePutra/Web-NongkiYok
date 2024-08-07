@@ -13,17 +13,19 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:5000/login', 
+      const response = await axios.post(
+        "http://localhost:5000/login",
         { username, password },
         { withCredentials: true } // Tambahkan opsi ini
       );
       if (response.status === 200) {
         const redirectUrl = response.data.redirectUrl;
+        // navigate(redirectUrl);
         navigate(redirectUrl);
       }
     } catch (error) {
-      console.error('Error logging in', error);
-      alert('Login failed. Please check your username and password.');
+      console.error("Error logging in", error);
+      alert("Login failed. Please check your username and password.");
     }
   };
 
@@ -32,7 +34,9 @@ const Login = () => {
       <div className="content kodchasan-bold w-1/4 flex flex-col items-center">
         <h1 className="text-color-yellow text-7xl m-3">LOGIN</h1>
         <div className="border-b-4 border-color-yellow m-5 h-2 w-full"></div>
-        <form onSubmit={handleLogin} className="w-full flex flex-col items-center">
+        <form
+          onSubmit={handleLogin}
+          className="w-full flex flex-col items-center">
           <UserInput
             type="text"
             id="usernameLogin"
@@ -59,8 +63,7 @@ const Login = () => {
         </a>
         <a
           href="./"
-          className="absolute hover:text-color-yellow left-5 bottom-5 text-color-primary "
-        >
+          className="absolute hover:text-color-yellow left-5 bottom-5 text-color-primary ">
           Back
         </a>
       </div>

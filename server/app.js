@@ -92,7 +92,9 @@ app.post("/login", (req, res) => {
           .status(200)
           .json({ message: "Login successful", redirectUrl: "/dashboard" });
       } else {
-        res.status(200).json({ message: "Login successful", redirectUrl: "/" });
+        res
+          .status(200)
+          .json({ message: "Login successful", redirectUrl: "/dashboard" });
       }
     });
   });
@@ -113,7 +115,16 @@ app.get("/api/session", (req, res) => {
   }
   res.json(req.session.user);
 });
-
+// Endpoint untuk mengambil data lokasi
+app.get("/api/locations", (req, res) => {
+  const query = "SELECT Latitude, Longtitude, name FROM places";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
 //===== LOGIC =====
 app.get("/items", (req, res) => {
   const query = "SELECT * FROM users";
@@ -129,6 +140,16 @@ app.get("/items", (req, res) => {
 app.get("/card/:sort", (req, res) => {
   if (req.params.sort === "up") {
     console.log("sort harga naik");
+    const query = `SELECT * FROM places ORDER BY AVG_Price DESC`;
+    db.query(query, (err, results) => {
+      if (err) {
+        res.status(500).send(err);
+      } else {
+        res.json(results);
+      }
+    });
+  } else if (req.params.sort === "down") {
+    console.log("sort harga turun");
     const query = `SELECT * FROM places ORDER BY AVG_Price ASC`;
     db.query(query, (err, results) => {
       if (err) {
@@ -139,7 +160,7 @@ app.get("/card/:sort", (req, res) => {
     });
   } else if (req.params.sort === "down") {
     console.log("sort harga turun");
-    const query = `SELECT * FROM places ORDER BY AVG_Price DESC`;
+    const query = `SELECT * FROM places ORDER BY AVG_Price ASC`;
     db.query(query, (err, results) => {
       if (err) {
         res.status(500).send(err);
