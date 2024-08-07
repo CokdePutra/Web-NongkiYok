@@ -42,7 +42,7 @@ const Dashboard = () => {
         <CardPlace 
         src={"./img/Card/star.png"}
         title={favorites.total_favorites}
-        desc={"Total bintang di dapatkan"}
+        desc={"Bintang diperoleh"}
         />
         <CardPlace 
         src={"./img/Card/placeholder.png"}
