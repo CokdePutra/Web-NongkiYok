@@ -5,6 +5,8 @@ import mysql from "mysql";
 import bcrypt from "bcryptjs";
 import bodyParser from "body-parser";
 import session from "express-session";
+import multer from "multer";
+import path from "path";
 
 dotenv.config();
 
@@ -45,15 +47,25 @@ db.connect((err) => {
   console.log("Connected to the database");
 });
 
+// Multer storage configuration
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public/uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
 // REGISTER
 app.post("/register", (req, res) => {
   const { name, email, password, role, username } = req.body;
-
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
       return res.status(500).send("Server Error");
     }
-
     const query =
       "INSERT INTO users (Name, Email, Password, Role, Username) VALUES (?, ?, ?, ?, ?)";
     db.query(query, [name, email, hash, role, username], (err, results) => {
@@ -99,6 +111,7 @@ app.post("/login", (req, res) => {
     });
   });
 });
+
 // LOGOUT
 app.post("/logout", (req, res) => {
   req.session.destroy((err) => {
@@ -108,6 +121,7 @@ app.post("/logout", (req, res) => {
     res.status(200).send("Logout successful");
   });
 });
+
 // Route untuk mendapatkan data session
 app.get("/api/session", (req, res) => {
   if (!req.session.user) {
@@ -115,9 +129,10 @@ app.get("/api/session", (req, res) => {
   }
   res.json(req.session.user);
 });
+
 // Endpoint untuk mengambil data lokasi
 app.get("/api/locations", (req, res) => {
-  const query = "SELECT Latitude, Longtitude, name FROM places";
+  const query = "SELECT * FROM places";
   db.query(query, (err, results) => {
     if (err) {
       return res.status(500).send(err);
@@ -125,6 +140,55 @@ app.get("/api/locations", (req, res) => {
     res.json(results);
   });
 });
+
+// Endpoint untuk input tempat baru
+app.post("/api/places", upload.single("image"), (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send("Not logged in");
+  }
+
+  const {
+    name,
+    price,
+    Category,
+    longitude,
+    latitude,
+    googleMapsLink,
+    description,
+  } = req.body;
+
+  console.log(req.body);
+  console.log("==========");
+  const image = req.file ? `/uploads/${req.file.filename}` : "";
+  const userId = req.session.user.id;
+
+  const query = `
+    INSERT INTO places (name, AVG_Price,Category, Longtitude, Latitude, Link, Description, Image, Id_User)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  db.query(
+    query,
+    [
+      name,
+      price,
+      Category,
+      longitude, // pastikan urutannya sesuai
+      latitude, // pastikan urutannya sesuai
+      googleMapsLink,
+      description,
+      image,
+      userId,
+    ],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("Error adding place");
+      }
+      res.status(201).send("Place added successfully");
+    }
+  );
+});
+
 //===== LOGIC =====
 app.get("/items", (req, res) => {
   const query = "SELECT * FROM users";
@@ -158,20 +222,11 @@ app.get("/card/:sort", (req, res) => {
         res.json(results);
       }
     });
-  } else if (req.params.sort === "down") {
-    console.log("sort harga turun");
-    const query = `SELECT * FROM places ORDER BY AVG_Price ASC`;
-    db.query(query, (err, results) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.json(results);
-      }
-    });
   } else {
     res.status(500).send("Invalid sort parameter");
   }
 });
+
 // guide end point
 app.get("/api/places", (req, res) => {
   if (!req.session.user) {
@@ -188,6 +243,7 @@ app.get("/api/places", (req, res) => {
     res.json(results);
   });
 });
+
 // favorite place end point
 app.get("/api/AllPlaces", (req, res) => {
   if (!req.session.user) {
@@ -204,22 +260,7 @@ app.get("/api/AllPlaces", (req, res) => {
     res.json(results[0]);
   });
 });
-// favorite place end point
-app.get("/api/AllPlaces", (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).send("Not logged in");
-  }
 
-  const userId = req.session.user.id;
-  const query = "SELECT COUNT(*) as total FROM places where Id_User = ?";
-
-  db.query(query, [userId], (err, results) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    res.json(results[0]);
-  });
-});
 // favorite place end point
 app.get("/api/FavPlaces", (req, res) => {
   if (!req.session.user) {

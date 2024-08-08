@@ -1,6 +1,6 @@
 import React from "react";
 
-const UserInput = ({ type = "text", id, name, placeholder, value, onChange, className }) => {
+const UserInput = ({ type = "text", id, name, placeholder, value, onChange, className, inpiutMode }) => {
   return (
     <div className="formInput w-full">
       <input
@@ -12,6 +12,7 @@ const UserInput = ({ type = "text", id, name, placeholder, value, onChange, clas
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        inputMode={inpiutMode}
         className={`bg-hover-button text-black rounded-full h-9 p-5 m-2 w-full ${className}`}
       />
     </div>
