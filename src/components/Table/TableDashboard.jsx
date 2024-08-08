@@ -22,9 +22,11 @@ const TableDashboard = () => {
     <div className="container mx-auto p-4 rounded mb-4 max-w-screen-lg">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl kodchasan-bold text-white">Lokasi Ngopi</h1>
+        <a href="/locinput">
         <button className="bg-color-yellow hover:bg-button-gray text-color-black hover:text-white font-bold py-2 px-4 text-m rounded">
           + Tambahkan Tempat
         </button>
+        </a>
       </div>
       <table className="min-w-full rounded-md table-fixed bg-white">
         <thead>
