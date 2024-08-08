@@ -46,7 +46,7 @@ const TableDashboard = () => {
           </button>
         </a>
       </div>
-      <table className="min-w-full rounded-md table-fixed bg-white">
+      <table className="min-w-full rounded table-fixed bg-white">
         <thead>
           <tr>
             <th className="w-40 px-4 py-2 text-xs">Nama</th>
