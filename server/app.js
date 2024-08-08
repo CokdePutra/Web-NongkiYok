@@ -99,14 +99,12 @@ app.post("/login", (req, res) => {
         role: user.Role,
       };
 
-      if (user.Role === "guide") {
+      if (user.Role === "Guide") {
         res
           .status(200)
           .json({ message: "Login successful", redirectUrl: "/dashboard" });
       } else {
-        res
-          .status(200)
-          .json({ message: "Login successful", redirectUrl: "/dashboard" });
+        res.status(200).json({ message: "Login successful", redirectUrl: "/" });
       }
     });
   });
@@ -187,6 +185,31 @@ app.post("/api/places", upload.single("image"), (req, res) => {
       res.status(201).send("Place added successfully");
     }
   );
+});
+
+app.delete("/api/places/delete/:id", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send("Not logged in");
+  }
+
+  const placeId = req.params.id;
+  const userId = req.session.user.id;
+
+  // Ensure the user is the owner of the place before deleting
+  const query = "DELETE FROM places WHERE Id_Places = ? AND Id_User = ?";
+
+  db.query(query, [placeId, userId], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error deleting place");
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).send("Place not found or not authorized");
+    }
+    res
+      .status(200)
+      .json({ message: "Delete successful", redirectUrl: "/dashboard" });
+  });
 });
 
 //===== LOGIC =====
