@@ -21,12 +21,15 @@ const TableDashboard = () => {
   const handleDelete = async (placeId) => {
     if (window.confirm("Are you sure you want to delete this place?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/places/delete/${placeId}`, {
-          withCredentials: true,
-        });
+        await axios.delete(
+          `http://localhost:5000/api/places/delete/${placeId}`,
+          {
+            withCredentials: true,
+          }
+        );
         // Remove the deleted place from the state
         setPlaces(places.filter((place) => place.id !== placeId));
-        
+
         // Redirect to the dashboard page after successful deletion
         window.location.href = "/dashboard";
       } catch (error) {
@@ -34,13 +37,12 @@ const TableDashboard = () => {
       }
     }
   };
-  
 
   return (
     <div className="container mx-auto p-4 rounded mb-4 max-w-screen-lg">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl kodchasan-bold text-white">Lokasi Ngopi</h1>
-        <a href="/locinput">
+        <a href="/locationinput">
           <button className="bg-color-yellow hover:bg-button-gray text-color-black hover:text-white font-bold py-2 px-4 text-m rounded">
             + Tambahkan Tempat
           </button>
@@ -64,10 +66,14 @@ const TableDashboard = () => {
             <tr key={place.id}>
               <td className="px-4 py-2 whitespace-nowrap">{place.Name}</td>
               <td className="px-4 py-2 whitespace-nowrap">{place.Category}</td>
-              <td className="px-4 py-2 whitespace-nowrap">{place.Description}</td>
+              <td className="px-4 py-2 whitespace-nowrap">
+                {place.Description}
+              </td>
               <td className="px-4 py-2 whitespace-nowrap">{place.AVG_Price}</td>
               <td className="px-4 py-2 whitespace-nowrap">{place.Latitude}</td>
-              <td className="px-4 py-2 whitespace-nowrap">{place.Longtitude}</td>
+              <td className="px-4 py-2 whitespace-nowrap">
+                {place.Longtitude}
+              </td>
               <td className="px-4 py-2 whitespace-nowrap">
                 <a href={place.Link} target="_blanks">
                   <div className="icon-location flex items-center">
@@ -85,8 +91,7 @@ const TableDashboard = () => {
                 </button>
                 <button
                   className="text-white-600 hover:text-indigo-900 mr-2 bg-red-500 text-white py-1 px-4 rounded"
-                  onClick={() => handleDelete(place.Id_Places)}
-                >
+                  onClick={() => handleDelete(place.Id_Places)}>
                   Delete
                 </button>
               </td>
