@@ -113,6 +113,7 @@ const LockInput = () => {
               value={formData.Category}  // Tambahkan value untuk menyinkronkan dengan state
               onChange={handleChange}
             >
+              <option selected >Pilih Katagori</option>
               <option value="Cafe">Cafe</option>
               <option value="Resto">Resto</option>
             </select>
