@@ -6,8 +6,11 @@ import Login from "./views/Login";
 import SignUp from "./views/SignUp";
 import HomeCard from "./views/HomeCard";
 import SessionInfo from "./views/SessionInfo";
-import MapComponent from './views/MapComponent';
+import MapComponent from "./views/MapComponent";
 import Dashboard from "./views/Dashboard";
+import LocationInput from "./views/LocationInput";
+import EditLocation from "./views/EditLocation";
+import Contact from "./views/Contact";
 
 function App() {
   return (
@@ -22,6 +25,9 @@ function App() {
           <Route path="/ss" element={<SessionInfo />} />
           <Route path="/map" element={<MapComponent />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/LocationInput" element={<LocationInput />} />
+          <Route path="/EditLocation/:id" element={<EditLocation />} />
+          <Route path="/Contact" element={<Contact />} />
         </Routes>
       </Router>
     </>

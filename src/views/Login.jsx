@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,29 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/session", {
+          withCredentials: true,
+        });
+        const role = response.data.role;
+        // Redirect if already logged in
+        if (role === "Guide") {
+          navigate("/dashboard");
+        } else if (role === "Admin") {
+          navigate("/dashboard-admin");
+        } else if (role === "User") {
+          navigate("/");
+        }
+      } catch (error) {
+        console.log("ok", error);
+      }
+    };
+
+    checkLoginStatus();
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -16,11 +39,10 @@ const Login = () => {
       const response = await axios.post(
         "http://localhost:5000/login",
         { username, password },
-        { withCredentials: true } // Tambahkan opsi ini
+        { withCredentials: true }
       );
       if (response.status === 200) {
         const redirectUrl = response.data.redirectUrl;
-        // navigate(redirectUrl);
         navigate(redirectUrl);
       }
     } catch (error) {
@@ -34,9 +56,7 @@ const Login = () => {
       <div className="content kodchasan-bold w-1/4 flex flex-col items-center">
         <h1 className="text-color-yellow text-7xl m-3">LOGIN</h1>
         <div className="border-b-4 border-color-yellow m-5 h-2 w-full"></div>
-        <form
-          onSubmit={handleLogin}
-          className="w-full flex flex-col items-center">
+        <form onSubmit={handleLogin} className="w-full flex flex-col items-center">
           <UserInput
             type="text"
             id="usernameLogin"
@@ -70,22 +90,22 @@ const Login = () => {
       <img
         src="./img/Login/Polygon1.png"
         alt=""
-        className="absolute w-1/5  bottom-0 left-0 -z-10"
+        className="absolute w-1/5 bottom-0 left-0 -z-10"
       />
       <img
         src="./img/Login/Polygon2.png"
         alt=""
-        className="absolute w-1/5  top-0 right-0 -z-10"
+        className="absolute w-1/5 top-0 right-0 -z-10"
       />
       <img
         src="./img/Login/Ellipse.png"
         alt=""
-        className="absolute w-1/10  top-[5rem] left-[4rem] -z-10"
+        className="absolute w-1/10 top-[5rem] left-[4rem] -z-10"
       />
       <img
         src="./img/Login/Ellipse.png"
         alt=""
-        className="absolute w-1/10  bottom-[2rem] right-[4rem] -z-10"
+        className="absolute w-1/10 bottom-[2rem] right-[4rem] -z-10"
       />
     </div>
   );

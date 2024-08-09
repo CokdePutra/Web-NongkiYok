@@ -70,7 +70,7 @@ const MapComponent = () => {
           <Marker
             key={index}
             position={[location.Latitude, location.Longtitude]}>
-            <Popup>{location.name}</Popup>
+            <Popup>{location.Name}</Popup>
           </Marker>
         ))}
       </MapContainer>

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const Navbar = ({ className }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userRole, setUserRole] = useState(null); // State untuk menyimpan role pengguna
+  const location = useLocation();
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -27,12 +29,21 @@ const Navbar = ({ className }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/logout", {}, { withCredentials: true });
+      await axios.post(
+        "http://localhost:5000/logout",
+        {},
+        { withCredentials: true }
+      );
       setUserRole(null); // Clear user role after logout
+      window.location.href = "/"; // Redirect to home after logout
     } catch (error) {
       console.error("Error logging out:", error);
     }
   };
+
+  const isDashboardPage =
+    location.pathname === "/dashboard" ||
+    location.pathname === "/dashboard-admin";
 
   return (
     <>
@@ -56,45 +67,51 @@ const Navbar = ({ className }) => {
               <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-10">
                 <a
                   href="/homecard"
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
-                  List
+                  className="rounded-md block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  List Location
                 </a>
                 <a
                   href="/map"
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  className="rounded-md block px-4 py-2 text-gray-800 hover:bg-gray-200">
                   Map
                 </a>
               </div>
             )}
-            <a href="#">Contact</a>
+            <a href="/Contact">Contact</a>
             {userRole ? (
-  userRole == "User" ? (
-    <button
-      onClick={handleLogout}
-      className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-      Logout
-    </button>
-  ) : userRole == "Guide" ? (
-    <a
-      href="/dashboard-guide"
-      className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-      Home
-    </a>
-  ) : userRole == "Admin" ? (
-    <a
-      href="/dashboard-admin"
-      className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-      Home
-    </a>
-  ) : null
-) : (
-  <a
-    href="/login"
-    className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-    Login
-  </a>
-)}
-
+              isDashboardPage &&
+              (userRole === "Guide" || userRole === "Admin") ? (
+                <button
+                  onClick={handleLogout}
+                  className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+                  Logout
+                </button>
+              ) : userRole === "Guide" ? (
+                <a
+                  href="/dashboard"
+                  className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+                  Home
+                </a>
+              ) : userRole === "Admin" ? (
+                <a
+                  href="/dashboard-admin"
+                  className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+                  Home
+                </a>
+              ) : (
+                <button
+                  onClick={handleLogout}
+                  className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+                  Logout
+                </button>
+              )
+            ) : (
+              <a
+                href="/login"
+                className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+                Login
+              </a>
+            )}
           </div>
         </div>
       </div>

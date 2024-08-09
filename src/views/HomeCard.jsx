@@ -6,6 +6,7 @@ import Card from '../components/Card/Card';
 const HomeCard = () => {
   const [cards, setCards] = useState([]);
   const [sortOrder, setSortOrder] = useState('up'); // Default sort order
+
   useEffect(() => {
     const fetchCards = async () => {
       try {
@@ -19,12 +20,21 @@ const HomeCard = () => {
     fetchCards();
   }, [sortOrder]);
 
+  const handleSortUp = () => {
+    setSortOrder('up');
+  };
+
+  const handleSortDown = () => {
+    setSortOrder('down');
+  };
+
   return (
     <>
       <Navbar />
       <div className="container-card flex flex-wrap justify-center items-stretch gap-4 p-4">
         {cards.map((card, index) => (
           <Card
+            placeId={card.Id_Places}
             key={index}
             title={card.Name} 
             imgSrc="./img/Card/image-ex.png" 
@@ -34,6 +44,23 @@ const HomeCard = () => {
             category={card.Category}
           />
         ))}
+      </div>
+      <div className="flex gap-1 mt-2 ml-3 mb-1 absolute bottom-[2rem] left-[2rem]">
+        {sortOrder === 'up' ? (
+          <img
+            src="./img/Card/Up.png"
+            alt="Sort Up"
+            className="w-15 h-[auto] cursor-pointer"
+            onClick={handleSortDown}
+          />
+        ) : (
+          <img
+            src="./img/Card/DOWN.png"
+            alt="Sort Down"
+            className="w-15 h-[auto] cursor-pointer"
+            onClick={handleSortUp}
+          />
+        )}
       </div>
     </>
   );
