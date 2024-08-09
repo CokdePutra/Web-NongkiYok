@@ -30,3 +30,8 @@ ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda
 
 1. node server/app.js
 2. npm run dev
+
+# contoh 1 user
+
+username : zephyrus
+password : admin#1234
