@@ -24,6 +24,7 @@ ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda
 18. npm install leaflet react-leaflet
 19. npm install multer
 20. npm install path
+21. npm install boxicons --save
 
 # Sebelum run start dibawah ini
 

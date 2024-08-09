@@ -38,7 +38,7 @@ const TableDashboard = () => {
     }
   };
   return (
-    <div className="container mx-auto p-4 rounded mb-4 max-w-screen-lg">
+    <div className="container mx-auto p-4 rounded mb-4 max-w-screen-xl">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl kodchasan-bold text-white">Lokasi Ngopi</h1>
         <a href="/locationinput">
@@ -65,7 +65,7 @@ const TableDashboard = () => {
             <tr key={place.id}>
               <td className="px-4 py-2 whitespace-nowrap">{place.Name}</td>
               <td className="px-4 py-2 whitespace-nowrap">{place.Category}</td>
-              <td className="px-4 py-2 whitespace-nowrap">
+              <td className="px-4 py-2 whitespace-nowrap text-wrap">
                 {place.Description}
               </td>
               <td className="px-4 py-2 whitespace-nowrap">{place.AVG_Price}</td>

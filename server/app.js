@@ -417,6 +417,26 @@ app.delete("/api/delete/favorites/:placeId", (req, res) => {
 });
 
 //======================================
+app.post("/api/contact", (req, res) => {
+  const { name, email, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).send("All fields are required.");
+  }
+
+  db.query(
+    "INSERT INTO contact (Name, Email, Massage) VALUES (?, ?, ?)",
+    [name, email, message],
+    (err) => {
+      if (err) {
+        console.error("Error saving the message:", err);
+        return res.status(500).send("Error saving the message");
+      }
+      console.log("Message received:", { name, email, message });
+      res.status(200).send("Message saved successfully");
+    }
+  );
+});
 
 // check runing
 const PORT = process.env.PORT || 5000;
