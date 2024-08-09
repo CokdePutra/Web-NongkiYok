@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import session from "express-session";
 import multer from "multer";
 import path from "path";
+import { redirect } from "react-router-dom";
 
 dotenv.config();
 
@@ -346,6 +347,7 @@ app.get("/api/AllPlaces", (req, res) => {
   });
 });
 
+// ====== FAVORITE ======
 // favorite place end point
 app.get("/api/FavPlaces", (req, res) => {
   if (!req.session.user) {
@@ -362,6 +364,59 @@ app.get("/api/FavPlaces", (req, res) => {
     res.json(results[0]);
   });
 });
+// Endpoint to get favorite status
+app.get("/api/favorite/status/:placeId", (req, res) => {
+  const { placeId } = req.params;
+  const userId = req.session.user.id;
+  console.log(userId, placeId);
+  const query =
+    "SELECT COUNT(*) AS count FROM favorites WHERE Id_User = ? AND Id_Places = ?";
+  db.query(query, [userId, placeId], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to fetch favorite status" });
+    }
+
+    const isFavorited = result[0].count > 0;
+    res.json({ isFavorited });
+  });
+});
+// Endpoint to add a place to favorites
+app.post("/api/add/favorites", (req, res) => {
+  const { placeId } = req.body;
+  const userId = req.session.user.id; // Assuming user ID is stored in the session
+  if (!userId) {
+    return res.status(401).json({ error: "User not logged in" });
+  }
+
+  const query = "INSERT INTO favorite (Id_User, Id_Places) VALUES (?, ?)";
+  db.query(query, [userId, placeId], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to add to favorites" });
+    }
+    res.json({ message: "Added to favorites" });
+    redirect("/homecard");
+  });
+});
+// Endpoint to remove a place from favorites
+app.delete("/api/delete/favorites/:placeId", (req, res) => {
+  const { placeId } = req.params;
+  const userId = req.session.user.id;
+
+  if (!userId) {
+    return res.status(401).json({ error: "User not logged in" });
+  }
+
+  const query = "DELETE FROM favorite WHERE Id_User = ? AND Id_Places = ?";
+  db.query(query, [userId, placeId], (err, result) => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to remove from favorites" });
+    }
+    res.json({ message: "Removed from favorites" });
+    redirect("/homecard");
+  });
+});
+
+//======================================
 
 // check runing
 const PORT = process.env.PORT || 5000;

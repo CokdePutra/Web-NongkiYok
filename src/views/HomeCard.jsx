@@ -25,6 +25,7 @@ const HomeCard = () => {
       <div className="container-card flex flex-wrap justify-center items-stretch gap-4 p-4">
         {cards.map((card, index) => (
           <Card
+            placeId={card.Id_Places}
             key={index}
             title={card.Name} 
             imgSrc="./img/Card/image-ex.png" 
