@@ -18,6 +18,7 @@ const Card = ({ placeId, title, imgSrc, description, link, price, category }) =>
       }
     };
 
+    
     fetchFavoriteStatus();
   }, [placeId]);
 
