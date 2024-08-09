@@ -138,8 +138,8 @@ app.get("/api/locations", (req, res) => {
     res.json(results);
   });
 });
-
-// Endpoint untuk input tempat baru
+// ======= CRUD =======
+// add place
 app.post("/api/places", upload.single("image"), (req, res) => {
   if (!req.session.user) {
     return res.status(401).send("Not logged in");
@@ -186,7 +186,68 @@ app.post("/api/places", upload.single("image"), (req, res) => {
     }
   );
 });
+// get place by id
+app.get("/api/get/places/:id", (req, res) => {
+  const placeId = req.params.id;
+  const query = "SELECT * FROM places WHERE Id_Places = ?";
+  db.query(query, [placeId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    if (results.length === 0) {
+      return res.status(404).send("Place not found");
+    }
+    res.json(results[0]);
+  });
+});
 
+// update place
+app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).send("Not logged in");
+  }
+
+  const placeId = req.params.id;
+  const { Name, AVG_Price, Category, Longtitude, Latitude, Link, Description } =
+    req.body;
+  console.log(req.body);
+  const image = req.file ? `/uploads/${req.file.filename}` : "";
+  const userId = req.session.user.id;
+
+  const query = `
+    UPDATE places 
+    SET name = ?, AVG_Price = ?, Category = ?, Latitude = ?, Longtitude = ?, Link = ?, Description = ?, Image = ?
+    WHERE Id_Places = ? AND Id_User = ?
+  `;
+  db.query(
+    query,
+    [
+      Name,
+      AVG_Price,
+      Category,
+      Latitude,
+      Longtitude,
+      Link,
+      Description,
+      image,
+      placeId,
+      userId,
+    ],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("Error updating place");
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).send("Place not found or not authorized");
+      }
+      res
+        .status(200)
+        .json({ message: "Update successful", redirectUrl: "/dashboard" });
+    }
+  );
+});
+// delete place
 app.delete("/api/places/delete/:id", (req, res) => {
   if (!req.session.user) {
     return res.status(401).send("Not logged in");
@@ -211,6 +272,7 @@ app.delete("/api/places/delete/:id", (req, res) => {
       .json({ message: "Delete successful", redirectUrl: "/dashboard" });
   });
 });
+// ==========
 
 //===== LOGIC =====
 app.get("/items", (req, res) => {

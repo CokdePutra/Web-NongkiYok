@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import UserInput from "../components/UserInput/UserInput";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
-const LocationInput = () => {
+const EditLocation = () => {
   const navigate = useNavigate();
+  const param = useParams()
+  const id = param.id// Mengambil ID dari URL
+  console.log(id)  
   const [userRole, setUserRole] = useState(null);
   const [formData, setFormData] = useState({
-    name: "",
-    price: "",
+    Name: "",
+    AVG_Price: "",
     Category: "",
-    longitude: "",
-    latitude: "",
-    googleMapsLink: "",
-    description: "",
+    Latitude: "",
+    Longtitude: "",
+    Link: "",
+    Description: "",
   });
   const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -28,7 +30,6 @@ const LocationInput = () => {
         const role = response.data.role;
         setUserRole(role);
 
-        // Redirect if not Guide or Admin
         if (role !== "Guide" && role !== "Admin") {
           navigate("/");
         }
@@ -42,15 +43,21 @@ const LocationInput = () => {
   }, [navigate]);
 
   useEffect(() => {
-    axios
-      .get("/api/session")
-      .then((response) => {
-        setIsLoggedIn(true);
-      })
-      .catch((error) => {
-        setIsLoggedIn(false);
-      });
-  }, []);
+    const fetchPlaceData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/get/places/${id}`, {
+          withCredentials: true,
+        });
+        console.log(response.data);
+        setFormData(response.data);
+      } catch (error) {
+        console.error("Error fetching place data:", error);
+        setError("Failed to load place data");
+      }
+    };
+
+    fetchPlaceData();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,13 +71,8 @@ const LocationInput = () => {
     setImage(e.target.files[0]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!isLoggedIn) {
-      setError("You must be logged in to add a place");
-      return;
-    }
 
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => {
@@ -80,28 +82,24 @@ const LocationInput = () => {
       formDataToSend.append("image", image);
     }
 
-    axios
-      .post("http://localhost:5000/api/places", formDataToSend, {
+    try {
+      await axios.put(`http://localhost:5000/api/places/update/${id}`, formDataToSend, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      })
-      .then((response) => {
-        console.log(response.data);
-        setError(null);
-        navigate("/dashboard");
-      })
-      .catch((error) => {
-        console.error("Error adding place", error);
-        setError(error.response ? error.response.data : "Error adding place");
       });
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error updating place", error);
+      setError(error.response ? error.response.data : "Error updating place");
+    }
   };
 
   return (
     <>
       <h2 className="text-3xl font-bold mb-4 text-center text-color-yellow kodchasan-bold mt-[4vh]">
-        FORM TAMBAHKAN TEMPAT
+        FORM EDIT TEMPAT
       </h2>
 
       <form
@@ -116,8 +114,9 @@ const LocationInput = () => {
             type="text"
             id="name"
             placeholder="Toko..."
-            name="name"
+            name="Name"
             className="w-full py-2 border rounded-md ml-[-2px]"
+            value={formData.Name}
             onChange={handleChange}
           />
         </div>
@@ -131,8 +130,9 @@ const LocationInput = () => {
               id="price"
               placeholder="20000..."
               inputMode="numeric"
-              name="price"
+              name="AVG_Price"
               className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+              value={formData.AVG_Price}
               onChange={handleChange}
             />
           </div>
@@ -148,7 +148,7 @@ const LocationInput = () => {
               value={formData.Category}
               onChange={handleChange}
             >
-              <option value="" disabled>
+              <option value="">
                 Pilih Kategori
               </option>
               <option value="Cafe">Cafe</option>
@@ -166,8 +166,9 @@ const LocationInput = () => {
               id="latitude"
               placeholder="-8.6513135..."
               inputMode="numeric"
-              name="latitude"
+              name="Latitude"
               className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+              value={formData.Latitude}
               onChange={handleChange}
             />
           </div>
@@ -180,8 +181,9 @@ const LocationInput = () => {
               id="longitude"
               placeholder="115.1939839..."
               inputMode="numeric"
-              name="longitude"
+              name="Longtitude"
               className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+              value={formData.Longtitude}
               onChange={handleChange}
             />
           </div>
@@ -195,8 +197,9 @@ const LocationInput = () => {
               type="url"
               id="googleMapsLink"
               placeholder="https://maps.app.goo.gl/..."
-              name="googleMapsLink"
+              name="Link"
               className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+              value={formData.Link}
               onChange={handleChange}
             />
           </div>
@@ -204,16 +207,14 @@ const LocationInput = () => {
             <label className="block text-color-yellow jura-medium">
               Upload Image
             </label>
-                        <div className="formInput w-full">
-              <input
-                autoComplete="off"
-                type="file"
-                id="image"
-                name="image"
-                className="bg-hover-button text-black rounded-md h-9 p-5 m-2 w-full px-3 py-[2px] border ml-[-2px]"
-                onChange={handleImageChange}
-                />
-            </div>
+            <input
+              autoComplete="off"
+              type="file"
+              id="image"
+              name="image"
+              className="bg-hover-button text-black rounded-md h-9 p-5 m-2 w-full px-3 py-[2px] border ml-[-2px]"
+              onChange={handleImageChange}
+            />
           </div>
         </div>
         <div className="mb-4">
@@ -224,8 +225,9 @@ const LocationInput = () => {
             type="text"
             id="description"
             placeholder="Deskripsi singkat..."
-            name="description"
+            name="Description"
             className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+            value={formData.Description}
             onChange={handleChange}
           />
         </div>
@@ -240,7 +242,7 @@ const LocationInput = () => {
       <Link to="/dashboard">
         <div className="flex gap-1 mt-2 ml-3 mb-1 absolute bottom-[2rem] left-[2rem]">
           <img
-            src="./img/Card/Icon.png"
+            src="../img/Card/Icon.png"
             alt="Back Icon"
             className="w-6 h-[auto]"
           />
@@ -251,4 +253,4 @@ const LocationInput = () => {
   );
 };
 
-export default LocationInput;
+export default EditLocation;

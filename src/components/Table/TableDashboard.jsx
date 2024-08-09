@@ -37,7 +37,6 @@ const TableDashboard = () => {
       }
     }
   };
-
   return (
     <div className="container mx-auto p-4 rounded mb-4 max-w-screen-lg">
       <div className="flex items-center justify-between mb-4">
@@ -86,9 +85,13 @@ const TableDashboard = () => {
                 </a>
               </td>
               <td className="px-4 py-2 whitespace-nowrap text-sm leading-5 font-medium">
-                <button className="text-white-600 hover:text-indigo-900 mr-2 bg-blue-500 text-white py-1 px-4 rounded">
-                  Edit
-                </button>
+              <button
+  className="text-white-600 hover:text-indigo-900 mr-2 bg-blue-500 text-white py-1 px-4 rounded"
+  onClick={() => window.location.href = `/EditLocation/${place.Id_Places}`}
+>
+  Edit
+</button>
+
                 <button
                   className="text-white-600 hover:text-indigo-900 mr-2 bg-red-500 text-white py-1 px-4 rounded"
                   onClick={() => handleDelete(place.Id_Places)}>
