@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import UserInput from "../components/UserInput/UserInput";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const LocationInput = () => {
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -17,6 +18,28 @@ const LocationInput = () => {
   const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/session", {
+          withCredentials: true,
+        });
+        const role = response.data.role;
+        setUserRole(role);
+
+        // Redirect if not Guide or Admin
+        if (role !== "Guide" && role !== "Admin") {
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Error fetching session data:", error);
+        navigate("/");
+      }
+    };
+
+    checkLoginStatus();
+  }, [navigate]);
 
   useEffect(() => {
     axios
@@ -68,7 +91,6 @@ const LocationInput = () => {
         console.log(response.data);
         setError(null);
         navigate("/dashboard");
-        // Handle success, maybe clear form or show success message
       })
       .catch((error) => {
         console.error("Error adding place", error);
@@ -84,7 +106,8 @@ const LocationInput = () => {
 
       <form
         onSubmit={handleSubmit}
-        className="max-w-lg mx-auto p-4 shadow-md rounded-lg bg-navbar-color">
+        className="max-w-lg mx-auto p-4 shadow-md rounded-lg bg-navbar-color"
+      >
         <div className="mb-4">
           <label className="block text-color-yellow jura-medium">
             Nama Tempat
@@ -122,9 +145,12 @@ const LocationInput = () => {
               className="bg-hover-button text-black rounded-md h-9 p-5 m-2 w-full px-2 py-1 border ml-[-5px]"
               name="Category"
               id="Category"
-              value={formData.Category} // Tambahkan value untuk menyinkronkan dengan state
-              onChange={handleChange}>
-              <option selected>Pilih Katagori</option>
+              value={formData.Category}
+              onChange={handleChange}
+            >
+              <option value="" disabled>
+                Pilih Kategori
+              </option>
               <option value="Cafe">Cafe</option>
               <option value="Resto">Resto</option>
             </select>
@@ -194,7 +220,7 @@ const LocationInput = () => {
           <UserInput
             type="text"
             id="description"
-            placeholder="deskripsi singkat..."
+            placeholder="Deskripsi singkat..."
             name="description"
             className="w-full px-3 py-2 border rounded-md ml-[-2px]"
             onChange={handleChange}
@@ -203,20 +229,21 @@ const LocationInput = () => {
         {error && <div className="text-red-500 mb-4">{error}</div>}
         <button
           type="submit"
-          className="w-full bg-black text-white px-3 py-2 rounded-md jura-medium">
+          className="w-full bg-black text-white px-3 py-2 rounded-md jura-medium"
+        >
           Submit
         </button>
       </form>
-      <a href={"Dashboard"}>
+      <Link to="/dashboard">
         <div className="flex gap-1 mt-2 ml-3 mb-1 absolute bottom-[2rem] left-[2rem]">
           <img
             src="./img/Card/Icon.png"
             alt="Back Icon"
             className="w-6 h-[auto]"
           />
-          <h3 className="text-white jura-medium ">Back</h3>
+          <h3 className="text-white jura-medium">Back</h3>
         </div>
-      </a>
+      </Link>
     </>
   );
 };
