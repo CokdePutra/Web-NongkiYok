@@ -35,3 +35,5 @@ ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda
 
 username : zephyrus
 password : admin#1234
+
+desain : https://www.figma.com/proto/hOU58955XGafJ5PbADaM1t/Nongki-Yok?node-id=0-1&t=OmyfPQAgpI0AKoKX-1
