@@ -77,7 +77,7 @@ const Navbar = ({ className }) => {
                 </a>
               </div>
             )}
-            <a href="#">Contact</a>
+            <a href="/Contact">Contact</a>
             {userRole ? (
               isDashboardPage &&
               (userRole === "Guide" || userRole === "Admin") ? (
