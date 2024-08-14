@@ -9,7 +9,8 @@ import axios from "axios";
 delete L.Icon.Default.prototype._getIconUrl;
 
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
 });
@@ -53,6 +54,18 @@ const MapComponent = () => {
     fetchLocations();
   }, []);
 
+  // Function to determine the number of money icons based on price
+  const getMoneyIcons = (price) => {
+    if (price < 35000) {
+      return 1;
+    } else if (price >= 35000 && price <= 60000) {
+      return 2;
+    } else if (price <= 80000) {
+      return 3;
+    }
+    return 0; // Default return value if price doesn't match any condition
+  };
+
   return (
     <div className="relative h-screen w-screen">
       <div className="absolute top-0 left-0 right-0 z-10">
@@ -70,7 +83,35 @@ const MapComponent = () => {
           <Marker
             key={index}
             position={[location.Latitude, location.Longtitude]}>
-            <Popup>{location.Name}</Popup>
+            <Popup>
+              <strong>{location.Name}</strong>
+              <hr className="m-1 bg-color-primary" />
+            <div className="container">
+              <img
+                src={location.Image ? `./${location.Image}` : './img/Card/image-ex.png'}
+                alt="img-card"
+                className="rounded-t-lg w-full h-28 object-cover"
+              />
+              <div className="flex items-center">
+                  <div className="flex">
+                  {[...Array(getMoneyIcons(location.AVG_Price))].map((_, idx) => (
+                    <img
+                      key={idx}
+                      src="./img/Card/money2.png"
+                      alt="icon-money"
+                      className="h-6 w-6"
+                    />
+                ))}
+              </div>
+              </div>
+              <span className="inline-flex mt-1 ms-auto  items-center self-end rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+                {location.Category}
+              </span>
+              <span className="inline-flex mt-1 ms-1  items-center self-end rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+                {location.Size}
+              </span>
+            </div>
+            </Popup>
           </Marker>
         ))}
       </MapContainer>
