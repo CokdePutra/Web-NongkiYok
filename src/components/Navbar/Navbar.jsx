@@ -86,7 +86,7 @@ const Navbar = ({ className }) => {
             <img
               src="./img/Card/AI.png"
               alt="AI"
-              className="h-6 w-6 object-cover"
+              className="h-7 w-7 object-cover"
             />
           </a>
           {user ? (
