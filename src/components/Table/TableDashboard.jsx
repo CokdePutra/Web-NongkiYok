@@ -62,7 +62,7 @@ const TableDashboard = () => {
             <th className="w-24 px-4 py-2 text-xs">Aksi</th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white divide-y text-center divide-gray-200">
           {places.map((place) => (
             <tr key={place.id}>
               <td className="px-4 py-2 whitespace-nowrap">{place.Name}</td>

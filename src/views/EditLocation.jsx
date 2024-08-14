@@ -17,9 +17,29 @@ const EditLocation = () => {
     Description: "",
     Img_old: "", // Field to store the old image
   });
-
+  const [userRole, setUserRole] = useState(null);
   const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/session", {
+          withCredentials: true,
+        });
+        const role = response.data.role;
+        setUserRole(role);
+
+        // Redirect if not Guide or Admin
+        if (role !== "Guide" && role !== "Admin") {
+          navigate("/");
+        }
+      } catch (error) {
+        console.error("Error fetching session data:", error);
+        navigate("/");
+      }
+    };
+    checkLoginStatus();
+  }, [navigate]);
 
   useEffect(() => {
     const fetchPlaceData = async () => {
