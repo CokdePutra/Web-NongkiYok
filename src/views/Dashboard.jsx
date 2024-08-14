@@ -93,7 +93,7 @@ const Dashboard = () => {
         <CardPlace
           src={"./img/Card/star.png"}
           title={favorites.total_favorites ? favorites.total_favorites : 0}
-          desc={userRole === "Guide" ? "Tempat difavoritkan" : "Tempat favorit"}
+          desc={userRole === "Guide" ? "Tempat yang difavoritkan" : "Tempat favorit"}
         />
         {userRole === "Guide" && (
           <CardPlace
