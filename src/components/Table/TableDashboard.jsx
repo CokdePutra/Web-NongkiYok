@@ -38,6 +38,7 @@ const TableDashboard = () => {
       }
     }
   };
+
   return (
     <div className="container mx-auto p-4 rounded mb-4 max-w-screen-xl">
       <div className="flex items-center justify-between mb-4">
@@ -48,75 +49,78 @@ const TableDashboard = () => {
           </button>
         </a>
       </div>
-      <table className="min-w-full rounded table-fixed bg-white">
-        <thead>
-          <tr>
-            <th className="w-40 px-4 py-2 text-xs">Nama</th>
-            <th className="w-40 px-4 py-2 text-xs">Kategori</th>
-            <th className="w-40 px-4 py-2 text-xs">Size</th>
-            <th className="w-64 px-4 py-2 text-xs">Deskripsi</th>
-            <th className="w-36 px-4 py-2 text-xs">Harga</th>
-            <th className="w-28 px-4 py-2 text-xs">Latitude</th>
-            <th className="w-28 px-4 py-2 text-xs">Longitude</th>
-            <th className="w-28 px-4 py-2 text-xs">Gambar</th>
-            <th className="w-28 px-4 py-2 text-xs">Lokasi</th>
-            <th className="w-24 px-4 py-2 text-xs">Aksi</th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y text-center divide-gray-200">
-          {places.map((place) => (
-            <tr key={place.id}>
-              <td className="px-4 py-2 whitespace-nowrap">{place.Name}</td>
-              <td className="px-4 py-2 whitespace-nowrap">{place.Category}</td>
-              <td className="px-4 py-2 whitespace-nowrap">{place.Size}</td>
-              <td className="px-4 py-2 whitespace-nowrap text-wrap">
-                {place.Description}
-              </td>
-              <td className="px-4 py-2 whitespace-nowrap">{place.AVG_Price}</td>
-              <td className="px-4 py-2 whitespace-nowrap">{place.Latitude}</td>
-              <td className="px-4 py-2 whitespace-nowrap">
-                {place.Longtitude}
-              </td>
-              <td className="px-4 py-2 whitespace-nowrap">
-              {place.Image? (
-              <a href={place.Image ? `./${place.Image}` : './img/Card/image-ex.png'} target="_blanks">
-                <div className="icon-location flex justify-center">
-                <box-icon type='solid' name='image'>icon</box-icon>
-                </div>
-              </a>
-              ) : (
-                <p className="icon-location flex justify-center">-</p>
-              )}
-              </td>
-              <td className="px-4 py-2 whitespace-nowrap">
-                <a href={place.Link} target="_blanks">
-                  <div className="icon-location flex justify-center">
-                    <img
-                      src="./img/Card/location.png"
-                      alt="icon-location"
-                      className="h-6 w-6"
-                    />
-                  </div>
-                </a>
-              </td>
-              <td className="px-4 py-2 whitespace-nowrap text-sm leading-5 font-medium">
-              <button
-  className="text-white-600 hover:text-indigo-900 mr-2 bg-blue-500 text-white py-1 px-4 rounded"
-  onClick={() => window.location.href = `/EditLocation/${place.Id_Places}`}
->
-  Edit
-</button>
-
-                <button
-                  className="text-white-600 hover:text-indigo-900 mr-2 bg-red-500 text-white py-1 px-4 rounded"
-                  onClick={() => handleDelete(place.Id_Places)}>
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto">
+        <div className="relative max-h-[500px] overflow-y-auto">
+          <table className="min-w-full table-fixed bg-white">
+            <thead className="sticky top-0 text-bo bg-white shadow">
+              <tr>
+                <th className="w-40 px-4 py-2">Nama</th>
+                <th className="w-40 px-4 py-2">Kategori</th>
+                <th className="w-40 px-4 py-2">Size</th>
+                <th className="w-64 px-4 py-2">Deskripsi</th>
+                <th className="w-36 px-4 py-2">Harga</th>
+                <th className="w-28 px-4 py-2">Latitude</th>
+                <th className="w-28 px-4 py-2">Longitude</th>
+                <th className="w-28 px-4 py-2">Gambar</th>
+                <th className="w-28 px-4 py-2">Lokasi</th>
+                <th className="w-24 px-4 py-2">Aksi</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y text-center divide-gray-200">
+              {places.map((place) => (
+                <tr key={place.id}>
+                  <td className="px-4 py-2 whitespace-nowrap">{place.Name}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">{place.Category}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">{place.Size}</td>
+                  <td className="px-4 py-2 whitespace-nowrap text-wrap">
+                    {place.Description}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap">{place.AVG_Price}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">{place.Latitude}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    {place.Longtitude}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    {place.Image ? (
+                      <a href={place.Image ? `./${place.Image}` : './img/Card/image-ex.png'} target="_blanks">
+                        <div className="icon-location flex justify-center">
+                          <box-icon type='solid' name='image'>icon</box-icon>
+                        </div>
+                      </a>
+                    ) : (
+                      <p className="icon-location flex justify-center">-</p>
+                    )}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    <a href={place.Link} target="_blanks">
+                      <div className="icon-location flex justify-center">
+                        <img
+                          src="./img/Card/location.png"
+                          alt="icon-location"
+                          className="h-6 w-6"
+                        />
+                      </div>
+                    </a>
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap text-sm leading-5 font-medium">
+                    <button
+                      className="text-white-600 hover:text-indigo-900 mr-2 bg-blue-500 text-white py-1 px-4 rounded"
+                      onClick={() => window.location.href = `/EditLocation/${place.Id_Places}`}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="text-white-600 hover:text-indigo-900 mr-2 bg-red-500 text-white py-1 px-4 rounded"
+                      onClick={() => handleDelete(place.Id_Places)}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

@@ -100,6 +100,7 @@ app.post("/login", (req, res) => {
         email: user.Email,
         username: user.Username,
         role: user.Role,
+        name: user.Name,
       };
 
       if (user.Role === "Guide") {
@@ -298,7 +299,7 @@ app.get("/items", (req, res) => {
     }
   });
 });
-
+//card logic main
 app.get("/card/:sort", (req, res) => {
   if (req.params.sort === "up") {
     console.log("sort harga naik");
@@ -324,6 +325,24 @@ app.get("/card/:sort", (req, res) => {
     res.status(500).send("Invalid sort parameter");
   }
 });
+// user fav card
+app.get("/api/card/fav", (req, res) => {
+  const userId = req.session.user.id;
+  const query = `
+    SELECT * 
+    FROM favorite 
+    INNER JOIN places USING (Id_Places) 
+    WHERE favorite.Id_User = ?
+  `;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
+
 // guide end point
 app.get("/api/places", (req, res) => {
   if (!req.session.user) {
