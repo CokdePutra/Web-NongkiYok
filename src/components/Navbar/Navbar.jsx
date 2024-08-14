@@ -4,21 +4,20 @@ import { useLocation } from "react-router-dom";
 
 const Navbar = ({ className }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [user, setUser] = useState(null); // State to store user data
+  const [user, setUser] = useState(null);
   const location = useLocation();
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
 
-  // Fetch session data on component mount
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/session", {
           withCredentials: true,
         });
-        setUser(response.data); // Set user data based on session data
+        setUser(response.data);
       } catch (error) {
         console.error("Error fetching session data:", error);
       }
@@ -34,8 +33,8 @@ const Navbar = ({ className }) => {
         {},
         { withCredentials: true }
       );
-      setUser(null); // Clear user data after logout
-      window.location.href = "/"; // Redirect to home after logout
+      setUser(null);
+      window.location.href = "/";
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -46,42 +45,50 @@ const Navbar = ({ className }) => {
     location.pathname === "/dashboard-admin";
 
   return (
-    <div className="container-Navbar sticky top-0 w-full z-[999]">
+    <div className="sticky top-0 w-full z-[999] bg-navbar-color">
       <div
-        className={`content flex m-5 justify-between bg-navbar-color rounded-lg overflow-hidden ${className}`}>
-        <div className="Left m-5">
-          <h1 className="text-4xl text-color-yellow kodchasan-bold">
-            Nongki-Yok
-          </h1>
-        </div>
-        <div className="Right m-5 space-x-8 text-white jura-medium">
-          {user ? (
-            <>
-              <span>Hai, <strong className="capitalize">{user.name}</strong></span>
-            </>
-          ) : (
-            <a></a>
+        className={`flex justify-between items-center p-5 rounded-lg ${className}`}>
+        
+        {/* Left Section */}
+        <h1 className="text-4xl text-color-yellow kodchasan-bold">
+          Nongki-Yok
+        </h1>
+        
+        {/* Right Section */}
+        <div className="flex items-center text-lg space-x-8 text-white jura-medium">
+          {user && (
+            <span>Hai, <strong className="capitalize">{user.name}</strong></span>
           )}
-          <span className="text-2xl border-l-2 border-white"></span>
-          <a href="/">Home</a>
-          <button onClick={toggleDropdown} className="focus:outline-none">
+          <span className="border-l-2 border-white">
+          <a href="/" className="ml-3">Home</a>
+          </span>
+          <button
+            onClick={toggleDropdown}
+            className="relative focus:outline-none">
             Location
+            {dropdownOpen && (
+              <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                <a
+                  href="/homecard"
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  List Location
+                </a>
+                <a
+                  href="/map"
+                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  Map
+                </a>
+              </div>
+            )}
           </button>
-          {dropdownOpen && (
-            <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-              <a
-                href="/homecard"
-                className="rounded-md block px-4 py-2 text-gray-800 hover:bg-gray-200">
-                List Location
-              </a>
-              <a
-                href="/map"
-                className="rounded-md block px-4 py-2 text-gray-800 hover:bg-gray-200">
-                Map
-              </a>
-            </div>
-          )}
           <a href="/Contact">Contact</a>
+          <a href="" className="flex items-center">
+            <img
+              src="./img/Card/AI.png"
+              alt="AI"
+              className="h-6 w-6 object-cover"
+            />
+          </a>
           {user ? (
             isDashboardPage &&
             (user.role === "Guide" ||
@@ -95,7 +102,7 @@ const Navbar = ({ className }) => {
             ) : user.role === "Guide" || user.role === "User" ? (
               <a
                 href="/dashboard"
-                className="bg-button-gray hover:bg-color-primary text-white py-3 px-4 rounded">
+                className="bg-button-gray hover:bg-color-primary text-white py-3 px-4 rounded-lg">
                 Dashboard
               </a>
             ) : user.role === "Admin" ? (
