@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import 'boxicons';
 
 const TableDashboard = () => {
   const [places, setPlaces] = useState([]);
@@ -56,6 +57,7 @@ const TableDashboard = () => {
             <th className="w-36 px-4 py-2 text-xs">Harga</th>
             <th className="w-28 px-4 py-2 text-xs">Latitude</th>
             <th className="w-28 px-4 py-2 text-xs">Longitude</th>
+            <th className="w-28 px-4 py-2 text-xs">Gambar</th>
             <th className="w-28 px-4 py-2 text-xs">Lokasi</th>
             <th className="w-24 px-4 py-2 text-xs">Aksi</th>
           </tr>
@@ -74,8 +76,19 @@ const TableDashboard = () => {
                 {place.Longtitude}
               </td>
               <td className="px-4 py-2 whitespace-nowrap">
+              {place.Image? (
+              <a href={place.Image ? `./${place.Image}` : './img/Card/image-ex.png'} target="_blanks">
+                <div className="icon-location flex justify-center">
+                <box-icon type='solid' name='image'>icon</box-icon>
+                </div>
+              </a>
+              ) : (
+                <p className="icon-location flex justify-center">-</p>
+              )}
+              </td>
+              <td className="px-4 py-2 whitespace-nowrap">
                 <a href={place.Link} target="_blanks">
-                  <div className="icon-location flex items-center">
+                  <div className="icon-location flex justify-center">
                     <img
                       src="./img/Card/location.png"
                       alt="icon-location"
