@@ -73,7 +73,7 @@ const Dashboard = () => {
       <div className="flex justify-center">
         <CardPlace
           src={"./img/Card/star.png"}
-          title={favorites.total_favorites}
+          title={favorites.total_favorites? favorites.total_favorites : 0}
           desc={"Bintang diperoleh"}
         />
         <CardPlace
