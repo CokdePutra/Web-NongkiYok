@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import 'boxicons';
 
-const Card = ({ placeId, title, imgSrc, description, link, price, category }) => {
+const Card = ({ placeId, title, imgSrc, description, link, price, category, size }) => {
   const [isFavorited, setIsFavorited] = useState(false);
 
   // Fetch favorite status when component mounts
@@ -69,9 +69,14 @@ const Card = ({ placeId, title, imgSrc, description, link, price, category }) =>
         alt="img-card"
         className="rounded-t-lg w-full h-48 object-cover"
       />
-      <span className="inline-flex mt-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+      <div className="info gap-1 mt-2">
+      <span className="inline-flex mt-1 mx-1  items-center self-start rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
         {category}
       </span>
+      <span className="inline-flex mt-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+        {size}
+      </span>
+      </div>
       <h1 className="title kodchasan-bold text-2xl mt-1 text-white">{title}</h1>
       <p className="description text-gray-300 mt-2">{description}</p>
       <div className="flex justify-between mt-4">

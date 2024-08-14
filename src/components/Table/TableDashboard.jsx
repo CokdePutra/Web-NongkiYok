@@ -53,6 +53,7 @@ const TableDashboard = () => {
           <tr>
             <th className="w-40 px-4 py-2 text-xs">Nama</th>
             <th className="w-40 px-4 py-2 text-xs">Kategori</th>
+            <th className="w-40 px-4 py-2 text-xs">Size</th>
             <th className="w-64 px-4 py-2 text-xs">Deskripsi</th>
             <th className="w-36 px-4 py-2 text-xs">Harga</th>
             <th className="w-28 px-4 py-2 text-xs">Latitude</th>
@@ -67,6 +68,7 @@ const TableDashboard = () => {
             <tr key={place.id}>
               <td className="px-4 py-2 whitespace-nowrap">{place.Name}</td>
               <td className="px-4 py-2 whitespace-nowrap">{place.Category}</td>
+              <td className="px-4 py-2 whitespace-nowrap">{place.Size}</td>
               <td className="px-4 py-2 whitespace-nowrap text-wrap">
                 {place.Description}
               </td>

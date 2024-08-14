@@ -151,6 +151,7 @@ app.post("/api/places", upload.single("image"), (req, res) => {
   const {
     name,
     price,
+    Size,
     Category,
     longitude,
     latitude,
@@ -164,17 +165,18 @@ app.post("/api/places", upload.single("image"), (req, res) => {
   const userId = req.session.user.id;
 
   const query = `
-    INSERT INTO places (name, AVG_Price,Category, Longtitude, Latitude, Link, Description, Image, Id_User)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO places (name, AVG_Price,Size, Category, Longtitude, Latitude, Link, Description, Image, Id_User)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
   db.query(
     query,
     [
       name,
       price,
+      Size,
       Category,
       longitude, // pastikan urutannya sesuai
-      latitude, // pastikan urutannya sesuai
+      latitude,
       googleMapsLink,
       description,
       image,
@@ -214,6 +216,7 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
   const {
     Name,
     AVG_Price,
+    Size,
     Category,
     Longtitude,
     Latitude,
@@ -221,14 +224,13 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
     Description,
     Img_old, // The old image path
   } = req.body;
-
   // If a new image is uploaded, use it; otherwise, use the old image
   const image = req.file ? `/uploads/${req.file.filename}` : Img_old;
   const userId = req.session.user.id;
 
   const query = `
     UPDATE places 
-    SET name = ?, AVG_Price = ?, Category = ?, Latitude = ?, Longtitude = ?, Link = ?, Description = ?, Image = ?
+    SET name = ?, AVG_Price = ?,Size = ?, Category = ?, Latitude = ?, Longtitude = ?, Link = ?, Description = ?, Image = ?
     WHERE Id_Places = ? AND Id_User = ?
   `;
   db.query(
@@ -236,6 +238,7 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
     [
       Name,
       AVG_Price,
+      Size,
       Category,
       Latitude,
       Longtitude,

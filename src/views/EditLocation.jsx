@@ -10,6 +10,7 @@ const EditLocation = () => {
   const [formData, setFormData] = useState({
     Name: "",
     AVG_Price: "",
+    Size:"",
     Category: "",
     Latitude: "",
     Longtitude: "",
@@ -122,7 +123,7 @@ const EditLocation = () => {
           />
         </div>
         <div className="mb-4 flex space-x-4">
-          <div className="w-1/2">
+          <div className="w-1/3">
             <label className="block text-color-yellow jura-medium">
               Rata-Rata Harga
             </label>
@@ -137,7 +138,7 @@ const EditLocation = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="w-1/2">
+          <div className="w-1/3">
             <label className="block text-color-yellow jura-medium">
               Kategori
             </label>
@@ -154,6 +155,26 @@ const EditLocation = () => {
               </option>
               <option value="Cafe">Cafe</option>
               <option value="Resto">Resto</option>
+            </select>
+          </div>
+          <div className="w-1/3">
+            <label className="block text-color-yellow jura-medium">
+              Size lokasi
+            </label>
+            <select
+              required
+              className="bg-hover-button text-black rounded-md h-9 p-5 m-2 w-full px-2 py-1 border ml-[-5px]"
+              name="Size"
+              id="Size"
+              value={formData.Size}
+              onChange={handleChange}
+            >
+              <option value="">
+                Pilih Size
+              </option>
+              <option value="Small">Small</option>
+              <option value="Medium">Medium</option>
+              <option value="Large">Large</option>
             </select>
           </div>
         </div>

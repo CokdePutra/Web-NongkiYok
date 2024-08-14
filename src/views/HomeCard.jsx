@@ -41,6 +41,7 @@ const HomeCard = () => {
             link={card.Link}
             price={card.AVG_Price}
             category={card.Category}
+            size={card.Size}
           />
         ))}
       </div>
