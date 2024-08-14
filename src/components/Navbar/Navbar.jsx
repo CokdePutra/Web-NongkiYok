@@ -58,11 +58,11 @@ const Navbar = ({ className }) => {
           {user ? (
             <>
               <span>Hai, <strong className="capitalize">{user.name}</strong></span>
-              <span className="text-2xl border-l-2 border-white"></span>
             </>
           ) : (
             <a></a>
           )}
+          <span className="text-2xl border-l-2 border-white"></span>
           <a href="/">Home</a>
           <button onClick={toggleDropdown} className="focus:outline-none">
             Location
