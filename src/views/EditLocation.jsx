@@ -5,10 +5,8 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 
 const EditLocation = () => {
   const navigate = useNavigate();
-  const param = useParams()
-  const id = param.id// Mengambil ID dari URL
-  console.log(id)  
-  const [userRole, setUserRole] = useState(null);
+  const { id } = useParams(); // Mengambil ID dari URL
+
   const [formData, setFormData] = useState({
     Name: "",
     AVG_Price: "",
@@ -17,30 +15,11 @@ const EditLocation = () => {
     Longtitude: "",
     Link: "",
     Description: "",
+    Img_old: "", // Field to store the old image
   });
+
   const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/session", {
-          withCredentials: true,
-        });
-        const role = response.data.role;
-        setUserRole(role);
-
-        if (role !== "Guide" && role !== "Admin") {
-          navigate("/");
-        }
-      } catch (error) {
-        console.error("Error fetching session data:", error);
-        navigate("/");
-      }
-    };
-
-    checkLoginStatus();
-  }, [navigate]);
 
   useEffect(() => {
     const fetchPlaceData = async () => {
@@ -48,8 +27,7 @@ const EditLocation = () => {
         const response = await axios.get(`http://localhost:5000/api/get/places/${id}`, {
           withCredentials: true,
         });
-        console.log(response.data);
-        setFormData(response.data);
+        setFormData({ ...response.data, Img_old: response.data.Image }); // Store the old image in Img_old
       } catch (error) {
         console.error("Error fetching place data:", error);
         setError("Failed to load place data");
@@ -78,8 +56,11 @@ const EditLocation = () => {
     Object.keys(formData).forEach((key) => {
       formDataToSend.append(key, formData[key]);
     });
+
     if (image) {
-      formDataToSend.append("image", image);
+      formDataToSend.append("image", image); // Append the new image if it exists
+    } else {
+      formDataToSend.append("image", formData.Img_old); // Append the old image if no new image is uploaded
     }
 
     try {

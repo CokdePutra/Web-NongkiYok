@@ -9,6 +9,7 @@ import multer from "multer";
 import path from "path";
 import { redirect } from "react-router-dom";
 
+//=================================SETUP=================================
 dotenv.config();
 
 const app = express();
@@ -59,7 +60,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
+// ======================================================================
+//============================= CREDENTIAL ==============================
 // REGISTER
 app.post("/register", (req, res) => {
   const { name, email, password, role, username } = req.body;
@@ -120,7 +122,6 @@ app.post("/logout", (req, res) => {
     res.status(200).send("Logout successful");
   });
 });
-
 // Route untuk mendapatkan data session
 app.get("/api/session", (req, res) => {
   if (!req.session.user) {
@@ -128,7 +129,8 @@ app.get("/api/session", (req, res) => {
   }
   res.json(req.session.user);
 });
-
+//=========================================================
+// =================== PLACES ALL LOGIC ===================
 // Endpoint untuk mengambil data lokasi
 app.get("/api/locations", (req, res) => {
   const query = "SELECT * FROM places";
@@ -209,10 +211,19 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
   }
 
   const placeId = req.params.id;
-  const { Name, AVG_Price, Category, Longtitude, Latitude, Link, Description } =
-    req.body;
-  console.log(req.body);
-  const image = req.file ? `/uploads/${req.file.filename}` : "";
+  const {
+    Name,
+    AVG_Price,
+    Category,
+    Longtitude,
+    Latitude,
+    Link,
+    Description,
+    Img_old, // The old image path
+  } = req.body;
+
+  // If a new image is uploaded, use it; otherwise, use the old image
+  const image = req.file ? `/uploads/${req.file.filename}` : Img_old;
   const userId = req.session.user.id;
 
   const query = `
@@ -273,8 +284,6 @@ app.delete("/api/places/delete/:id", (req, res) => {
       .json({ message: "Delete successful", redirectUrl: "/dashboard" });
   });
 });
-// ==========
-
 //===== LOGIC =====
 app.get("/items", (req, res) => {
   const query = "SELECT * FROM users";
@@ -312,7 +321,6 @@ app.get("/card/:sort", (req, res) => {
     res.status(500).send("Invalid sort parameter");
   }
 });
-
 // guide end point
 app.get("/api/places", (req, res) => {
   if (!req.session.user) {
@@ -329,8 +337,10 @@ app.get("/api/places", (req, res) => {
     res.json(results);
   });
 });
+//==========================================================================
+// =============================== FAVORITE ================================
 
-// favorite place end point
+// total favorite place by user end point
 app.get("/api/AllPlaces", (req, res) => {
   if (!req.session.user) {
     return res.status(401).send("Not logged in");
@@ -346,9 +356,7 @@ app.get("/api/AllPlaces", (req, res) => {
     res.json(results[0]);
   });
 });
-
-// ====== FAVORITE ======
-// favorite place end point
+// favorite place obtained by user end point
 app.get("/api/FavPlaces", (req, res) => {
   if (!req.session.user) {
     return res.status(401).send("Not logged in");
@@ -364,7 +372,7 @@ app.get("/api/FavPlaces", (req, res) => {
     res.json(results[0]);
   });
 });
-// Endpoint to get favorite status
+// Endpoint to get verify favorite status
 app.get("/api/favorite/status/:placeId", (req, res) => {
   const { placeId } = req.params;
   const userId = req.session.user.id;
@@ -416,7 +424,8 @@ app.delete("/api/delete/favorites/:placeId", (req, res) => {
   });
 });
 
-//======================================
+//========================= CRUD CONTACT ==========================
+// Create (inssert) contact
 app.post("/api/contact", (req, res) => {
   const { name, email, message } = req.body;
 
@@ -437,6 +446,7 @@ app.post("/api/contact", (req, res) => {
     }
   );
 });
+//================================================================
 
 // check runing
 const PORT = process.env.PORT || 5000;
