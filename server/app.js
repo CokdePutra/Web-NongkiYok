@@ -370,7 +370,7 @@ app.get("/api/favorite/status/:placeId", (req, res) => {
   const userId = req.session.user.id;
   console.log(userId, placeId);
   const query =
-    "SELECT COUNT(*) AS count FROM favorites WHERE Id_User = ? AND Id_Places = ?";
+    "SELECT COUNT(*) AS count FROM favorite WHERE Id_User = ? AND Id_Places = ?";
   db.query(query, [userId, placeId], (err, result) => {
     if (err) {
       return res.status(500).json({ error: "Failed to fetch favorite status" });
