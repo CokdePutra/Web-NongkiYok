@@ -1,11 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
-import Data from "./views/Data";
 import Home from "./views/Home";
 import Login from "./views/Login";
 import SignUp from "./views/SignUp";
 import HomeCard from "./views/HomeCard";
-import SessionInfo from "./views/SessionInfo";
 import MapComponent from "./views/MapComponent";
 import Dashboard from "./views/Dashboard";
 import LocationInput from "./views/LocationInput";
