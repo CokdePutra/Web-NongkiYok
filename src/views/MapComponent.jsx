@@ -84,9 +84,9 @@ const MapComponent = () => {
             key={index}
             position={[location.Latitude, location.Longtitude]}>
             <Popup>
-              <strong>{location.Name}</strong>
+              <strong className="kodchasan-bold">{location.Name}</strong>
               <hr className="m-1 bg-color-primary" />
-            <div className="container">
+            <div className="container jura-medium">
               <img
                 src={location.Image ? `./${location.Image}` : './img/Card/image-ex.png'}
                 alt="img-card"
@@ -104,10 +104,10 @@ const MapComponent = () => {
                 ))}
               </div>
               </div>
-              <span className="inline-flex mt-1 ms-auto  items-center self-end rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+              <span className="inline-flex mt-1 ms-auto  items-center self-end rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-black ring-1 ring-inset ring-yellow-600/20">
                 {location.Category}
               </span>
-              <span className="inline-flex mt-1 ms-1  items-center self-end rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+              <span className="inline-flex mt-1 ms-1  items-center self-end rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-black ring-1 ring-inset ring-yellow-600/20">
                 {location.Size}
               </span>
             </div>
