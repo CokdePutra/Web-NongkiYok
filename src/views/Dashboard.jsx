@@ -95,7 +95,7 @@ const Dashboard = () => {
           title={favorites.total_favorites ? favorites.total_favorites : 0}
           desc={userRole === "Guide" ? "Tempat yang difavoritkan" : "Tempat favorit"}
         />
-        {userRole === "Guide" && (
+        {userRole === "Guide" || userRole === "Admin" && (
           <CardPlace
             src={"./img/Card/placeholder.png"}
             title={total.total ? total.total : 0}
@@ -103,7 +103,7 @@ const Dashboard = () => {
           />
         )}
       </div>
-      {userRole === "Guide" ? (
+      {userRole === "Guide" || userRole === "Admin" ? (
         <TableDashboard />
       ) : (
         userRole === "User" && (

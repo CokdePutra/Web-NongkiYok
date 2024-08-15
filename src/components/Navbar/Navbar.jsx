@@ -42,8 +42,8 @@ const Navbar = ({ className }) => {
 
   const isDashboardPage =
     location.pathname === "/dashboard" ||
-    location.pathname === "/dashboard-admin";
-
+    location.pathname === "/Admin";
+  const isAdminPage = location.pathname === "/Admin";
   return (
     <div className="sticky top-0 w-full z-[999] bg-navbar-color">
       <div
@@ -67,15 +67,15 @@ const Navbar = ({ className }) => {
             className="relative focus:outline-none">
             Location
             {dropdownOpen && (
-              <div className="absolute mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+              <div className="absolute mt-3 ml-[-70%] w-48 bg-white rounded-md shadow-lg z-10">
                 <a
                   href="/homecard"
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  className="block rounded-md  px-4 py-2 text-gray-800 hover:bg-gray-200">
                   List Location
                 </a>
                 <a
                   href="/map"
-                  className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                  className="block rounded-md  px-4 py-2 text-gray-800 hover:bg-gray-200">
                   Map
                 </a>
               </div>

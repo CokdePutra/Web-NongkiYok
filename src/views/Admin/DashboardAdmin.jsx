@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
-import Card from "../../components/Card/Card";
+import CardPlace from "../../components/Card/CardPlace";
 import axios from "axios";
 const DashboardAdmin = () => {
   const [userRole, setUserRole] = useState(null);
@@ -29,7 +29,23 @@ const DashboardAdmin = () => {
   return (
     <>
     <Navbar />
-      <h1 className="text-white">asksak</h1>
+      <div className="flex justify-center">
+      <CardPlace
+          src={"./img/Card/star.png"}
+          title={1}
+          desc={"Total User"}
+        />
+      <CardPlace
+          src={"./img/Card/guide.png"}
+          title={1}
+          desc={"Total Guide"}
+        />
+      <CardPlace
+          src={"./img/Card/location.png"}
+          title={1}
+          desc={"Total Place"}
+        />
+      </div>
     </>
   );
 };
