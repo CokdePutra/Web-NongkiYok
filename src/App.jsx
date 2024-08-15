@@ -9,7 +9,7 @@ import Dashboard from "./views/Dashboard";
 import LocationInput from "./views/LocationInput";
 import EditLocation from "./views/EditLocation";
 import Contact from "./views/Contact";
-
+import DashboardAdmin from "./views/Admin/DashboardAdmin";
 function App() {
   return (
     <>
@@ -24,6 +24,7 @@ function App() {
           <Route path="/LocationInput" element={<LocationInput />} />
           <Route path="/EditLocation/:id" element={<EditLocation />} />
           <Route path="/Contact" element={<Contact />} />
+          <Route path="/Admin" element={<DashboardAdmin />} />
         </Routes>
       </Router>
     </>

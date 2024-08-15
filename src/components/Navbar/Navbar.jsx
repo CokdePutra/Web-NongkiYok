@@ -107,9 +107,9 @@ const Navbar = ({ className }) => {
               </a>
             ) : user.role === "Admin" ? (
               <a
-                href="/dashboard-admin"
+                href="/Admin"
                 className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-                Home
+                Dashboard
               </a>
             ) : (
               <button

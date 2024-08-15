@@ -107,6 +107,11 @@ app.post("/login", (req, res) => {
         res
           .status(200)
           .json({ message: "Login successful", redirectUrl: "/dashboard" });
+      } else if (user.Role === "Admin") {
+        res.status(200).json({
+          message: "Login successful",
+          redirectUrl: "/Admin",
+        });
       } else {
         res.status(200).json({ message: "Login successful", redirectUrl: "/" });
       }
