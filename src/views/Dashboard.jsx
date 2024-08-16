@@ -97,7 +97,7 @@ const Dashboard = () => {
         />
         {(userRole === "Guide" || userRole === "Admin") && (
           <CardPlace
-          src={"./img/Card/placeholder.png"}
+          src={"./img/Card/Map.png"}
           title={total.total ? total.total : 0}
           desc={"Tempat yang ditambahkan"}
           />

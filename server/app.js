@@ -294,16 +294,6 @@ app.delete("/api/places/delete/:id", (req, res) => {
   });
 });
 //===== LOGIC =====
-app.get("/items", (req, res) => {
-  const query = "SELECT * FROM users";
-  db.query(query, (err, results) => {
-    if (err) {
-      res.status(500).send(err);
-    } else {
-      res.json(results);
-    }
-  });
-});
 //card logic main
 app.get("/card/:sort", (req, res) => {
   if (req.params.sort === "up") {
@@ -362,6 +352,16 @@ app.get("/api/places", (req, res) => {
       return res.status(500).send(err);
     }
     res.json(results);
+  });
+});
+// count all place
+app.get("/api/totalplaces", (req, res) => {
+  const query = "SELECT COUNT(*) as total FROM places";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status;
+    }
+    res.json(results[0]);
   });
 });
 //==========================================================================
@@ -473,7 +473,80 @@ app.post("/api/contact", (req, res) => {
   );
 });
 //================================================================
-
+//========================== USER CRUD ===========================
+// get all user
+app.get("/api/users", (req, res) => {
+  const query =
+    "SELECT * FROM users WHERE Role != 'Admin' ORDER BY `users`.`Role` DESC";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
+// delete user
+app.delete("/api/users/delete/:id", (req, res) => {
+  const userId = req.params.id;
+  const query = "DELETE FROM users WHERE Id_User = ? AND Role != 'Admin'";
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(200).send("User deleted successfully");
+  });
+});
+// count all user by role
+app.get("/api/totalusers/:role", (req, res) => {
+  const role = req.params.role;
+  const query = "SELECT COUNT(*) as total FROM users WHERE Role = ?";
+  db.query(query, [role], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results[0]);
+  });
+});
+//update user role to guide when aproved by admin
+app.put("/api/users/update/:id", (req, res) => {
+  const userId = req.params.id;
+  const query = "UPDATE users SET Role = 'Guide' WHERE Id_User = ?";
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(200).send("User role updated to Guide");
+  });
+});
+//update user password by user and admin
+app.put("/api/users/update/password/:id", (req, res) => {
+  const userId = req.params.id;
+  const { password } = req.body;
+  bcrypt.hash(password, saltRounds, (err, hash) => {
+    if (err) {
+      return res.status(500).send("Server Error");
+    }
+    const query = "UPDATE users SET Password = ? WHERE Id_User = ?";
+    db.query(query, [hash, userId], (err, results) => {
+      if (err) {
+        return res.status(500).send(err);
+      }
+      res.status(200).send("Password updated successfully");
+    });
+  });
+});
+// get all admin
+app.get("/api/Admin", (req, res) => {
+  const query = "SELECT * FROM users WHERE Role = 'Admin'";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
+//================================================================
+//========================== SERVER RUNNING =======================
 // check runing
 const PORT = process.env.PORT || 5000;
 app.get("/", (req, res) => {

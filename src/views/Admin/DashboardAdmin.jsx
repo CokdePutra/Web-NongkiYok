@@ -2,9 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import CardPlace from "../../components/Card/CardPlace";
+import TableUser from "../../components/Table/TableUser.jsx";
+import AdminList from "../../components/Table/AdminList.jsx";
 import axios from "axios";
 const DashboardAdmin = () => {
   const [userRole, setUserRole] = useState(null);
+  const [totalplace, setTotalPlace] = useState({});
+  const [totaluser, setTotalUser] = useState({});
+  const [totalguide, setTotalGuide] = useState({});
   const navigate = useNavigate();
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -26,25 +31,78 @@ const DashboardAdmin = () => {
 
     checkLoginStatus();
   }, [navigate]);
+  useEffect(() => {
+    const fetchTotalPlace = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/totalplaces", {
+          withCredentials: true,
+        });
+        setTotalPlace(response.data);
+      } catch (error) {
+        console.error("Error fetching total place", error);
+      }
+    };
+
+    fetchTotalPlace();
+  }, []);
+  useEffect(() => {
+    const fetchTotalUser = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/totalusers/User", {
+          withCredentials: true,
+        });
+        setTotalUser(response.data);
+      } catch (error) {
+        console.error("Error fetching total user", error);
+      }
+    };
+
+    fetchTotalUser();
+  }, []);
+  useEffect(() => {
+    const fetchTotalGuide = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/totalusers/Guide", {
+          withCredentials: true,
+        });
+        setTotalGuide(response.data);
+      } catch (error) {
+        console.error("Error fetching total guide", error);
+      }
+    };
+
+    fetchTotalGuide();
+  }, []);
   return (
     <>
     <Navbar />
       <div className="flex justify-center">
       <CardPlace
-          src={"./img/Card/star.png"}
-          title={1}
+          src={"./img/Card/Users.png"}
+          title={totaluser.total}
           desc={"Total User"}
         />
       <CardPlace
           src={"./img/Card/guide.png"}
-          title={1}
+          title={totalguide.total}
           desc={"Total Guide"}
         />
       <CardPlace
-          src={"./img/Card/location.png"}
-          title={1}
+          src={"./img/Card/Map.png"}
+          title={totalplace.total}
           desc={"Total Place"}
         />
+      </div>
+      <div className="flex items-center mb-4 mx-[16%]">
+        <h1 className="text-2xl kodchasan-bold text-white">User Management</h1>
+      </div>
+      <div className="justify-center flex space-x-1">
+        <div className="w-1/2">
+          <TableUser/>
+          </div>
+        <div className="w-1/5">
+          <AdminList/>
+          </div>
       </div>
     </>
   );
