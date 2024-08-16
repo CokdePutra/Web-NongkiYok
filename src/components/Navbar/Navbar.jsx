@@ -41,26 +41,28 @@ const Navbar = ({ className }) => {
   };
 
   const isDashboardPage =
-    location.pathname === "/dashboard" ||
-    location.pathname === "/Admin";
+    location.pathname === "/dashboard" || location.pathname === "/Admin";
   const isAdminPage = location.pathname === "/Admin";
   return (
-    <div className="sticky top-0 w-full z-[999] bg-navbar-color">
+    <div className="sticky top-0 w-full px-10 py-5 z-[999] ">
       <div
-        className={`flex justify-between items-center p-5 rounded-lg ${className}`}>
-        
+        className={`flex justify-between items-center p-5 rounded-lg bg-navbar-color  ${className}`}>
         {/* Left Section */}
         <h1 className="text-4xl text-color-yellow kodchasan-bold">
           Nongki-Yok
         </h1>
-        
+
         {/* Right Section */}
         <div className="flex items-center text-lg space-x-8 text-white jura-medium">
           {user && (
-            <span>Hai, <strong className="capitalize">{user.name}</strong></span>
+            <span>
+              Hai, <strong className="capitalize">{user.name}</strong>
+            </span>
           )}
           <span className="border-l-2 border-white">
-          <a href="/" className="ml-3">Home</a>
+            <a href="/" className="ml-3">
+              Home
+            </a>
           </span>
           <button
             onClick={toggleDropdown}
