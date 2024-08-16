@@ -76,7 +76,7 @@ const DashboardAdmin = () => {
   return (
     <>
     <Navbar />
-      <div className="flex justify-center">
+      <div className="flex justify-center ">
       <CardPlace
           src={"./img/Card/Users.png"}
           title={totaluser.total}
@@ -96,8 +96,8 @@ const DashboardAdmin = () => {
       <div className="flex items-center mb-4 mx-[16%]">
         <h1 className="text-2xl kodchasan-bold text-white">User Management</h1>
       </div>
-      <div className="justify-center flex space-x-1">
-        <div className="w-1/2">
+      <div className="container justify-center ml-[5%] flex space-x-1">
+        <div className="w-3/5">
           <TableUser/>
           </div>
         <div className="w-1/5">

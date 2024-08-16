@@ -10,6 +10,7 @@ import LocationInput from "./views/LocationInput";
 import EditLocation from "./views/EditLocation";
 import Contact from "./views/Contact";
 import DashboardAdmin from "./views/Admin/DashboardAdmin";
+import ContactList from "./views/Admin/ContactList";
 function App() {
   return (
     <>
@@ -25,6 +26,7 @@ function App() {
           <Route path="/EditLocation/:id" element={<EditLocation />} />
           <Route path="/Contact" element={<Contact />} />
           <Route path="/Admin" element={<DashboardAdmin />} />
+          <Route path="/ListContact" element={<ContactList />} />
         </Routes>
       </Router>
     </>

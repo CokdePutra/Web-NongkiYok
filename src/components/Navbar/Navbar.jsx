@@ -42,7 +42,7 @@ const Navbar = ({ className }) => {
 
   const isDashboardPage =
     location.pathname === "/dashboard" || location.pathname === "/Admin";
-  const isAdminPage = location.pathname === "/Admin";
+  const isAdminPage = location.pathname === "/Admin" || location.pathname === "/ListContact";
   return (
     <div className="sticky top-0 w-full px-10 py-5 z-[999] ">
       <div
@@ -83,7 +83,14 @@ const Navbar = ({ className }) => {
               </div>
             )}
           </button>
-          <a href="/Contact">Contact</a>
+          {isAdminPage ? (
+            <a href="/ListContact">Contact List</a>
+          ) : (
+            <a href="/Contact">Contact</a>
+          )}
+          {isAdminPage && (
+            <a href="/Dashboard">Guide Dahboard</a>
+          )}
           <a href="" className="flex items-center">
             <img
               src="./img/Card/AI.png"

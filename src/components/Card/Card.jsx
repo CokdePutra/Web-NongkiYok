@@ -69,9 +69,10 @@ const Card = ({ placeId, title, imgSrc, description, link, price, category, size
       {isLoggedIn && (
         <div className="z-1 my-[-12px] mb-1 absolute">
           <box-icon
-            name="star"
+            name="bookmark"
             type={isFavorited ? 'solid' : 'regular'}
             color='#FCBC36'
+            size="md"
             onClick={handleFavoriteClick}
             style={{ cursor: "pointer" }}
           ></box-icon>

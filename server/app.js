@@ -545,7 +545,40 @@ app.get("/api/Admin", (req, res) => {
     res.json(results);
   });
 });
-//================================================================
+//=================================================================
+//========================== Message CRUD =========================
+// count all message
+app.get("/api/messages", (req, res) => {
+  const query = "SELECT COUNT(*) as total FROM contact";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results[0]);
+  });
+});
+// get all message
+app.get("/api/contact", (req, res) => {
+  const query = "SELECT * FROM contact";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
+// delete message
+app.delete("/api/contact/delete/:id", (req, res) => {
+  const messageId = req.params.id;
+  const query = "DELETE FROM contact WHERE Id_Contact = ?";
+  db.query(query, [messageId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(200).send("Message deleted successfully");
+  });
+});
+//=================================================================
 //========================== SERVER RUNNING =======================
 // check runing
 const PORT = process.env.PORT || 5000;
