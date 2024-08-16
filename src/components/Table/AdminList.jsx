@@ -20,6 +20,9 @@ const AdminList = () => {
   }, []);
   return (
     <div className="container mx-auto p-4 rounded mb-4 max-w-screen-xl">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl kodchasan-bold text-white">Admin</h1>
+        </div>
       <div className="overflow-x-auto">
         <div className="relative max-h-[500px] overflow-y-auto">
           <table className="min-w-full table-fixed bg-white">

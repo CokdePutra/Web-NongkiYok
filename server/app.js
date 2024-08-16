@@ -510,12 +510,32 @@ app.get("/api/totalusers/:role", (req, res) => {
 //update user role to guide when aproved by admin
 app.put("/api/users/update/:id", (req, res) => {
   const userId = req.params.id;
-  const query = "UPDATE users SET Role = 'Guide' WHERE Id_User = ?";
+  const query1 = "UPDATE users SET Role = 'Guide' WHERE Id_User = ?";
+  db.query(query1, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    const query2 =
+      "UPDATE registerguide SET Status = 'Approved' WHERE Id_User = ?";
+    db.query(query2, [userId], (err, results) => {
+      if (err) {
+        return res.status(500).send(err);
+      }
+      res
+        .status(200)
+        .send("User role updated to Guide and status changed to Approved");
+    });
+  });
+});
+//delete register guide request when rejected by admin
+app.delete("/api/users/deleterequest/:id", (req, res) => {
+  const userId = req.params.id;
+  const query = "DELETE FROM registerguide WHERE Id_User = ?";
   db.query(query, [userId], (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
-    res.status(200).send("User role updated to Guide");
+    res.status(200).send("User rejected successfully");
   });
 });
 //update user password by user and admin
@@ -538,6 +558,17 @@ app.put("/api/users/update/password/:id", (req, res) => {
 // get all admin
 app.get("/api/Admin", (req, res) => {
   const query = "SELECT * FROM users WHERE Role = 'Admin'";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
+// get all guide request
+app.get("/api/GuideRequest", (req, res) => {
+  const query =
+    "SELECT * FROM registerguide INNER JOIN users using(Id_User) WHERE registerguide.Status = 'Pending'";
   db.query(query, (err, results) => {
     if (err) {
       return res.status(500).send(err);

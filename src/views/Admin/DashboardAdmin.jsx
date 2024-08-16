@@ -2,15 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import CardPlace from "../../components/Card/CardPlace";
-import TableUser from "../../components/Table/TableUser.jsx";
-import AdminList from "../../components/Table/AdminList.jsx";
+import TableUser from "../../components/Table/TableUser";
+import AdminList from "../../components/Table/AdminList";
+import GuideRegister from "../../components/Table/GuideRegister";
 import axios from "axios";
+
 const DashboardAdmin = () => {
   const [userRole, setUserRole] = useState(null);
   const [totalplace, setTotalPlace] = useState({});
   const [totaluser, setTotalUser] = useState({});
   const [totalguide, setTotalGuide] = useState({});
   const navigate = useNavigate();
+
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
@@ -31,6 +34,7 @@ const DashboardAdmin = () => {
 
     checkLoginStatus();
   }, [navigate]);
+
   useEffect(() => {
     const fetchTotalPlace = async () => {
       try {
@@ -45,6 +49,7 @@ const DashboardAdmin = () => {
 
     fetchTotalPlace();
   }, []);
+
   useEffect(() => {
     const fetchTotalUser = async () => {
       try {
@@ -59,6 +64,7 @@ const DashboardAdmin = () => {
 
     fetchTotalUser();
   }, []);
+
   useEffect(() => {
     const fetchTotalGuide = async () => {
       try {
@@ -73,38 +79,44 @@ const DashboardAdmin = () => {
 
     fetchTotalGuide();
   }, []);
+
   return (
     <>
-    <Navbar />
-      <div className="flex justify-center ">
-      <CardPlace
+      <Navbar />
+      <div className="flex justify-center">
+        <CardPlace
           src={"./img/Card/Users.png"}
           title={totaluser.total}
           desc={"Total User"}
         />
-      <CardPlace
+        <CardPlace
           src={"./img/Card/guide.png"}
           title={totalguide.total}
           desc={"Total Guide"}
         />
-      <CardPlace
+        <CardPlace
           src={"./img/Card/Map.png"}
           title={totalplace.total}
           desc={"Total Place"}
         />
       </div>
-      <div className="flex items-center mb-4 mx-[16%]">
-        <h1 className="text-2xl kodchasan-bold text-white">User Management</h1>
-      </div>
-      <div className="container justify-center ml-[5%] flex space-x-1">
-        <div className="w-3/5">
-          <TableUser/>
-          </div>
-        <div className="w-1/5">
-          <AdminList/>
-          </div>
-      </div>
+
+      <div className="flex flex-col items-center">
+  <div className="flex justify-center space-x-1 w-11/12 max-w-screen-xl">
+    <div className="w-9/12">
+      <TableUser />
+    </div>
+    <div className="w-3/12">
+      <AdminList />
+    </div>
+  </div>
+  <div className="w-11/12 max-w-screen-xl mt-2">
+    <GuideRegister />
+  </div>
+</div>
+
     </>
   );
 };
+
 export default DashboardAdmin;
