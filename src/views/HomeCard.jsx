@@ -50,14 +50,14 @@ const HomeCard = () => {
           <img
             src="./img/Card/Up.png"
             alt="Sort Up"
-            className="w-15 h-[auto] cursor-pointer"
+            className="w-[90%] h-[auto] cursor-pointer"
             onClick={handleSortDown}
           />
         ) : (
           <img
             src="./img/Card/DOWN.png"
             alt="Sort Down"
-            className="w-15 h-[auto] cursor-pointer"
+            className="w-[90%] h-[auto] cursor-pointer"
             onClick={handleSortUp}
           />
         )}

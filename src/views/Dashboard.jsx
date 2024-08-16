@@ -22,7 +22,7 @@ const Dashboard = () => {
         const role = response.data.role;
         setUserRole(role);
 
-        // Redirect if not Guide, Admin, or User
+
         if (role !== "Guide" && role !== "Admin" && role !== "User") {
           navigate("/");
         }
@@ -95,11 +95,11 @@ const Dashboard = () => {
           title={favorites.total_favorites ? favorites.total_favorites : 0}
           desc={userRole === "Guide" ? "Tempat yang difavoritkan" : "Tempat favorit"}
         />
-        {userRole === "Guide" || userRole === "Admin" && (
+        {(userRole === "Guide" || userRole === "Admin") && (
           <CardPlace
-            src={"./img/Card/placeholder.png"}
-            title={total.total ? total.total : 0}
-            desc={"Tempat yang ditambahkan"}
+          src={"./img/Card/placeholder.png"}
+          title={total.total ? total.total : 0}
+          desc={"Tempat yang ditambahkan"}
           />
         )}
       </div>
