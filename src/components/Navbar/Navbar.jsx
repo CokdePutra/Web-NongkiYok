@@ -43,6 +43,7 @@ const Navbar = ({ className }) => {
   const isDashboardPage =
     location.pathname === "/dashboard" || location.pathname === "/Admin";
   const isAdminPage = location.pathname === "/Admin" || location.pathname === "/ListContact";
+  const isuserPage = location.pathname === "/dashboard";
   return (
     <div className="sticky top-0 w-full px-10 py-5 z-[999] ">
       <div
@@ -85,12 +86,20 @@ const Navbar = ({ className }) => {
           </button>
           {isAdminPage ? (
             <a href="/ListContact">Contact List</a>
-          ) : (
+          ) : isuserPage && user && user.role === "User" ?(
+            <a href="/Daftar">Daftar Guide</a>
+          ): !isuserPage && !isAdminPage &&(
             <a href="/Contact">Contact</a>
           )}
-          {isAdminPage && (
+
+          {isAdminPage && user && user.role === "Admin" &&(
             <a href="/Dashboard">Guide Dahboard</a>
           )}
+
+          {/* {isuserPage && user && user.role === "User" &&(
+            <a href="/Daftar">Daftar Guide</a>
+          )} */}
+
           <a href="" className="flex items-center">
             <img
               src="./img/Card/AI.png"
