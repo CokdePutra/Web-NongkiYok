@@ -95,8 +95,10 @@ const GuideRequest = () => {
           <div className="mb-8">
             <ul className="list-decimal jura-medium ml-6 font-bold text-black text-xl space-y-2">
               <li>Kontribusi ke pariwisata lokal</li>
+              <li>Kontribusi ke perekonomian lokal</li>
               <li>Membantu para UMKM dan usaha lokal agar dikenal</li>
-              <li>Membantu masyarakat untuk wawasan yang luas</li>
+              <li>Membantu masyarakat untuk wawasan tempat yang beragam</li>
+              <li>Dari komunitas untuk komunitas</li>
             </ul>
           </div>
           <form onSubmit={handleSubmit}>
