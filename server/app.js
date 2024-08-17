@@ -8,7 +8,8 @@ import session from "express-session";
 import multer from "multer";
 import path from "path";
 import { redirect } from "react-router-dom";
-
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { FunctionDeclarationSchemaType } from "@google/generative-ai";
 //=================================SETUP=================================
 dotenv.config();
 
@@ -60,6 +61,26 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+//=====================================================================
+//============================= GEMINI SETUP================================
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+let model = genAI.getGenerativeModel({
+  model: "gemini-1.5-pro",
+  generationConfig: {
+    responseMimeType: "application/json",
+    responseSchema: {
+      type: FunctionDeclarationSchemaType.ARRAY,
+      items: {
+        type: FunctionDeclarationSchemaType.OBJECT,
+        properties: {
+          recipe_name: {
+            type: FunctionDeclarationSchemaType.STRING,
+          },
+        },
+      },
+    },
+  },
+});
 // ======================================================================
 //============================= CREDENTIAL ==============================
 // REGISTER
@@ -666,6 +687,39 @@ app.delete("/api/contact/delete/:id", (req, res) => {
   });
 });
 //=================================================================
+//========================== GEMINI LOGIC ==========================
+app.get("/gemini", async (req, res) => {
+  try {
+    // Mengambil daftar tempat dari API lokal
+    const response = await fetch("http://localhost:5000/card/up");
+    const ListTempat = await response.json();
+
+    // Ketentuan yang digunakan untuk filter tempat
+    const ketentuan = {
+      budget: req.query.budget,
+      ukuran: req.query.ukuran,
+      category: req.query.category,
+    };
+
+    // Membuat prompt untuk Google Generative AI
+    const prompt = `
+      Saya memiliki daftar tempat berikut: ${JSON.stringify(ListTempat)}.
+      berikan tempat terbaik untuk saya berdasarkan ketentuan berikut:
+      - Budget sekitar: ${ketentuan.budget}
+      - Category: ${ketentuan.category}
+    `;
+
+    // Menghasilkan konten dengan Google Generative AI
+    let result = await model.generateContent(prompt);
+    let text = result.response.text();
+
+    // Mengirimkan hasilnya sebagai respons JSON
+    res.json({ message: text });
+  } catch (error) {
+    console.error("Error generating content:", error);
+    res.status(500).json({ error: "Failed to generate content" });
+  }
+});
 //========================== SERVER RUNNING =======================
 // check runing
 const PORT = process.env.PORT || 5000;
