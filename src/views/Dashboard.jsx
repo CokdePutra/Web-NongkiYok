@@ -36,7 +36,7 @@ const Dashboard = () => {
   }, [navigate]);
 
   useEffect(() => {
-    if (userRole === "Guide" || userRole === "User") {
+    if (userRole === "Guide" || userRole === "Admin") {
       const fetchFavorites = async () => {
         try {
           const response = await axios.get(
@@ -53,8 +53,23 @@ const Dashboard = () => {
 
       fetchFavorites();
     }
-
-    if (userRole === "Guide") {
+    if (userRole === "User") {
+      const fetchFavorites = async () => {
+        try {
+          const response = await axios.get(
+            "http://localhost:5000/api/personal/Favplaces",
+            {
+              withCredentials: true,
+            }
+          );
+          setFavorites(response.data);
+        } catch (error) {
+          console.error("Error fetching favorite places", error);
+        }
+      };
+      fetchFavorites();
+    }
+    if (userRole === "Guide" || userRole === "Admin") {
       const fetchTotal = async () => {
         try {
           const response = await axios.get(
@@ -93,7 +108,7 @@ const Dashboard = () => {
         <CardPlace
           src={"./img/Card/star.png"}
           title={favorites.total_favorites ? favorites.total_favorites : 0}
-          desc={userRole === "Guide" ? "Tempat yang difavoritkan" : "Tempat favorit"}
+          desc={userRole === "Guide" || userRole === "Admin" ? "Tempat Populer" : "Tempat favorit"}
         />
         {(userRole === "Guide" || userRole === "Admin") && (
           <CardPlace

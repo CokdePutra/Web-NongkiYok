@@ -390,8 +390,28 @@ app.get("/api/FavPlaces", (req, res) => {
   }
 
   const userId = req.session.user.id;
-  const query =
-    "SELECT SUM((SELECT COUNT(*) FROM favorite WHERE Id_Places = places.Id_Places)) AS total_favorites FROM places WHERE EXISTS (SELECT 1 FROM favorite WHERE Id_Places = places.Id_Places AND Id_User = ?);";
+  const query = `
+SELECT COUNT(*) AS total_favorites
+FROM favorite
+INNER JOIN places ON places.Id_Places = favorite.Id_Places
+WHERE places.Id_User = ?;
+`;
+
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results[0]);
+  });
+});
+// favorite place by user
+app.get("/api/personal/Favplaces", (req, res) => {
+  const userId = req.session.user.id;
+  const query = `
+    SELECT COUNT(*) AS total_favorites 
+    FROM favorite 
+    WHERE Id_User = ?;
+  `;
   db.query(query, [userId], (err, results) => {
     if (err) {
       return res.status(500).send(err);
