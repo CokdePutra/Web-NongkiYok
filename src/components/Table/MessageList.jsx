@@ -87,7 +87,7 @@ const MessageList = () => {
                       <button
                         className="text-white-600 hover:text-indigo-900 mr-2 bg-green-500 text-white py-1 px-4 rounded"
                       >
-                        Replay
+                        Reply
                       </button>
                       <button
                         className="text-white-600 hover:text-indigo-900 mr-2 bg-red-500 text-white py-1 px-4 rounded"
