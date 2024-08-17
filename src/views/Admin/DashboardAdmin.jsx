@@ -38,9 +38,12 @@ const DashboardAdmin = () => {
   useEffect(() => {
     const fetchTotalPlace = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/totalplaces", {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          "http://localhost:5000/api/totalplaces",
+          {
+            withCredentials: true,
+          }
+        );
         setTotalPlace(response.data);
       } catch (error) {
         console.error("Error fetching total place", error);
@@ -53,9 +56,12 @@ const DashboardAdmin = () => {
   useEffect(() => {
     const fetchTotalUser = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/totalusers/User", {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          "http://localhost:5000/api/totalusers/User",
+          {
+            withCredentials: true,
+          }
+        );
         setTotalUser(response.data);
       } catch (error) {
         console.error("Error fetching total user", error);
@@ -64,13 +70,16 @@ const DashboardAdmin = () => {
 
     fetchTotalUser();
   }, []);
-  
+
   useEffect(() => {
     const fetchallUser = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/all/users", {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          "http://localhost:5000/api/all/users",
+          {
+            withCredentials: true,
+          }
+        );
         setallUser(response.data);
       } catch (error) {
         console.error("Error fetching total user", error);
@@ -83,9 +92,12 @@ const DashboardAdmin = () => {
   useEffect(() => {
     const fetchTotalGuide = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/totalusers/Guide", {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          "http://localhost:5000/api/totalusers/Guide",
+          {
+            withCredentials: true,
+          }
+        );
         setTotalGuide(response.data);
       } catch (error) {
         console.error("Error fetching total guide", error);
@@ -99,32 +111,35 @@ const DashboardAdmin = () => {
     <>
       <Navbar />
       <div className="flex justify-center">
-      <div className="grid grid-cols-1 justify-items-center">
-        <CardPlace
-          src={"./img/Card/Users.png"}
-          title={totalUser.total}
-          desc={"Total User"}
-        />
-        <CardPlace
-          src={"./img/Card/guide.png"}
-          title={totalGuide.total}
-          desc={"Total Guide"}
-        />
+        <div className="grid grid-cols-1 justify-items-center">
+          <CardPlace
+            src={"./img/Card/Users.png"}
+            title={totalUser.total}
+            desc={"Total User"}
+          />
+          <CardPlace
+            src={"./img/Card/guide.png"}
+            title={totalGuide.total}
+            desc={"Total Guide"}
+          />
+        </div>
+        <div className="grid grid-cols-1 justify-items-center">
+          <CardPlace
+            src={"./img/Card/Person.png"}
+            title={allUser.total}
+            desc={"All Users"}
+          />
+          <CardPlace
+            src={"./img/Card/Map.png"}
+            title={totalPlace.total}
+            desc={"Total Place"}
+          />
+        </div>
       </div>
-      <div className="grid grid-cols-1 justify-items-center">
-        <CardPlace
-          src={"./img/Card/Person.png"}
-          title={allUser.total}
-          desc={"All Users"}
-        />
-        <CardPlace
-          src={"./img/Card/Map.png"}
-          title={totalPlace.total}
-          desc={"Total Place"}
-        />
-        </div>
-        </div>
       <div className="flex flex-col items-center">
+        <div className="w-11/12 max-w-screen-xl mt-2">
+          <GuideRegister />
+        </div>
         <div className="flex justify-center space-x-1 w-11/12 max-w-screen-xl">
           <div className="w-9/12">
             <TableUser />
@@ -132,9 +147,6 @@ const DashboardAdmin = () => {
           <div className="w-3/12">
             <AdminList />
           </div>
-        </div>
-        <div className="w-11/12 max-w-screen-xl mt-2">
-          <GuideRegister />
         </div>
       </div>
     </>
