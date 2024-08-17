@@ -31,9 +31,25 @@ ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda
 1. node server/app.js
 2. npm run dev
 
-# contoh 1 user
+# User and Password
 
+Admin :
+username : Zayuran
+username : Gmoons
+
+---
+
+Guide :
 username : zephyrus
-password : admin#1234
+
+---
+
+User :
+Username : Adidoy
+Username : Kanha
+
+---
+
+All password : admin#1234
 
 desain : https://www.figma.com/proto/hOU58955XGafJ5PbADaM1t/Nongki-Yok?node-id=0-1&t=OmyfPQAgpI0AKoKX-1

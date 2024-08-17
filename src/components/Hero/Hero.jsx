@@ -29,9 +29,11 @@ const Hero = () => {
                 hadir sebagai solusi buat kamu yang pengen menemukan kedai kopi
                 tersembunyi dengan suasana yang asik dan kopi yang nikmat!
               </div>
-              <button className="bg-button-gray hover:bg-color-primary w-36 border-solid border-4 border-button-gray text-white py-2 px-4 rounded-lg my-5">
-                <a href="/map">Lihat Lokasi</a>
-              </button>
+              <a href="/map">
+                <button className="bg-button-gray hover:bg-color-primary w-36 border-solid border-4 border-button-gray text-white py-2 px-4 rounded-lg my-5">
+                  Lihat Lokasi
+                </button>
+              </a>
             </div>
           </div>
           <div class="right w-1/2 flex flex-col justify-center h-screen mx-10 p-4">

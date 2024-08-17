@@ -5,22 +5,22 @@ import { useNavigate, useParams, Link } from "react-router-dom";
 
 const EditLocation = () => {
   const navigate = useNavigate();
-  const param = useParams()
-  const id = param.id// Mengambil ID dari URL
-  console.log(id)  
-  const [userRole, setUserRole] = useState(null);
+  const { id } = useParams(); // Mengambil ID dari URL
+
   const [formData, setFormData] = useState({
     Name: "",
     AVG_Price: "",
+    Size:"",
     Category: "",
     Latitude: "",
     Longtitude: "",
     Link: "",
     Description: "",
+    Img_old: "", // Field to store the old image
   });
+  const [userRole, setUserRole] = useState(null);
   const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
-
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
@@ -30,6 +30,7 @@ const EditLocation = () => {
         const role = response.data.role;
         setUserRole(role);
 
+        // Redirect if not Guide or Admin
         if (role !== "Guide" && role !== "Admin") {
           navigate("/");
         }
@@ -38,7 +39,6 @@ const EditLocation = () => {
         navigate("/");
       }
     };
-
     checkLoginStatus();
   }, [navigate]);
 
@@ -48,8 +48,7 @@ const EditLocation = () => {
         const response = await axios.get(`http://localhost:5000/api/get/places/${id}`, {
           withCredentials: true,
         });
-        console.log(response.data);
-        setFormData(response.data);
+        setFormData({ ...response.data, Img_old: response.data.Image }); // Store the old image in Img_old
       } catch (error) {
         console.error("Error fetching place data:", error);
         setError("Failed to load place data");
@@ -78,8 +77,11 @@ const EditLocation = () => {
     Object.keys(formData).forEach((key) => {
       formDataToSend.append(key, formData[key]);
     });
+
     if (image) {
-      formDataToSend.append("image", image);
+      formDataToSend.append("image", image); // Append the new image if it exists
+    } else {
+      formDataToSend.append("image", formData.Img_old); // Append the old image if no new image is uploaded
     }
 
     try {
@@ -121,7 +123,7 @@ const EditLocation = () => {
           />
         </div>
         <div className="mb-4 flex space-x-4">
-          <div className="w-1/2">
+          <div className="w-1/3">
             <label className="block text-color-yellow jura-medium">
               Rata-Rata Harga
             </label>
@@ -136,7 +138,7 @@ const EditLocation = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="w-1/2">
+          <div className="w-1/3">
             <label className="block text-color-yellow jura-medium">
               Kategori
             </label>
@@ -153,6 +155,26 @@ const EditLocation = () => {
               </option>
               <option value="Cafe">Cafe</option>
               <option value="Resto">Resto</option>
+            </select>
+          </div>
+          <div className="w-1/3">
+            <label className="block text-color-yellow jura-medium">
+              Size lokasi
+            </label>
+            <select
+              required
+              className="bg-hover-button text-black rounded-md h-9 p-5 m-2 w-full px-2 py-1 border ml-[-5px]"
+              name="Size"
+              id="Size"
+              value={formData.Size}
+              onChange={handleChange}
+            >
+              <option value="">
+                Pilih Size
+              </option>
+              <option value="Small">Small</option>
+              <option value="Medium">Medium</option>
+              <option value="Large">Large</option>
             </select>
           </div>
         </div>

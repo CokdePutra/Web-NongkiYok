@@ -1,24 +1,50 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import 'boxicons';
+import "boxicons";
 
-const Card = ({ placeId, title, imgSrc, description, link, price, category }) => {
+const Card = ({
+  placeId,
+  title,
+  imgSrc,
+  description,
+  link,
+  price,
+  category,
+  size,
+}) => {
   const [isFavorited, setIsFavorited] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Fetch favorite status when component mounts
   useEffect(() => {
     const fetchFavoriteStatus = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/favorite/status/${placeId}`, {
-          withCredentials: true,
-        });
+        // Check if the user is logged in
+        const sessionResponse = await axios.get(
+          "http://localhost:5000/api/session",
+          {
+            withCredentials: true,
+          }
+        );
+        setIsLoggedIn(true); // User is logged in
+
+        // If the user is logged in, fetch the favorite status
+        const response = await axios.get(
+          `http://localhost:5000/api/favorite/status/${placeId}`,
+          {
+            withCredentials: true,
+          }
+        );
         setIsFavorited(response.data.isFavorited);
       } catch (error) {
-        console.error("Error fetching favorite status", error);
+        if (error.response && error.response.status === 401) {
+          setIsLoggedIn(false); // User is not logged in
+        } else {
+          console.error("Error fetching favorite status", error);
+        }
       }
     };
 
-    
     fetchFavoriteStatus();
   }, [placeId]);
 
@@ -26,13 +52,20 @@ const Card = ({ placeId, title, imgSrc, description, link, price, category }) =>
   const handleFavoriteClick = async () => {
     try {
       if (!isFavorited) {
-        await axios.post("http://localhost:5000/api/add/favorites", { placeId }, {
-          withCredentials: true,
-        });
+        await axios.post(
+          "http://localhost:5000/api/add/favorites",
+          { placeId },
+          {
+            withCredentials: true,
+          }
+        );
       } else {
-        await axios.delete(`http://localhost:5000/api/delete/favorites/${placeId}`, {
-          withCredentials: true,
-        });
+        await axios.delete(
+          `http://localhost:5000/api/delete/favorites/${placeId}`,
+          {
+            withCredentials: true,
+          }
+        );
       }
       setIsFavorited(!isFavorited);
     } catch (error) {
@@ -54,27 +87,34 @@ const Card = ({ placeId, title, imgSrc, description, link, price, category }) =>
   const moneyIcons = Array.from({ length: getMoneyIcons(price) });
 
   return (
-    <div className="card bg-navbar-color rounded-lg shadow-lg p-6 m-4 w-[20rem] flex flex-col overflow-hidden">
-      <div className="z-1 my-[-12px] mb-1 absolute">
-        <box-icon
-          name="star"
-          type={isFavorited ? 'solid' : 'regular'}
-          color='#FCBC36'
-          onClick={handleFavoriteClick}
-          style={{ cursor: "pointer" }}
-        ></box-icon>
-      </div>
+    <div className="card bg-navbar-color rounded-lg shadow-lg p-6 m-4 w-[20rem] flex flex-col place-content-between overflow-hidden ">
+      {isLoggedIn && (
+        <div className="z-1 my-[-12px] mb-1 absolute">
+          <box-icon
+            name="bookmark"
+            type={isFavorited ? "solid" : "regular"}
+            color="#FCBC36"
+            size="md"
+            onClick={handleFavoriteClick}
+            style={{ cursor: "pointer" }}></box-icon>
+        </div>
+      )}
       <img
         src={imgSrc}
         alt="img-card"
         className="rounded-t-lg w-full h-48 object-cover"
       />
-      <span className="inline-flex mt-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
-        {category}
-      </span>
+      <div className="info gap-1 mt-2">
+        <span className="inline-flex mt-1 mx-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+          {category}
+        </span>
+        <span className="inline-flex mt-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+          {size}
+        </span>
+      </div>
       <h1 className="title kodchasan-bold text-2xl mt-1 text-white">{title}</h1>
       <p className="description text-gray-300 mt-2">{description}</p>
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between mt-4 h-auto">
         <div className="icon-money flex items-center">
           {moneyIcons.map((_, index) => (
             <img
