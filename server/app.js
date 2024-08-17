@@ -565,6 +565,20 @@ app.get("/api/Admin", (req, res) => {
     res.json(results);
   });
 });
+// guide request
+app.post("/api/registerguide", (req, res) => {
+  const { Alasan } = req.body;
+  const idUser = req.session.user.id;
+  const status = "Pending";
+  const query =
+    "INSERT INTO registerguide (Id_User, Alasan, Status) VALUES (?, ?, ?)";
+  db.query(query, [idUser, Alasan, status], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(201).send("Guide request submitted");
+  });
+});
 // get all guide request
 app.get("/api/GuideRequest", (req, res) => {
   const query =
@@ -574,6 +588,18 @@ app.get("/api/GuideRequest", (req, res) => {
       return res.status(500).send(err);
     }
     res.json(results);
+  });
+});
+// check pending guide request
+app.get("/api/registerguide/check", (req, res) => {
+  const userId = req.session.user.id;
+  const query =
+    "SELECT COUNT(*) as hasPendingRequest FROM registerguide WHERE Id_User = ? AND Status = 'Pending'";
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results[0]);
   });
 });
 //=================================================================

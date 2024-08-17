@@ -11,6 +11,7 @@ import EditLocation from "./views/EditLocation";
 import Contact from "./views/Contact";
 import DashboardAdmin from "./views/Admin/DashboardAdmin";
 import ContactList from "./views/Admin/ContactList";
+import GuideRequest from "./views/GuideRequest";
 function App() {
   return (
     <>
@@ -27,6 +28,7 @@ function App() {
           <Route path="/Contact" element={<Contact />} />
           <Route path="/Admin" element={<DashboardAdmin />} />
           <Route path="/ListContact" element={<ContactList />} />
+          <Route path="/GuideRequest" element={<GuideRequest />} />
         </Routes>
       </Router>
     </>

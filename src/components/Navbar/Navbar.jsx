@@ -87,7 +87,7 @@ const Navbar = ({ className }) => {
           {isAdminPage ? (
             <a href="/ListContact">Contact List</a>
           ) : isuserPage && user && user.role === "User" ?(
-            <a href="/Daftar">Daftar Guide</a>
+            <a href="/GuideRequest">Daftar Guide</a>
           ): !isuserPage && !isAdminPage &&(
             <a href="/Contact">Contact</a>
           )}
