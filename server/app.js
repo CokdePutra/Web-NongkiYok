@@ -505,6 +505,16 @@ app.get("/api/users", (req, res) => {
     res.json(results);
   });
 });
+// count all user
+app.get("/api/all/users", (req, res) => {
+  const query = "SELECT COUNT(*) as total FROM users";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results[0]);
+  });
+});
 // delete user
 app.delete("/api/users/delete/:id", (req, res) => {
   const userId = req.params.id;
