@@ -105,10 +105,10 @@ const Dashboard = () => {
     <>
       <Navbar />
       <div className="flex justify-center">
-        <CardPlace
-          src={"./img/Card/star.png"}
-          title={favorites.total_favorites ? favorites.total_favorites : 0}
-          desc={userRole === "Guide" || userRole === "Admin" ? "Tempat Populer" : "Tempat favorit"}
+      <CardPlace
+        src={userRole === "Guide" || userRole === "Admin" ? "./img/Card/star.png" : "./img/Card/bookmarks.png"}
+        title={favorites.total_favorites || 0}
+        desc={userRole === "Guide" || userRole === "Admin" ? "Tempat Populer" : "Wishlist"}
         />
         {(userRole === "Guide" || userRole === "Admin") && (
           <CardPlace
