@@ -195,38 +195,52 @@ app.post("/api/places", upload.single("image"), (req, res) => {
     description,
   } = req.body;
 
-  console.log(req.body);
-  console.log("==========");
   const image = req.file ? `/uploads/${req.file.filename}` : "";
   const userId = req.session.user.id;
 
-  const query = `
-    INSERT INTO places (name, AVG_Price,Size, Category, Longtitude, Latitude, Link, Description, Image, Id_User)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-  db.query(
-    query,
-    [
-      name,
-      price,
-      Size,
-      Category,
-      longitude, // pastikan urutannya sesuai
-      latitude,
-      googleMapsLink,
-      description,
-      image,
-      userId,
-    ],
-    (err, results) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).send("Error adding place");
-      }
-      res.status(201).send("Place added successfully");
+  // Check if a place with the same name already exists
+  const checkQuery = `SELECT * FROM places WHERE name = ?`;
+  db.query(checkQuery, [name], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send("Error checking for existing place");
     }
-  );
+
+    if (results.length > 0) {
+      // Place with the same name already exists
+      return res.status(409).send("Place with the same name already exists");
+    }
+
+    // No duplicate found, proceed with the insertion
+    const insertQuery = `
+      INSERT INTO places (name, AVG_Price, Size, Category, Longtitude, Latitude, Link, Description, Image, Id_User)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    db.query(
+      insertQuery,
+      [
+        name,
+        price,
+        Size,
+        Category,
+        longitude, // pastikan urutannya sesuai
+        latitude,
+        googleMapsLink,
+        description,
+        image,
+        userId,
+      ],
+      (err, results) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send("Error adding place");
+        }
+        res.status(201).send("Place added successfully");
+      }
+    );
+  });
 });
+
 // get place by id
 app.get("/api/get/places/:id", (req, res) => {
   const placeId = req.params.id;
