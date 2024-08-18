@@ -73,7 +73,16 @@ let model = genAI.getGenerativeModel({
       items: {
         type: FunctionDeclarationSchemaType.OBJECT,
         properties: {
-          recipe_name: {
+          Id_Places: {
+            type: FunctionDeclarationSchemaType.INTEGER,
+          },
+          Name: {
+            type: FunctionDeclarationSchemaType.STRING,
+          },
+          Latitude: {
+            type: FunctionDeclarationSchemaType.STRING,
+          },
+          Longtitude: {
             type: FunctionDeclarationSchemaType.STRING,
           },
         },
@@ -688,6 +697,7 @@ app.delete("/api/contact/delete/:id", (req, res) => {
 });
 //=================================================================
 //========================== GEMINI LOGIC ==========================
+// search by gemini
 app.get("/gemini", async (req, res) => {
   try {
     // Mengambil daftar tempat dari API lokal
@@ -707,18 +717,40 @@ app.get("/gemini", async (req, res) => {
       berikan tempat terbaik untuk saya berdasarkan ketentuan berikut:
       - Budget sekitar: ${ketentuan.budget}
       - Category: ${ketentuan.category}
+      cari tempat yang sesuai dari daftar saya ataupun yang paling 
+      mendekati sesuai dari ketentuan di atas.
     `;
 
     // Menghasilkan konten dengan Google Generative AI
     let result = await model.generateContent(prompt);
-    let text = result.response.text();
+    let place = JSON.parse(result.response.text());
 
     // Mengirimkan hasilnya sebagai respons JSON
-    res.json({ message: text });
+    res.json(place);
   } catch (error) {
     console.error("Error generating content:", error);
     res.status(500).json({ error: "Failed to generate content" });
   }
+});
+// add place by gemini
+app.get("/api/gemini/add", async (req, res) => {
+  const ketentuan = {
+    budget: req.query.budget,
+    ukuran: req.query.ukuran,
+    category: req.query.category,
+    lokasi: req.query.lokasi,
+    kriteria: req.query.kriteria,
+  };
+  const prompt = `berikan saya 1 tempat terbaik dengan kriteria ${ketentuan.kriteria} untuk saya 
+  sekitaran ${ketentuan.lokasi}, 
+  dengan budget sekitar ${ketentuan.budget}, dan ukuran ${ketentuan.ukuran} 
+  dengan kategori ${ketentuan.category}.`;
+  // Menghasilkan konten dengan Google Generative AI
+  let result = await model.generateContent(prompt);
+  let place = JSON.parse(result.response.text());
+
+  // Mengirimkan hasilnya sebagai respons JSON
+  res.json(place);
 });
 //========================== SERVER RUNNING =======================
 // check runing
