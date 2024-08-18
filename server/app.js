@@ -64,6 +64,7 @@ const upload = multer({ storage: storage });
 //=====================================================================
 //============================= GEMINI SETUP================================
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// config model for get place by gemini
 let model = genAI.getGenerativeModel({
   model: "gemini-1.5-pro",
   generationConfig: {
@@ -85,6 +86,31 @@ let model = genAI.getGenerativeModel({
           Longtitude: {
             type: FunctionDeclarationSchemaType.STRING,
           },
+        },
+      },
+    },
+  },
+});
+// config model for add place by gemini
+let modeladd = genAI.getGenerativeModel({
+  model: "gemini-1.5-pro",
+  generationConfig: {
+    responseMimeType: "application/json",
+    responseSchema: {
+      type: FunctionDeclarationSchemaType.ARRAY,
+      items: {
+        type: FunctionDeclarationSchemaType.OBJECT,
+        properties: {
+          Name: {
+            type: FunctionDeclarationSchemaType.STRING,
+          },
+          Latitude: {
+            type: FunctionDeclarationSchemaType.STRING,
+          },
+          Longtitude: {
+            type: FunctionDeclarationSchemaType.STRING,
+          },
+          L,
         },
       },
     },
@@ -760,7 +786,7 @@ app.get("/api/gemini/add", async (req, res) => {
   dengan budget sekitar ${ketentuan.budget}, dan ukuran ${ketentuan.ukuran} 
   dengan kategori ${ketentuan.category}.`;
   // Menghasilkan konten dengan Google Generative AI
-  let result = await model.generateContent(prompt);
+  let result = await modeladd.generateContent(prompt);
   let place = JSON.parse(result.response.text());
 
   // Mengirimkan hasilnya sebagai respons JSON
