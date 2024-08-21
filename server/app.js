@@ -110,7 +110,6 @@ let modeladd = genAI.getGenerativeModel({
           Longtitude: {
             type: FunctionDeclarationSchemaType.STRING,
           },
-          L,
         },
       },
     },
