@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 const Navbar = ({ className }) => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // State untuk mobile menu
   const [user, setUser] = useState(null);
   const location = useLocation();
 
@@ -14,7 +14,7 @@ const Navbar = ({ className }) => {
   };
 
   const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
+    setMobileMenuOpen(!mobileMenuOpen); // Toggle untuk mobile menu
   };
 
   useEffect(() => {
@@ -52,157 +52,184 @@ const Navbar = ({ className }) => {
   const isuserPage = location.pathname === "/dashboard";
 
   return (
-    <div className="sticky top-0 w-full px-10 py-5 z-[999]">
+    <div className="sticky top-0 w-full z-[999]">
+      {/* Tambahkan kondisi untuk menyembunyikan navbar saat mobile menu terbuka */}
       <div
-        className={`flex justify-between items-center p-5 rounded-lg bg-navbar-color ${className}`}>
-        {/* Left Section */}
-        <h1 className="text-4xl text-color-yellow kodchasan-bold">
-          Nongki-Yok
-        </h1>
+        className={`${
+          mobileMenuOpen ? "hidden" : "block" // Navbar tersembunyi saat mobileMenuOpen true
+        } px-10 py-5`}
+      >
+        <div
+          className={`flex justify-between items-center p-5 rounded-lg bg-navbar-color ${className}`}>
+          {/* Left Section */}
+          <h1 className="text-4xl text-color-yellow kodchasan-bold">
+            Nongki-Yok
+          </h1>
 
-        {/* Hamburger Button for Mobile */}
-        <button
-          className="block md:hidden text-white focus:outline-none"
-          onClick={toggleMobileMenu}
-        >
-          {/* Icon Hamburger */}
-          <svg
-            className="w-8 h-8"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
+          {/* Hamburger Button for Mobile */}
+          <button
+            className="block md:hidden text-white focus:outline-none hover:text-color-gold-card"
+            onClick={toggleMobileMenu} // Saat ditekan, mobile menu akan muncul
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
-          </svg>
-        </button>
+            {/* Icon Hamburger */}
+            <svg
+              className="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
 
-        {/* Right Section (Hidden on mobile, visible on larger screens) */}
-        <div className="hidden md:flex items-center text-lg space-x-8 text-white jura-medium">
-          {user && (
-            <span>
-              Hai, <strong className="capitalize">{user.name}</strong>
+          {/* Right Section (Hidden on mobile, visible on larger screens) */}
+          <div className="hidden md:flex items-center text-lg space-x-8 text-white jura-medium">
+            {user && (
+              <span>
+                Hai, <strong className="capitalize">{user.name}</strong>
+              </span>
+            )}
+            <span className="border-l-2 border-white">
+              <a href="/" className="ml-3">
+                Home
+              </a>
             </span>
-          )}
-          <span className="border-l-2 border-white">
-            <a href="/" className="ml-3">
-              Home
+            <button
+              onClick={toggleDropdown}
+              className="relative focus:outline-none">
+              Location
+              {dropdownOpen && (
+                <div className="absolute mt-3 ml-[-70%] w-48 bg-white rounded-md shadow-lg z-10">
+                  <a
+                    href="/homecard"
+                    className="block rounded-md px-4 py-2 text-gray-800 hover:bg-gray-200">
+                    List Location
+                  </a>
+                  <a
+                    href="/map"
+                    className="block rounded-md px-4 py-2 text-gray-800 hover:bg-gray-200">
+                    Map
+                  </a>
+                </div>
+              )}
+            </button>
+            {isAdminPage ? (
+              <a href="/ListContact">Contact List</a>
+            ) : isuserPage && user && user.role === "User" ? (
+              <a href="/GuideRequest">Daftar Guide</a>
+            ) : !isuserPage && !isAdminPage && (
+              <a href="/Contact">Contact</a>
+            )}
+
+            {isAdminPage && user && user.role === "Admin" && (
+              <a href="/Dashboard">Guide Dahboard</a>
+            )}
+
+            <a href="" className="flex items-center">
+              <img
+                src="./img/Card/AI.png"
+                alt="AI"
+                className="h-7 w-7 object-cover"
+              />
             </a>
-          </span>
+            {user ? (
+              isDashboardPage &&
+              (user.role === "Guide" ||
+                user.role === "Admin" ||
+                user.role === "User") ? (
+                <button
+                  onClick={handleLogout}
+                  className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+                  Logout
+                </button>
+              ) : user.role === "Guide" || user.role === "User" ? (
+                <a
+                  href="/dashboard"
+                  className="bg-button-gray hover:bg-color-primary text-white py-3 px-4 rounded-lg">
+                  Dashboard
+                </a>
+              ) : user.role === "Admin" ? (
+                <a
+                  href="/Admin"
+                  className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+                  Dashboard
+                </a>
+              ) : (
+                <button
+                  onClick={handleLogout}
+                  className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+                  Logout
+                </button>
+              )
+            ) : (
+              <a
+                href="/login"
+                className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
+                Login
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu (Visible on smaller screens) */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-y-0 left-0 w-64 bg-navbar-color text-white p-5 space-y-4 z-50 transition-transform transform translate-x-0 mr-10">
+          <div className="flex justify-between items-center mb-4">
+            {user && (
+              <span className="text-lg font-bold">
+                Hai, <strong className="capitalize">{user.name}</strong>
+              </span>
+            )}
+            <button
+              onClick={() => setMobileMenuOpen(false)} // Saat ditekan, mobile menu akan tertutup dan navbar muncul kembali
+              className="text-white text-2xl">
+              &times;
+            </button>
+          </div>
+          <a href="/" className="block py-2 px-4 border-b border-gray-700 hover:text-color-gold-card">Home</a>
           <button
             onClick={toggleDropdown}
-            className="relative focus:outline-none">
-            Location
+            className="relative focus:outline-none w-full text-left">
+            <p className="block py-2 px-4 border-b border-gray-700 hover:text-color-gold-card">Location</p>
             {dropdownOpen && (
-              <div className="absolute mt-3 ml-[-70%] w-48 bg-white rounded-md shadow-lg z-10">
-                <a
-                  href="/homecard"
-                  className="block rounded-md px-4 py-2 text-gray-800 hover:bg-gray-200">
-                  List Location
-                </a>
-                <a
-                  href="/map"
-                  className="block rounded-md px-4 py-2 text-gray-800 hover:bg-gray-200">
-                  Map
-                </a>
+              <div className="mt-3 w-full bg-color-primary text-white">
+                <a href="/homecard" className="block py-2 px-4 border-b border-gray-700 hover:text-color-gold-card">List Location</a>
+                <a href="/map" className="block py-2 px-4 border-b border-gray-700 hover:text-color-gold-card">Map</a>
               </div>
             )}
           </button>
-          {isAdminPage ? (
-            <a href="/ListContact">Contact List</a>
-          ) : isuserPage && user && user.role === "User" ? (
-            <a href="/GuideRequest">Daftar Guide</a>
-          ) : !isuserPage && !isAdminPage && (
-            <a href="/Contact">Contact</a>
+          {isAdminPage && (
+            <a href="/ListContact" className="block py-2 px-4 border-b border-gray-700 hover:text-color-gold-card">Contact List</a>
           )}
-
-          {isAdminPage && user && user.role === "Admin" && (
-            <a href="/Dashboard">Guide Dahboard</a>
+          {!isAdminPage && (
+            <a href="/Contact" className="block py-2 px-4 border-b border-gray-700 hover:text-color-gold-card">Contact</a>
           )}
-
-          <a href="" className="flex items-center">
-            <img
-              src="./img/Card/AI.png"
-              alt="AI"
-              className="h-7 w-7 object-cover"
-            />
-          </a>
-          {user ? (
-            isDashboardPage &&
-            (user.role === "Guide" ||
-              user.role === "Admin" ||
-              user.role === "User") ? (
-              <button
-                onClick={handleLogout}
-                className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-                Logout
-              </button>
-            ) : user.role === "Guide" || user.role === "User" ? (
-              <a
-                href="/dashboard"
-                className="bg-button-gray hover:bg-color-primary text-white py-3 px-4 rounded-lg">
-                Dashboard
-              </a>
-            ) : user.role === "Admin" ? (
-              <a
-                href="/Admin"
-                className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-                Dashboard
-              </a>
-            ) : (
-              <button
-                onClick={handleLogout}
-                className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-                Logout
-              </button>
-            )
-          ) : (
-            <a
-              href="/login"
-              className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-              Login
-            </a>
-          )}
+          <div className="hover:text-color-gold-card">
+            {user && (
+              <>
+                {user.role === "Guide" || user.role === "User" ? (
+                  <a href="/dashboard" className="block py-2 px-4 border-b border-gray-700">Dashboard</a>
+                ) : user.role === "Admin" ? (
+                  <a href="/Admin" className="block py-2 px-4 border-b border-gray-700">Dashboard</a>
+                ) : (
+                  <button
+                    onClick={handleLogout}
+                    className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg block">
+                    Logout
+                  </button>
+                )}
+              </>
+            )}
+          </div>
         </div>
-
-        {/* Mobile Menu (Visible on smaller screens) */}
-        {mobileMenuOpen && (
-  <div className="md:hidden bg-navbar-color text-white mt-3 rounded-lg space-y-2 flex flex-col">
-    <a href="/" className="py-2 px-4 border-b border-gray-700 text-center">Home</a>
-    <a href="/homecard" className="py-2 px-4 border-b border-gray-700 text-center">List Location</a>
-    <a href="/map" className="py-2 px-4 border-b border-gray-700 text-center">Map</a>
-    {isAdminPage && (
-      <a href="/ListContact" className="py-2 px-4 border-b border-gray-700 text-center">Contact List</a>
-    )}
-    {!isAdminPage && (
-      <a href="/Contact" className="py-2 px-4 border-b border-gray-700 text-center">Contact</a>
-    )}
-    {user && (
-      <>
-        {user.role === "Guide" || user.role === "User" ? (
-          <a href="/dashboard" className="py-2 px-4 border-b border-gray-700 text-center">Dashboard</a>
-        ) : user.role === "Admin" ? (
-          <a href="/Admin" className="py-2 px-4 border-b border-gray-700 text-center">Dashboard</a>
-        ) : (
-          <button
-            onClick={handleLogout}
-            className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg text-center block">
-            Logout
-          </button>
-        )}
-      </>
-    )}
-  </div>
-)}
-
-
-
-      </div>
+      )}
     </div>
   );
 };
