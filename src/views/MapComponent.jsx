@@ -134,7 +134,9 @@ const MapComponent = () => {
     position={[location.Latitude, location.Longtitude]}
     icon={createCustomIcon(getMarkerColor(location.AVG_Price))}>
     <Popup>
-      <strong className="kodchasan-bold">{location.Name}</strong>
+    <a href={location.Link} target="_blank" rel="noopener noreferrer" className="!text-black font-bold">
+    <strong className="kodchasan-bold">{location.Name}</strong>
+  </a>
       <hr className="m-1 bg-color-primary" />
       <div className="container jura-medium">
         <img
