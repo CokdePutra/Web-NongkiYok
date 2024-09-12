@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 const GuideRequest = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState(null);
   const [alasan, setAlasan] = useState("");
@@ -11,7 +12,7 @@ const GuideRequest = () => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/session", {
+        const response = await axios.get(`${baseURL}/api/session`, {
           withCredentials: true,
         });
         const role = response.data.role;
@@ -31,7 +32,7 @@ const GuideRequest = () => {
     const checkPendingRequest = async () => {
       try {
         const pendingResponse = await axios.get(
-          "http://localhost:5000/api/registerguide/check",
+          `${baseURL}/api/registerguide/check`,
           {
             withCredentials: true,
           }
@@ -49,7 +50,7 @@ const GuideRequest = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/registerguide",
+        `${baseURL}/api/registerguide`,
         { Alasan: alasan },
         {
           withCredentials: true,

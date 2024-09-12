@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Login = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ const Login = () => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/session", {
+        const response = await axios.get(`${baseURL}/api/session`, {
           withCredentials: true,
         });
         const role = response.data.role;
@@ -37,7 +38,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/login",
+        `${baseURL}/login`,
         { username, password },
         { withCredentials: true }
       );

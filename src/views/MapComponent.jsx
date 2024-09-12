@@ -16,6 +16,7 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapComponent = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [locations, setLocations] = useState([]);
   const [position, setPosition] = useState([
     -8.670984102338322, 115.21225631025192,
@@ -40,7 +41,7 @@ const MapComponent = () => {
     const fetchLocations = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/locations",
+          `${baseURL}/api/locations`,
           {
             withCredentials: true,
           }

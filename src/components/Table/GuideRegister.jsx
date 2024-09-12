@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const GuideRegister = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/GuideRequest", {
+        const response = await axios.get(`${baseURL}/api/GuideRequest`, {
           withCredentials: true,
         });
         setUsers(response.data);
@@ -21,7 +22,7 @@ const GuideRegister = () => {
   const handleApprove = async (userId) => {
     if (window.confirm("Are you sure you want to approve this user as a Guide?")) {
       try {
-        await axios.put(`http://localhost:5000/api/users/update/${userId}`, {}, {
+        await axios.put(`${baseURL}/api/users/update/${userId}`, {}, {
           withCredentials: true,
         });
         setUsers(users.map((user) => 
@@ -37,7 +38,7 @@ const GuideRegister = () => {
   const handleReject = async (userId) => {
     if (window.confirm("Are you sure you want to reject this user?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/users/deleterequest/${userId}`, {
+        await axios.delete(`${baseURL}/api/users/deleterequest/${userId}`, {
           withCredentials: true,
         });
         setUsers(users.filter((user) => user.Id_User !== userId));

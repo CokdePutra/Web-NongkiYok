@@ -3,12 +3,12 @@ import axios from "axios";
 import 'boxicons';
 
 const AdminList = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [Admin, setAdmin] = useState([]);
-
   useEffect(() => {
     const fetchAdmin = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/Admin", {
+        const response = await axios.get(`${baseURL}/api/Admin`, {
           withCredentials: true,
         });
         setAdmin(response.data);

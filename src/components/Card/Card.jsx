@@ -12,6 +12,7 @@ const Card = ({
   category,
   size,
 }) => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [isFavorited, setIsFavorited] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -21,7 +22,7 @@ const Card = ({
       try {
         // Check if the user is logged in
         const sessionResponse = await axios.get(
-          "http://localhost:5000/api/session",
+          `${baseURL}api/session`,
           {
             withCredentials: true,
           }
@@ -30,7 +31,7 @@ const Card = ({
 
         // If the user is logged in, fetch the favorite status
         const response = await axios.get(
-          `http://localhost:5000/api/favorite/status/${placeId}`,
+          `${baseURL}api/favorite/status/${placeId}`,
           {
             withCredentials: true,
           }
@@ -53,7 +54,7 @@ const Card = ({
     try {
       if (!isFavorited) {
         await axios.post(
-          "http://localhost:5000/api/add/favorites",
+          `${baseURL}/api/add/favorites`,
           { placeId },
           {
             withCredentials: true,
@@ -61,7 +62,7 @@ const Card = ({
         );
       } else {
         await axios.delete(
-          `http://localhost:5000/api/delete/favorites/${placeId}`,
+          `${baseURL}/api/delete/favorites/${placeId}`,
           {
             withCredentials: true,
           }

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const MessageList = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [userRole, setUserRole] = useState(null);
   const [messages, setMessages] = useState([]);
 
@@ -11,7 +12,7 @@ const MessageList = () => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/session", {
+        const response = await axios.get(`${baseURL}/api/session`, {
           withCredentials: true,
         });
         const role = response.data.role;
@@ -31,7 +32,7 @@ const MessageList = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/contact", {
+        const response = await axios.get(`${baseURL}/api/contact`, {
           withCredentials: true,
         });
         setMessages(response.data);
@@ -46,7 +47,7 @@ const MessageList = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this message?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/contact/delete/${id}`, {
+        await axios.delete(`${baseURL}/api/contact/delete/${id}`, {
           withCredentials: true,
         });
         setMessages(messages.filter((message) => message.Id_Contact !== id));

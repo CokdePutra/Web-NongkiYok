@@ -5,6 +5,7 @@ import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
 
 const SignUp = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [formData, setFormData] = useState({
     email: "",
     name: "",
@@ -22,7 +23,7 @@ const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/register", {
+      const response = await axios.post(`${baseURL}/register`, {
         ...formData,
         role: "User",
       });

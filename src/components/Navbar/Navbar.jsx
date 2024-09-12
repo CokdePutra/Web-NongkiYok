@@ -3,6 +3,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 
 const Navbar = ({ className }) => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [user, setUser] = useState(null);
   const location = useLocation();
@@ -14,7 +15,7 @@ const Navbar = ({ className }) => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/session", {
+        const response = await axios.get(`${baseURL}/api/session`, {
           withCredentials: true,
         });
         setUser(response.data);
@@ -29,7 +30,7 @@ const Navbar = ({ className }) => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:5000/logout",
+        `${baseURL}/logout`,
         {},
         { withCredentials: true }
       );

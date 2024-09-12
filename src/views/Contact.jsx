@@ -3,6 +3,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
 
 const Contact = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -13,7 +14,7 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      await axios.post("http://localhost:5000/api/contact", {
+      await axios.post(`${baseURL}/api/contact`, {
         name,
         email,
         message,

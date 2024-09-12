@@ -4,6 +4,7 @@ import UserInput from "../components/UserInput/UserInput";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
 const EditLocation = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const navigate = useNavigate();
   const { id } = useParams(); // Mengambil ID dari URL
 
@@ -24,7 +25,7 @@ const EditLocation = () => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/session", {
+        const response = await axios.get(`${baseURL}/api/session`, {
           withCredentials: true,
         });
         const role = response.data.role;
@@ -45,7 +46,7 @@ const EditLocation = () => {
   useEffect(() => {
     const fetchPlaceData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/get/places/${id}`, {
+        const response = await axios.get(`${baseURL}/api/get/places/${id}`, {
           withCredentials: true,
         });
         setFormData({ ...response.data, Img_old: response.data.Image }); // Store the old image in Img_old
@@ -85,7 +86,7 @@ const EditLocation = () => {
     }
 
     try {
-      await axios.put(`http://localhost:5000/api/places/update/${id}`, formDataToSend, {
+      await axios.put(`${baseURL}/api/places/update/${id}`, formDataToSend, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
