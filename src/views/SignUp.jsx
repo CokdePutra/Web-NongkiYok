@@ -13,15 +13,39 @@ const SignUp = () => {
     password: "",
   });
   const [message, setMessage] = useState({ text: "", isError: false });
+  const [emailError, setEmailError] = useState(""); // Untuk pesan error email
   const navigate = useNavigate();
+
+  const validateEmail = (email) => {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    if (name === "email") {
+      if (!validateEmail(value)) {
+        setEmailError("Email tidak valid");
+      } else {
+        setEmailError("");
+      }
+    }
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+
+    // Cek jika email tidak valid
+    if (emailError) {
+      setMessage({
+        text: "Formulir tidak valid. Periksa input Anda.",
+        isError: true,
+      });
+      return;
+    }
+
     try {
       const response = await axios.post(`${baseURL}/register`, {
         ...formData,
@@ -54,6 +78,7 @@ const SignUp = () => {
             onChange={handleChange}
             className="w-full"
           />
+          {emailError && <p className="text-color-red text-sm">{emailError}</p>} {/* Pesan error email */}
           <div className="flex flex-col md:flex-row w-full space-y-2 md:space-y-0 md:space-x-2">
             <UserInput
               type="text"
