@@ -182,10 +182,12 @@ const Navbar = ({ className }) => {
       {mobileMenuOpen && (
         <div className="fixed inset-y-0 left-0 w-64 bg-navbar-color text-white p-5 space-y-4 z-50 transition-transform transform translate-x-0 mr-10">
           <div className="flex justify-between items-center mb-4">
-            {user && (
+            {user ? (
               <span className="text-lg font-bold">
                 Hai, <strong className="capitalize">{user.name}</strong>
               </span>
+            ) : (
+              <h1 className="text-3xl text-color-yellow kodchasan-bold">Nongki-Yok</h1>
             )}
             <button
               onClick={() => setMobileMenuOpen(false)} // Saat ditekan, mobile menu akan tertutup dan navbar muncul kembali
