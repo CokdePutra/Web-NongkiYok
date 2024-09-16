@@ -4,13 +4,14 @@ import Navbar from '../components/Navbar/Navbar';
 import Card from '../components/Card/Card';
 
 const HomeCard = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [cards, setCards] = useState([]);
-  const [sortOrder, setSortOrder] = useState('up'); // Default sort order
+  const [sortOrder, setSortOrder] = useState('up'); 
 
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/card/${sortOrder}`);
+        const response = await axios.get(`${baseURL}/card/${sortOrder}`);
         setCards(response.data);
       } catch (error) {
         console.error('Error fetching cards:', error);
@@ -18,15 +19,16 @@ const HomeCard = () => {
     };
 
     fetchCards();
-  }, [sortOrder]);
+  }, [sortOrder, baseURL]);
 
   const handleSortUp = () => {
     setSortOrder('up');
   };
-
+  
   const handleSortDown = () => {
     setSortOrder('down');
   };
+  
   return (
     <>
       <Navbar />

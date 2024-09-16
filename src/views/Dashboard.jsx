@@ -7,6 +7,7 @@ import Card from "../components/Card/Card";
 import axios from "axios";
 
 const Dashboard = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [total, setTotal] = useState({});
   const [favorites, setFavorites] = useState({});
   const [userRole, setUserRole] = useState(null);
@@ -16,7 +17,7 @@ const Dashboard = () => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/session", {
+        const response = await axios.get(`${baseURL}/api/session`, {
           withCredentials: true,
         });
         const role = response.data.role;
@@ -40,7 +41,7 @@ const Dashboard = () => {
       const fetchFavorites = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:5000/api/FavPlaces",
+            `${baseURL}/api/FavPlaces`,
             {
               withCredentials: true,
             }
@@ -57,7 +58,7 @@ const Dashboard = () => {
       const fetchFavorites = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:5000/api/personal/Favplaces",
+            `${baseURL}/api/personal/Favplaces`,
             {
               withCredentials: true,
             }
@@ -73,7 +74,7 @@ const Dashboard = () => {
       const fetchTotal = async () => {
         try {
           const response = await axios.get(
-            "http://localhost:5000/api/AllPlaces",
+            `${baseURL}/api/AllPlaces`,
             {
               withCredentials: true,
             }
@@ -88,7 +89,7 @@ const Dashboard = () => {
     } else if (userRole === "User") {
       const fetchCards = async () => {
         try {
-          const response = await axios.get("http://localhost:5000/api/card/fav", {
+          const response = await axios.get(`${baseURL}/api/card/fav`, {
             withCredentials: true,
           });
           setCards(response.data);

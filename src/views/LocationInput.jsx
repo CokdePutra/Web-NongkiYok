@@ -4,6 +4,7 @@ import UserInput from "../components/UserInput/UserInput";
 import { useNavigate, Link } from "react-router-dom";
 
 const LocationInput = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState(null);
   const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ const LocationInput = () => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/session", {
+        const response = await axios.get(`${baseURL}/api/session`, {
           withCredentials: true,
         });
         const role = response.data.role;
@@ -82,7 +83,7 @@ const LocationInput = () => {
     }
 
     axios
-      .post("http://localhost:5000/api/places", formDataToSend, {
+      .post(`${baseURL}/api/places`, formDataToSend, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",

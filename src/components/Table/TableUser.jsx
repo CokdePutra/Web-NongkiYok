@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const TableUser = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users", {
+        const response = await axios.get(`${baseURL}/api/users`, {
           withCredentials: true,
         });
         setUsers(response.data);
@@ -21,7 +22,7 @@ const TableUser = () => {
   const handleDelete = async (userId) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/users/delete/${userId}`, {
+        await axios.delete(`${baseURL}/api/users/delete/${userId}`, {
           withCredentials: true,
         });
         setUsers(users.filter((user) => user.User_Id !== userId));

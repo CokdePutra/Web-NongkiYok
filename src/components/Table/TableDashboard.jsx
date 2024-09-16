@@ -3,12 +3,13 @@ import axios from "axios";
 import 'boxicons';
 
 const TableDashboard = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [places, setPlaces] = useState([]);
 
   useEffect(() => {
     const fetchPlaces = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/places", {
+        const response = await axios.get(`${baseURL}/api/places`, {
           withCredentials: true,
         });
         setPlaces(response.data);
@@ -23,7 +24,7 @@ const TableDashboard = () => {
     if (window.confirm("Are you sure you want to delete this place?")) {
       try {
         await axios.delete(
-          `http://localhost:5000/api/places/delete/${placeId}`,
+          `${baseURL}/api/places/delete/${placeId}`,
           {
             withCredentials: true,
           }
