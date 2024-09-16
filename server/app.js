@@ -10,6 +10,7 @@ import path from "path";
 import { redirect } from "react-router-dom";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { FunctionDeclarationSchemaType } from "@google/generative-ai";
+import nodemailer from "nodemailer";
 //=================================SETUP=================================
 dotenv.config();
 
@@ -61,6 +62,36 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+// Konfigurasi transporter untuk mengirim email
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL_USER, // Email pengirim
+    pass: process.env.EMAIL_PASS, // Password atau App password (jika menggunakan Gmail)
+  },
+});
+// ============================== EMAIL TEST =============================
+// console.log("email user", process.env.EMAIL_USER);
+// console.log("Pass", process.env.EMAIL_PASS);
+// console.log("Host", process.env.EMAIL_HOST);
+// let mailOptions = {
+//   from: process.env.EMAIL_USER,
+//   to: "gungnanda14@gmail.com",
+//   subject: "Test Email",
+//   text: "This is a test email sent using Nodemailer!",
+// };
+
+// transporter.sendMail(mailOptions, (error, info) => {
+//   if (error) {
+//     console.log("Error sending email: ", error);
+//   } else {
+//     console.log("Email sent: " + info.response);
+//   }
+// });
+// ============================== END EMAIL TEST =============================
 //=====================================================================
 //============================= GEMINI SETUP================================
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -120,19 +151,101 @@ let modeladd = genAI.getGenerativeModel({
 // REGISTER
 app.post("/register", (req, res) => {
   const { name, email, password, role, username } = req.body;
+
+  // Membuat token verifikasi sederhana
+  const verificationToken = Math.floor(
+    100000 + Math.random() * 900000
+  ).toString();
+
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
       return res.status(500).send("Server Error");
     }
+
     const query =
-      "INSERT INTO users (Name, Email, Password, Role, Username) VALUES (?, ?, ?, ?, ?)";
-    db.query(query, [name, email, hash, role, username], (err, results) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).send("Error creating user");
+      "INSERT INTO users (Name, Email, Password, Role, Username, VerificationToken, IsVerified) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    db.query(
+      query,
+      [name, email, hash, role, username, verificationToken, false],
+      (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send("Error creating user");
+        }
+
+        // Mengirim email verifikasi
+        const mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: email,
+          subject: "Email Verification",
+          text: `Your verification code is ${verificationToken}. Please verify your email.`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log(error);
+            return res.status(500).send("Error sending verification email");
+          }
+          res.status(201).send("User registered. Please verify your email.");
+        });
       }
-      res.status(201).send("User registered");
+    );
+    app.post("/verify-email", (req, res) => {
+      const { email, verificationToken } = req.body;
+
+      const query =
+        "SELECT * FROM users WHERE Email = ? AND VerificationToken = ?";
+      db.query(query, [email, verificationToken], (err, results) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).send("Error verifying email");
+        }
+
+        if (results.length > 0) {
+          const updateQuery =
+            "UPDATE users SET IsVerified = true WHERE Email = ?";
+          db.query(updateQuery, [email], (err, updateResults) => {
+            if (err) {
+              console.log(err);
+              return res
+                .status(500)
+                .send("Error updating user verification status");
+            }
+            res.status(200).send("Email verified successfully");
+          });
+        } else {
+          res.status(400).send("Invalid verification token");
+        }
+      });
     });
+  });
+});
+// email verification
+app.post("/verify-email", (req, res) => {
+  const { email, verificationToken } = req.body;
+
+  const query = "SELECT * FROM users WHERE Email = ? AND VerificationToken = ?";
+  db.query(query, [email, verificationToken], (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send("Error verifying email");
+    }
+
+    if (results.length > 0) {
+      const updateQuery = "UPDATE users SET IsVerified = true WHERE Email = ?";
+      db.query(updateQuery, [email], (err, updateResults) => {
+        if (err) {
+          console.log(err);
+          return res
+            .status(500)
+            .send("Error updating user verification status");
+        }
+        res.status(200).send("Email verified successfully");
+      });
+    } else {
+      res.status(400).send("Invalid verification token");
+    }
   });
 });
 

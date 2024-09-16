@@ -5,7 +5,7 @@ import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
 
 const SignUp = () => {
-  const baseURL = import.meta.env.VITE_REACT_API_URL;
+  const baseURL = import.meta.env.VITE_REACT_API_URL; // URL dari API Backend
   const [formData, setFormData] = useState({
     email: "",
     name: "",
@@ -17,7 +17,7 @@ const SignUp = () => {
   const [nameError, setNameError] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Tambahkan state untuk loading
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
@@ -26,8 +26,7 @@ const SignUp = () => {
   };
 
   const validatePassword = (password) => {
-    // Contoh validasi password: minimal 6 karakter
-    return password.length >= 6;
+    return password.length >= 6; // Password minimal 6 karakter
   };
 
   const handleChange = (e) => {
@@ -43,7 +42,7 @@ const SignUp = () => {
       }
     }
 
-    // Validasi nama (contoh: tidak boleh kosong)
+    // Validasi nama
     if (name === "name") {
       if (value.trim() === "") {
         setNameError("Nama tidak boleh kosong");
@@ -52,7 +51,7 @@ const SignUp = () => {
       }
     }
 
-    // Validasi username (contoh: minimal 4 karakter)
+    // Validasi username
     if (name === "username") {
       if (value.trim().length < 4) {
         setUsernameError("Username minimal 4 karakter");
@@ -91,8 +90,10 @@ const SignUp = () => {
         ...formData,
         role: "User",
       });
-      setMessage({ text: response.data, isError: false });
-      navigate("/login");
+
+      // Beri pesan sukses dan arahkan pengguna ke halaman verifikasi
+      setMessage({ text: "Registrasi berhasil! Periksa email untuk verifikasi.", isError: false });
+      navigate("/verify-email", { state: { email: formData.email } }); // Kirim email ke halaman verifikasi
     } catch (error) {
       console.error("Error registering user:", error);
       setMessage({

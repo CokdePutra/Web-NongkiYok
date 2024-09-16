@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
 import Home from "./views/Home";
 import Login from "./views/Login";
+import VerifyEmail from "./views/VerifyEmail";
 import SignUp from "./views/SignUp";
 import HomeCard from "./views/HomeCard";
 import MapComponent from "./views/MapComponent";
@@ -29,6 +30,7 @@ function App() {
           <Route path="/Admin" element={<DashboardAdmin />} />
           <Route path="/ListContact" element={<ContactList />} />
           <Route path="/GuideRequest" element={<GuideRequest />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
         </Routes>
       </Router>
     </>
