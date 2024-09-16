@@ -5,13 +5,14 @@ import CardPlace from "../../components/Card/CardPlace";
 import MessageList from "../../components/Table/MessageList";
 import axios from "axios";
 const ContactList = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [userRole, setUserRole] = useState(null);
   const [totalMessages, setTotalMessages] = useState({});
   const navigate = useNavigate();
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/session", {
+        const response = await axios.get(`${baseURL}/api/session`, {
           withCredentials: true,
         });
         const role = response.data.role;
@@ -31,7 +32,7 @@ const ContactList = () => {
   useEffect(() => {
     const fetchTotalMessages = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/messages", {
+        const response = await axios.get(`${baseURL}/api/messages`, {
           withCredentials: true,
         });
         setTotalMessages(response.data);

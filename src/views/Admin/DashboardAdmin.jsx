@@ -14,11 +14,11 @@ const DashboardAdmin = () => {
   const [allUser, setallUser] = useState({});
   const [totalGuide, setTotalGuide] = useState({});
   const navigate = useNavigate();
-
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/session", {
+        const response = await axios.get(`${baseURL}/api/session`, {
           withCredentials: true,
         });
         const role = response.data.role;
@@ -39,7 +39,7 @@ const DashboardAdmin = () => {
     const fetchTotalPlace = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/totalplaces",
+          `${baseURL}/api/totalplaces`,
           {
             withCredentials: true,
           }
@@ -57,7 +57,7 @@ const DashboardAdmin = () => {
     const fetchTotalUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/totalusers/User",
+          `${baseURL}/api/totalusers/User`,
           {
             withCredentials: true,
           }
@@ -75,7 +75,7 @@ const DashboardAdmin = () => {
     const fetchallUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/all/users",
+          `${baseURL}/api/all/users`,
           {
             withCredentials: true,
           }
@@ -93,7 +93,7 @@ const DashboardAdmin = () => {
     const fetchTotalGuide = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/totalusers/Guide",
+          `${baseURL}/api/totalusers/Guide`,
           {
             withCredentials: true,
           }
