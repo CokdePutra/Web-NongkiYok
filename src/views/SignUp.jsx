@@ -81,7 +81,7 @@ const SignUp = () => {
             className="w-full"
           />
           <div className="flex justify-center">
-            <ButtonLogin text="Sign-Up" className="w-full md:w-1/2 my-4" />
+            <ButtonLogin text="Sign-Up" className="w-full md:w-1/2 my-4 hover:bg-color-gold-card" />
           </div>
         </form>
         {message.text && (
@@ -92,12 +92,12 @@ const SignUp = () => {
             {message.text}
           </p>
         )}
-        <a href="/login" className="text-white m-2 text-sm md:text-base">
+        <a href="/login" className="text-white m-2 text-sm md:text-base hover:text-color-gold-card">
           Already have an account? Login...
         </a>
         <a
           href="./"
-          className="absolute hover:text-color-yellow left-5 bottom-5 text-color-primary text-sm md:text-base">
+          className="absolute hover:text-color-gold-card left-5 bottom-5 text-color-primary text-sm md:text-base">
           Back
         </a>
       </div>

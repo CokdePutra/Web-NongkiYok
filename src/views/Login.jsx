@@ -76,17 +76,17 @@ const Login = () => {
             className="w-full"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <a href="" className="text-color-yellow m-2 text-sm md:text-base">
+          <a href="" className="text-color-yellow m-2 text-sm md:text-base hover:text-color-gold-card">
             Forgot Password?..
           </a>
-          <ButtonLogin text="Login" className="w-full md:w-1/2" />
+          <ButtonLogin text="Login" className="w-full md:w-1/2 hover:bg-color-gold-card" />
         </form>
-        <a href="/sign-up" className="text-white m-2 text-sm md:text-base">
+        <a href="/sign-up" className="text-white m-2 text-sm md:text-base hover:text-color-gold-card">
           Don't have an account? Make an account...
         </a>
         <a
           href="./"
-          className="absolute hover:text-color-yellow left-5 bottom-5 text-color-primary text-sm md:text-base">
+          className="absolute hover:text-color-gold-card left-5 bottom-5 text-color-primary text-sm md:text-base">
           Back
         </a>
       </div>
