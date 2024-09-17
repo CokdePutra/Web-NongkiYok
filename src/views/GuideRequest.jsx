@@ -120,10 +120,8 @@ const GuideRequest = () => {
               Apply
             </button>
           </form>
-        </div>
-      )}
           <Link to="/dashboard">
-            <div className="flex gap-1 mt-2 ml-3 mb-1 absolute bottom-[2rem] z-10 left-[2rem]">
+            <div className="flex gap-1 mt-10 ml-3 mb-1 bottom-[2rem] z-10 left-[2rem]">
               <img
                 src="./img/Card/Icon2.png"
                 alt="Back Icon"
@@ -132,25 +130,28 @@ const GuideRequest = () => {
               <h3 className="text-Black jura-medium">Back</h3>
             </div>
           </Link>
+        </div>
+      )}
+      {/* Gambar akan disembunyikan pada mobile screen */}
       <img
         src="./img/Login/Polygon1.png"
         alt=""
-        className="absolute w-1/5 bottom-0 left-0 -z-3"
+        className="absolute w-1/5 bottom-0 left-0 -z-3 hidden md:block"
       />
       <img
         src="./img/Login/Polygon2.png"
         alt=""
-        className="absolute w-1/5 top-0 right-0 -z-1"
+        className="absolute w-1/5 top-0 right-0 -z-1 hidden md:block"
       />
       <img
         src="./img/Login/Ellipse.png"
         alt=""
-        className="absolute w-1/10 bottom-[2rem] right-[4rem] -z-1"
+        className="absolute w-1/10 bottom-[2rem] right-[4rem] -z-1 hidden md:block"
       />
       <img
         src="./img/Login/Ellipse.png"
         alt=""
-        className="absolute w-1/10 top-[5rem] left-[4rem] -z-1"
+        className="absolute w-1/10 top-[5rem] left-[4rem] -z-1 hidden md:block"
       />
     </div>
   );
