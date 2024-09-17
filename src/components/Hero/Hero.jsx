@@ -41,17 +41,17 @@ const Hero = () => {
               <img
                 src="./img/Hero/Polygon-1.png"
                 alt=""
-                className="absolute w-1/2 h-5/6 bottom-0 right-0 -z-10"
+                className="absolute w-1/2 h-5/6 bottom-0 right-0 -z-10 hidden md:block"
               />
               <img
                 src="./img/Hero/Polygon-2.png"
                 alt=""
-                className="absolute w-1/2 h-5/6 bottom-0 right-0 -z-10"
+                className="absolute w-1/2 h-5/6 bottom-0 right-0 -z-10 hidden md:block"
               />
               <img
                 src="./img/Hero/coffee-image.png"
                 alt=""
-                className="absolute w-1/3  bottom-20 right-0 -z-10"
+                className="absolute w-1/3  bottom-20 right-0 -z-10 hidden md:block"
               />
               <img
                 src="./img/Ellipse.png"
