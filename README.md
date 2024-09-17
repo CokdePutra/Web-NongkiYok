@@ -47,19 +47,23 @@ username : Zayuran
 username : Gmoons
 ```
 
-```bash
 Guide :
+
+```bash
 username : zephyrus
 ```
 
-```bash
 User :
+
+```bash
 Username : Adidoy
 Username : Kanha
 ```
 
+All password :
+
 ```bash
-All password : admin#1234
+    admin#1234
 ```
 
 ## Important Note
