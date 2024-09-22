@@ -624,29 +624,33 @@ app.delete("/api/places/delete/:id", (req, res) => {
 //===== LOGIC =====
 //card logic main
 app.get("/card/:sort", (req, res) => {
-  if (req.params.sort === "up") {
-    console.log("sort harga naik");
-    const query = `SELECT * FROM places ORDER BY AVG_Price DESC`;
-    db.query(query, (err, results) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.json(results);
-      }
-    });
-  } else if (req.params.sort === "down") {
-    console.log("sort harga turun");
-    const query = `SELECT * FROM places ORDER BY AVG_Price ASC`;
-    db.query(query, (err, results) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.json(results);
-      }
-    });
-  } else {
-    res.status(500).send("Invalid sort parameter");
+  let query = ""; // Inisialisasi variabel query
+  console.log("sort berdasarkan", req.params.sort);
+  switch (req.params.sort) {
+    case "up":
+      query = "SELECT * FROM places ORDER BY AVG_Price DESC";
+      break;
+    case "down":
+      query = "SELECT * FROM places ORDER BY AVG_Price ASC";
+      break;
+    case "name-az":
+      query = "SELECT * FROM places ORDER BY Name ASC";
+      break;
+    case "name-za":
+      query = "SELECT * FROM places ORDER BY Name DESC";
+      break;
+    default:
+      return res.status(500).send("Invalid sort parameter");
   }
+
+  // Melakukan query ke database
+  db.query(query, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+    }
+  });
 });
 // user fav card
 app.get("/api/card/fav", (req, res) => {
