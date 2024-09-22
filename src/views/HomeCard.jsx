@@ -1,31 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Navbar from '../components/Navbar/Navbar';
-import Card from '../components/Card/Card';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Navbar from "../components/Navbar/Navbar";
+import Card from "../components/Card/Card";
 
 const HomeCard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [cards, setCards] = useState([]);
-  const [sortOrder, setSortOrder] = useState('up');
-  const [isFilterOpen, setIsFilterOpen] = useState(false); // State untuk membuka/tutup filter popup
+  const [sortOrder, setSortOrder] = useState("up");
+  const [selectedSize, setSelectedSize] = useState(""); // Untuk menyimpan pilihan size
+  const [selectedCategory, setSelectedCategory] = useState(""); // Untuk menyimpan pilihan category
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  // Fetch cards berdasarkan sortOrder
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        const response = await axios.get(`${baseURL}/card/${sortOrder}`);
+        const response = await axios.get(
+          `${baseURL}/card/${sortOrder}?size=${selectedSize}&category=${selectedCategory}`
+        );
         setCards(response.data);
       } catch (error) {
-        console.error('Error fetching cards:', error);
+        console.error("Error fetching cards:", error);
       }
     };
 
     fetchCards();
-  }, [sortOrder, baseURL]);
+  }, [sortOrder, selectedSize, baseURL, selectedCategory]);
 
   const handleSort = (order) => {
-    setSortOrder(order); // Set the new sortOrder
-    setIsFilterOpen(false); // Close the filter popup after selecting an option
+    setSortOrder(order);
+    setIsFilterOpen(false);
+  };
+
+  const handleSizeChange = (size) => {
+    setSelectedSize(size);
+    setIsFilterOpen(false);
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setIsFilterOpen(false);
+  };
+
+  const handleResetFilters = () => {
+    setSortOrder("up"); // Reset ke harga tertinggi
+    setSelectedSize(""); // Reset pilihan size
+    setSelectedCategory(""); // Reset pilihan kategori
   };
 
   return (
@@ -37,7 +56,7 @@ const HomeCard = () => {
             placeId={card.Id_Places}
             key={index}
             title={card.Name}
-            imgSrc={card.Image ? `./${card.Image}` : './img/Card/image-ex.png'}
+            imgSrc={card.Image ? `./${card.Image}` : "./img/Card/image-ex.png"}
             description={card.Description}
             link={card.Link}
             price={card.AVG_Price}
@@ -51,7 +70,7 @@ const HomeCard = () => {
           src="./img/Card/Tune.png"
           alt="Filter"
           className="w-[67%] h-[auto] cursor-pointer"
-          onClick={() => setIsFilterOpen(true)} // Buka popup ketika tombol filter diklik
+          onClick={() => setIsFilterOpen(true)}
         />
       </div>
 
@@ -60,7 +79,7 @@ const HomeCard = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-xl w-4/5 max-w-md relative">
             <div className="flex justify-between items-center">
-              <h3 className="text-xl font-semibold mb-4">Urutkan Berdasarkan</h3>
+              <h3 className="text-xl font-semibold mb-4">SORT BY</h3>
               <button
                 className="text-gray-500 hover:text-gray-700 text-3xl font-bold mt-[-7%]"
                 onClick={() => setIsFilterOpen(false)}
@@ -70,46 +89,115 @@ const HomeCard = () => {
             </div>
             <hr className="my-1 mb-3 border-t border-gray-300" />
             <ul className="space-y-4">
+              {/* Filter Harga */}
               <li>
                 <button
                   className={`w-full text-left py-2 px-4 rounded-lg flex items-center hover:bg-gray-100 ${
-                    sortOrder === 'down' ? 'bg-gray-200' : ''
+                    sortOrder === "up" ? "bg-gray-200" : ""
                   }`}
-                  onClick={() => handleSort('down')}
+                  onClick={() => handleSort("up")}
                 >
-                  {/* <img src="./img/icons/dolardown.png" alt="Harga Terendah" className="w-5 h-5 mr-2" /> */}
-                  Harga Terendah
+                  Highest Price
                 </button>
               </li>
               <li>
                 <button
                   className={`w-full text-left py-2 px-4 rounded-lg flex items-center hover:bg-gray-100 ${
-                    sortOrder === 'up' ? 'bg-gray-200' : ''
+                    sortOrder === "down" ? "bg-gray-200" : ""
                   }`}
-                  onClick={() => handleSort('up')}
+                  onClick={() => handleSort("down")}
                 >
-                  {/* <img src="./img/icons/dolardown.png" alt="Harga Tertinggi" className="w-5 h-5 mr-2" /> */}
-                  Harga Tertinggi
+                  Lowest Price
                 </button>
               </li>
               <li>
                 <button
                   className={`w-full text-left py-2 px-4 rounded-lg hover:bg-gray-100 ${
-                    sortOrder === 'name-az' ? 'bg-gray-200' : ''
+                    sortOrder === "name-az" ? "bg-gray-200" : ""
                   }`}
-                  onClick={() => handleSort('name-az')}
+                  onClick={() => handleSort("name-az")}
                 >
-                  Nama A-Z
+                  Name A~Z
                 </button>
               </li>
               <li>
                 <button
                   className={`w-full text-left py-2 px-4 rounded-lg hover:bg-gray-100 ${
-                    sortOrder === 'name-za' ? 'bg-gray-200' : ''
+                    sortOrder === "name-za" ? "bg-gray-200" : ""
                   }`}
-                  onClick={() => handleSort('name-za')}
+                  onClick={() => handleSort("name-za")}
                 >
-                  Nama Z-A
+                  Name Z~A
+                </button>
+              </li>
+
+              {/* Filter Ukuran */}
+              <div className="flex justify-between items-center">
+                <h4 className="text-lg font-semibold ">Size </h4>
+                <button
+                  className="text-color-yellow hover:text-color-gold-card mt-[-7%] mr-2"
+                  onClick={handleResetFilters}
+                >
+                  <box-icon name="reset"></box-icon>
+                </button>
+              </div>
+              <li className="flex gap-2.5 justify-start">
+                <button
+                  className={`px-4 py-2 text-sm rounded-full border-2 border-color-yellow hover:bg-color-yellow hover:text-black ${
+                    selectedSize === "Small"
+                      ? "bg-color-yellow text-black"
+                      : "text-black"
+                  }`}
+                  onClick={() => handleSizeChange("Small")}
+                >
+                  Small
+                </button>
+                <button
+                  className={`px-4 py-2 text-sm rounded-full border-2 border-color-yellow hover:bg-color-yellow hover:text-black ${
+                    selectedSize === "Medium"
+                      ? "bg-color-yellow text-black"
+                      : "text-black"
+                  }`}
+                  onClick={() => handleSizeChange("Medium")}
+                >
+                  Medium
+                </button>
+                <button
+                  className={`px-4 py-2 text-sm rounded-full border-2 border-color-yellow hover:bg-color-yellow hover:text-black ${
+                    selectedSize === "Large"
+                      ? "bg-color-yellow text-black"
+                      : "text-black"
+                  }`}
+                  onClick={() => handleSizeChange("Large")}
+                >
+                  Large
+                </button>
+              </li>
+
+              {/* Filter Kategori */}
+              <div className="flex justify-between items-center">
+                <h4 className="text-lg font-semibold ">Category</h4>
+              </div>
+              <li className="flex gap-2.5 justify-start">
+                <button
+                  className={`px-4 py-2 text-sm rounded-full border-2 border-color-yellow hover:bg-color-yellow hover:text-black ${
+                    selectedCategory === "Resto"
+                      ? "bg-color-yellow text-black"
+                      : "text-black"
+                  }`}
+                  onClick={() => handleCategoryChange("Resto")}
+                >
+                  Resto
+                </button>
+                <button
+                  className={`px-4 py-2 text-sm rounded-full border-2 border-color-yellow hover:bg-color-yellow hover:text-black ${
+                    selectedCategory === "Cafe"
+                      ? "bg-color-yellow text-black"
+                      : "text-black"
+                  }`}
+                  onClick={() => handleCategoryChange("Cafe")}
+                >
+                  Cafe
                 </button>
               </li>
             </ul>

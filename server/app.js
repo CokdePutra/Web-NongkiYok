@@ -624,27 +624,56 @@ app.delete("/api/places/delete/:id", (req, res) => {
 //===== LOGIC =====
 //card logic main
 app.get("/card/:sort", (req, res) => {
-  let query = ""; // Inisialisasi variabel query
-  console.log("sort berdasarkan", req.params.sort);
-  switch (req.params.sort) {
+  const sortOrder = req.params.sort;
+  const size = req.query.size; // Ambil query parameter 'size' dari request
+  const category = req.query.category; // Ambil query parameter 'category' dari request
+  console.log(
+    "sort by",
+    req.params.sort,
+    "size",
+    req.query.size,
+    "category",
+    req.query.category
+  );
+  let query = "SELECT * FROM places";
+  let queryParams = [];
+
+  // Cek apakah ada filter size dan category
+  if (size || category) {
+    query += " WHERE";
+
+    if (size) {
+      query += " Size = ?";
+      queryParams.push(size);
+    }
+
+    if (category) {
+      if (size) query += " AND"; // Tambahkan 'AND' jika size sudah ada
+      query += " Category = ?";
+      queryParams.push(category);
+    }
+  }
+
+  // Sorting berdasarkan parameter yang diterima
+  switch (sortOrder) {
     case "up":
-      query = "SELECT * FROM places ORDER BY AVG_Price DESC";
+      query += " ORDER BY AVG_Price DESC";
       break;
     case "down":
-      query = "SELECT * FROM places ORDER BY AVG_Price ASC";
+      query += " ORDER BY AVG_Price ASC";
       break;
     case "name-az":
-      query = "SELECT * FROM places ORDER BY Name ASC";
+      query += " ORDER BY Name ASC";
       break;
     case "name-za":
-      query = "SELECT * FROM places ORDER BY Name DESC";
+      query += " ORDER BY Name DESC";
       break;
     default:
       return res.status(500).send("Invalid sort parameter");
   }
 
-  // Melakukan query ke database
-  db.query(query, (err, results) => {
+  // Eksekusi query
+  db.query(query, queryParams, (err, results) => {
     if (err) {
       res.status(500).send(err);
     } else {
