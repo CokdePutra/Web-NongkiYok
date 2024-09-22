@@ -34,11 +34,7 @@ const Navbar = ({ className }) => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        `${baseURL}/logout`,
-        {},
-        { withCredentials: true }
-      );
+      await axios.post(`${baseURL}/logout`, {}, { withCredentials: true });
       setUser(null);
       window.location.href = "/";
     } catch (error) {
@@ -48,7 +44,8 @@ const Navbar = ({ className }) => {
 
   const isDashboardPage =
     location.pathname === "/dashboard" || location.pathname === "/Admin";
-  const isAdminPage = location.pathname === "/Admin" || location.pathname === "/ListContact";
+  const isAdminPage =
+    location.pathname === "/Admin" || location.pathname === "/ListContact";
   const isuserPage = location.pathname === "/dashboard";
 
   return (
@@ -60,7 +57,8 @@ const Navbar = ({ className }) => {
         } px-10 py-5`}
       >
         <div
-          className={`flex justify-between items-center p-5 rounded-lg bg-navbar-color ${className}`}>
+          className={`flex justify-between items-center p-5 rounded-lg bg-navbar-color ${className}`}
+        >
           {/* Left Section */}
           <h1 className="text-4xl text-color-yellow kodchasan-bold">
             Nongki-Yok
@@ -89,49 +87,77 @@ const Navbar = ({ className }) => {
           </button>
 
           {/* Right Section (Hidden on mobile, visible on larger screens) */}
-          <div className="hidden md:flex items-center text-lg space-x-8 text-white jura-medium">
+          <div className="hidden md:flex items-center text-lg space-x-7 text-white jura-medium text">
             {user && (
               <span>
                 Hai, <strong className="capitalize">{user.name}</strong>
               </span>
             )}
             <span className="border-l-2 border-white">
-              <a href="/" className="ml-3">
-                Home
+              <a href="/" className="ml-3 flex items-center space-x-2">
+                <box-icon name="home" color="#ffffff"></box-icon>
+                <span>Home</span>
               </a>
             </span>
             <button
               onClick={toggleDropdown}
-              className="relative focus:outline-none">
-              Location
+              className="relative focus:outline-none flex items-center space-x-2"
+            >
+              <box-icon name="map-pin" color="#ffffff"></box-icon>
+              <span>Location</span>
               {dropdownOpen && (
-                <div className="absolute mt-3 ml-[-70%] w-48 bg-white rounded-md shadow-lg z-10">
+                <div className="absolute mt-[130%] ml-[-100%] w-48 bg-gray-500 rounded-md shadow-lg z-10">
                   <a
                     href="/homecard"
-                    className="block rounded-md px-4 py-2 text-gray-800 hover:bg-gray-200">
+                    className="block rounded-md px-4 py-2 text-white hover:bg-gray-400"
+                  >
                     List Location
                   </a>
                   <a
                     href="/map"
-                    className="block rounded-md px-4 py-2 text-gray-800 hover:bg-gray-200">
+                    className="block rounded-md px-4 py-2 text-white hover:bg-gray-400"
+                  >
                     Map
                   </a>
                 </div>
               )}
             </button>
             {isAdminPage ? (
-              <a href="/ListContact">Contact List</a>
+              <a href="/ListContact" className="flex items-center space-x-2">
+                <box-icon
+                  name="contact"
+                  type="solid"
+                  color="#ffffff"
+                ></box-icon>
+                <span>Contact List</span>
+              </a>
             ) : isuserPage && user && user.role === "User" ? (
-              <a href="/GuideRequest">Daftar Guide</a>
-            ) : !isuserPage && !isAdminPage && (
-              <a href="/Contact">Contact</a>
+              <a href="/GuideRequest" className="flex items-center space-x-2">
+                <box-icon name="user-plus" color="#ffffff"></box-icon>
+                <span>Daftar Guide</span>
+              </a>
+            ) : (
+              !isuserPage &&
+              !isAdminPage && (
+                <a href="/Contact" className="flex items-center space-x-2">
+                  <box-icon name="message-dots" color="#ffffff"></box-icon>
+                  <span>Contact</span>
+                </a>
+              )
             )}
 
             {isAdminPage && user && user.role === "Admin" && (
-              <a href="/Dashboard">Guide Dahboard</a>
+              <a href="/Dashboard" className="flex items-center space-x-2">
+                <box-icon
+                  name="dashboard"
+                  type="solid"
+                  color="#ffffff"
+                ></box-icon>
+                <span>Guide Dashboard</span>
+              </a>
             )}
 
-            <a href="" className="flex items-center">
+            <a href="" className="flex items-center space-x-2">
               <img
                 src="./img/Card/AI.png"
                 alt="AI"
@@ -145,33 +171,43 @@ const Navbar = ({ className }) => {
                 user.role === "User") ? (
                 <button
                   onClick={handleLogout}
-                  className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-                  Logout
+                  className="bg-color-yellow hover:bg-color-gold-card text-black py-2 px-4 rounded-lg flex items-center space-x-2"
+                >
+                  <box-icon name="log-out"></box-icon>
+                  <span>Logout</span>
                 </button>
               ) : user.role === "Guide" || user.role === "User" ? (
                 <a
                   href="/dashboard"
-                  className="bg-button-gray hover:bg-color-primary text-white py-3 px-4 rounded-lg">
-                  Dashboard
+                  className="bg-color-yellow hover:bg-color-gold-card text-black py-2 px-4 rounded-lg flex items-center space-x-2"
+                >
+                  <box-icon name="dashboard" type="solid"></box-icon>
+                  <span>Dashboard</span>
                 </a>
               ) : user.role === "Admin" ? (
                 <a
                   href="/Admin"
-                  className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-                  Dashboard
+                  className="bg-color-yellow hover:bg-color-gold-card text-black py-2 px-4 rounded-lg flex items-center space-x-2"
+                >
+                  <box-icon name="dashboard" type="solid"></box-icon>
+                  <span>Dashboard</span>
                 </a>
               ) : (
                 <button
                   onClick={handleLogout}
-                  className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-                  Logout
+                  className="bg-color-yellow hover:bg-color-gold-card text-black py-2 px-4 rounded-lg flex items-center space-x-2"
+                >
+                  <box-icon name="log-out"></box-icon>
+                  <span>Logout</span>
                 </button>
               )
             ) : (
               <a
                 href="/login"
-                className="bg-button-gray hover:bg-color-primary text-white py-2 px-4 rounded-lg">
-                Login
+                className="bg-color-yellow hover:bg-color-gold-card text-black py-2 px-4 rounded-lg flex items-center space-x-2"
+              >
+                <box-icon name="log-in"></box-icon>
+                <span>Login</span>
               </a>
             )}
           </div>
@@ -187,103 +223,149 @@ const Navbar = ({ className }) => {
                 Hai, <strong className="capitalize">{user.name}</strong>
               </span>
             ) : (
-              <h1 className="text-3xl text-color-yellow kodchasan-bold">Nongki-Yok</h1>
+              <h1 className="text-3xl text-color-yellow kodchasan-bold">
+                Nongki-Yok
+              </h1>
             )}
             <button
               onClick={() => setMobileMenuOpen(false)} // Saat ditekan, mobile menu akan tertutup dan navbar muncul kembali
-              className="text-white text-2xl">
+              className="text-white text-2xl"
+            >
               &times;
             </button>
           </div>
-          <a href="/" className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2">
-              <box-icon name='home' color='#ffffff'></box-icon>
-              <span>Home</span>
+          <a
+            href="/"
+            className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2"
+          >
+            <box-icon name="home" color="#ffffff"></box-icon>
+            <span>Home</span>
           </a>
           <button
             onClick={toggleDropdown}
-            className="relative focus:outline-none w-full text-left">
-            <p  className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2">
-            <box-icon name='map-pin' color='#ffffff'></box-icon>
+            className="relative focus:outline-none w-full text-left"
+          >
+            <p className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2">
+              <box-icon name="map-pin" color="#ffffff"></box-icon>
               <span>Location</span>
-              </p>
+            </p>
             {dropdownOpen && (
               <div className="mt-3 w-full bg-color-primary text-white">
-                <a href="/homecard" className="block py-2 px-4 border-b border-gray-700 hover:text-color-gold-card">List Location</a>
-                <a href="/map" className="block py-2 px-4 border-b border-gray-700 hover:text-color-gold-card">Map</a>
+                <a
+                  href="/homecard"
+                  className="block py-2 px-4 border-b border-gray-700 hover:text-color-gold-card"
+                >
+                  List Location
+                </a>
+                <a
+                  href="/map"
+                  className="block py-2 px-4 border-b border-gray-700 hover:text-color-gold-card"
+                >
+                  Map
+                </a>
               </div>
             )}
           </button>
-            {isAdminPage ? (
-              <a href="/ListContact" className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2">
-              <box-icon name='contact' type='solid' color='#ffffff'></box-icon>
+          {isAdminPage ? (
+            <a
+              href="/ListContact"
+              className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2"
+            >
+              <box-icon name="contact" type="solid" color="#ffffff"></box-icon>
               <span>Contact List</span>
-              </a>
-            ) : isuserPage && user && user.role === "User" ? (
-              <a href="/GuideRequest"className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2">
-              <box-icon name='user-plus' color='#ffffff'></box-icon>
-              <span>Daftar Guide</span>
-              </a>
-            ) : !isuserPage && !isAdminPage && (
-              <a href="/Contact"  className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2">
-                <box-icon name='message-dots' color='#ffffff'></box-icon>
-                <span>Contact</span>
-                </a>
-            )}
-
-            {isAdminPage && user && user.role === "Admin" && (
-              <a href="/Dashboard" className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2">
-              <box-icon name='dashboard' type='solid' color='#ffffff'></box-icon>
-              <span>Dashboard Guide</span>
-              </a>
-            )}
-            <a href="" className="items-center flex py-2 px-4 border-b border-gray-700 hover:text-color-gold-card">
-              <img
-                src="./img/Card/AI.png"
-                alt="AI"
-                className="h-6 w-6 object-cover"
-              />
-              <p className=" text-wrap ms-2">Powerd by Gemini</p>
             </a>
-          <div className="hover:text-color-gold-card">
-          {user ? (
-  isDashboardPage && (user.role === "Guide" || user.role === "Admin" || user.role === "User") ? (
-    <button
-      onClick={handleLogout}
-      className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2">
-      <box-icon name='log-out'></box-icon>
-      <span>Logout</span>
-    </button>
-  ) : user.role === "Guide" || user.role === "User" ? (
-    <a
-      href="/dashboard"
-      className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2">
-      <box-icon name='dashboard' type='solid'></box-icon>
-      <span>Dashboard</span>
-    </a>
-  ) : user.role === "Admin" ? (
-    <a
-      href="/Admin"
-      className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2">
-      <box-icon name='dashboard' type='solid'></box-icon>
-      <span>Dashboard</span>
-    </a>
-  ) : (
-    <button
-      onClick={handleLogout}
-      className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2">
-      <box-icon name='log-out'></box-icon>
-      <span>Logout</span>
-    </button>
-  )
-) : (
-  <a
-    href="/login"
-    className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2">
-    <box-icon name='log-in'></box-icon>
-    <span>Login</span>
-  </a>
-)}
+          ) : isuserPage && user && user.role === "User" ? (
+            <a
+              href="/GuideRequest"
+              className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2"
+            >
+              <box-icon name="user-plus" color="#ffffff"></box-icon>
+              <span>Daftar Guide</span>
+            </a>
+          ) : (
+            !isuserPage &&
+            !isAdminPage && (
+              <a
+                href="/Contact"
+                className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2"
+              >
+                <box-icon name="message-dots" color="#ffffff"></box-icon>
+                <span>Contact</span>
+              </a>
+            )
+          )}
 
+          {isAdminPage && user && user.role === "Admin" && (
+            <a
+              href="/Dashboard"
+              className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2"
+            >
+              <box-icon
+                name="dashboard"
+                type="solid"
+                color="#ffffff"
+              ></box-icon>
+              <span>Dashboard Guide</span>
+            </a>
+          )}
+          <a
+            href=""
+            className="items-center flex py-2 px-4 border-b border-gray-700 hover:text-color-gold-card"
+          >
+            <img
+              src="./img/Card/AI.png"
+              alt="AI"
+              className="h-6 w-6 object-cover"
+            />
+            <p className=" text-wrap ms-2">Powerd by Gemini</p>
+          </a>
+          <div className="hover:text-color-gold-card">
+            {user ? (
+              isDashboardPage &&
+              (user.role === "Guide" ||
+                user.role === "Admin" ||
+                user.role === "User") ? (
+                <button
+                  onClick={handleLogout}
+                  className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2"
+                >
+                  <box-icon name="log-out"></box-icon>
+                  <span>Logout</span>
+                </button>
+              ) : user.role === "Guide" || user.role === "User" ? (
+                <a
+                  href="/dashboard"
+                  className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2"
+                >
+                  <box-icon name="dashboard" type="solid"></box-icon>
+                  <span>Dashboard</span>
+                </a>
+              ) : user.role === "Admin" ? (
+                <a
+                  href="/Admin"
+                  className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2"
+                >
+                  <box-icon name="dashboard" type="solid"></box-icon>
+                  <span>Dashboard</span>
+                </a>
+              ) : (
+                <button
+                  onClick={handleLogout}
+                  className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2"
+                >
+                  <box-icon name="log-out"></box-icon>
+                  <span>Logout</span>
+                </button>
+              )
+            ) : (
+              <a
+                href="/login"
+                className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2"
+              >
+                <box-icon name="log-in"></box-icon>
+                <span>Login</span>
+              </a>
+            )}
           </div>
         </div>
       )}
