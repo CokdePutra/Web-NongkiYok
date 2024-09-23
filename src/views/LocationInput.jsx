@@ -10,7 +10,7 @@ const LocationInput = () => {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
-    Size:"",
+    Size: "",
     Category: "",
     longitude: "",
     latitude: "",
@@ -169,9 +169,7 @@ const LocationInput = () => {
               value={formData.Size}
               onChange={handleChange}
             >
-              <option value="">
-                Pilih Size
-              </option>
+              <option value="">Pilih Size</option>
               <option value="Small">Small</option>
               <option value="Medium">Medium</option>
               <option value="Large">Large</option>
@@ -226,7 +224,7 @@ const LocationInput = () => {
             <label className="block text-color-yellow jura-medium">
               Upload Image
             </label>
-                        <div className="formInput w-full">
+            <div className="formInput w-full">
               <input
                 autoComplete="off"
                 type="file"
@@ -234,7 +232,7 @@ const LocationInput = () => {
                 name="image"
                 className="bg-hover-button text-black rounded-md h-9 p-5 m-2 w-full px-3 py-[2px] border ml-[-2px]"
                 onChange={handleImageChange}
-                />
+              />
             </div>
           </div>
         </div>
