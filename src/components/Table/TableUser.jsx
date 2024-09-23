@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import swal from "sweetalert2";
 
 const TableUser = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -20,12 +21,28 @@ const TableUser = () => {
   }, []);
 
   const handleDelete = async (userId) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this user?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
       try {
         await axios.delete(`${baseURL}/api/users/delete/${userId}`, {
           withCredentials: true,
         });
         setUsers(users.filter((user) => user.User_Id !== userId));
+        Swal.fire({
+          title: "Deleted!",
+          text: "User has been deleted.",
+          icon: "success",
+        });
+        window.location.reload();
       } catch (error) {
         console.error("Error deleting user", error);
       }
@@ -61,7 +78,8 @@ const TableUser = () => {
                   <td className="px-4 py-2 whitespace-nowrap text-sm leading-5 font-medium">
                     <button
                       className="text-white-600 hover:text-indigo-900 mr-2 bg-red-500 text-white py-1 px-4 rounded"
-                      onClick={() => handleDelete(user.Id_User)}>
+                      onClick={() => handleDelete(user.Id_User)}
+                    >
                       Delete
                     </button>
                   </td>

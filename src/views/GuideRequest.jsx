@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const GuideRequest = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -56,11 +57,19 @@ const GuideRequest = () => {
           withCredentials: true,
         }
       );
-      alert(response.data);
+      Swal.fire({
+        title: "Request successful send!",
+        text: "Check periodically until the admin makes a decision.",
+        icon: "success",
+      });
       navigate("/dashboard");
     } catch (error) {
+      Swal.fire({
+        title: "Oopss!",
+        text: "Error submitting guide request.",
+        icon: "error",
+      });
       console.error("Error submitting guide request:", error);
-      alert("Failed to submit guide request");
     }
   };
 

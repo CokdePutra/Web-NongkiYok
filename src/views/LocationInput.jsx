@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import UserInput from "../components/UserInput/UserInput";
 import { useNavigate, Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const LocationInput = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -70,6 +71,11 @@ const LocationInput = () => {
     e.preventDefault();
 
     if (!isLoggedIn) {
+      Swal.fire({
+        title: "Login Faild!",
+        text: "You must be logged in to add a place.",
+        icon: "error",
+      });
       setError("You must be logged in to add a place");
       return;
     }
@@ -90,11 +96,20 @@ const LocationInput = () => {
         },
       })
       .then((response) => {
-        console.log(response.data);
+        Swal.fire({
+          title: "Success Add!",
+          text: "Place has been added.",
+          icon: "success",
+        });
         setError(null);
         navigate("/dashboard");
       })
       .catch((error) => {
+        Swal.fire({
+          title: "Error adding place!",
+          text: "Error adding place. Please try again.",
+          icon: "error",
+        });
         console.error("Error adding place", error);
         setError(error.response ? error.response.data : "Error adding place");
       });

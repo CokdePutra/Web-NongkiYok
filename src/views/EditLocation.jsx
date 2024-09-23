@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import UserInput from "../components/UserInput/UserInput";
 import { useNavigate, useParams, Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const EditLocation = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -11,7 +12,7 @@ const EditLocation = () => {
   const [formData, setFormData] = useState({
     Name: "",
     AVG_Price: "",
-    Size:"",
+    Size: "",
     Category: "",
     Latitude: "",
     Longtitude: "",
@@ -92,8 +93,18 @@ const EditLocation = () => {
           "Content-Type": "multipart/form-data",
         },
       });
+      Swal.fire({
+        title: "Places Updated !",
+        text: "Place has been updated.",
+        icon: "success",
+      });
       navigate("/dashboard");
     } catch (error) {
+      Swal.fire({
+        title: "Error Updating place!",
+        text: "Error updating place. Please try again.",
+        icon: "error",
+      });
       console.error("Error updating place", error);
       setError(error.response ? error.response.data : "Error updating place");
     }
@@ -151,9 +162,7 @@ const EditLocation = () => {
               value={formData.Category}
               onChange={handleChange}
             >
-              <option value="">
-                Pilih Kategori
-              </option>
+              <option value="">Pilih Kategori</option>
               <option value="Cafe">Cafe</option>
               <option value="Resto">Resto</option>
             </select>
@@ -170,9 +179,7 @@ const EditLocation = () => {
               value={formData.Size}
               onChange={handleChange}
             >
-              <option value="">
-                Pilih Size
-              </option>
+              <option value="">Pilih Size</option>
               <option value="Small">Small</option>
               <option value="Medium">Medium</option>
               <option value="Large">Large</option>
