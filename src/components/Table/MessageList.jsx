@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const MessageList = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -49,12 +50,27 @@ const MessageList = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this message?")) {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this after delete!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
       try {
         await axios.delete(`${baseURL}/api/contact/delete/${id}`, {
           withCredentials: true,
         });
         setMessages(messages.filter((message) => message.Id_Contact !== id));
+        Swal.fire({
+          title: "Deleted!",
+          text: "Message has been deleted.",
+          icon: "success",
+        });
       } catch (error) {
         console.error("Error deleting message", error);
       }
@@ -79,10 +95,18 @@ const MessageList = () => {
       );
       setReply("");
       setShowReplyPopup(false);
-      alert("Reply sent successfully!");
+      Swal.fire({
+        title: "Success Replay!",
+        text: "Reply sent successfully via email!",
+        icon: "success",
+      });
     } catch (error) {
       console.error("Error sending reply", error);
-      alert("Failed to send reply.");
+      Swal.fire({
+        title: "Faild send replay!",
+        text: "Reply sent faild!, something went wrong!",
+        icon: "error",
+      });
     } finally {
       setIsSending(false); // Nonaktifkan loading setelah proses selesai
     }
