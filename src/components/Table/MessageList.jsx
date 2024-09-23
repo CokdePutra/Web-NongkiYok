@@ -6,6 +6,10 @@ const MessageList = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [userRole, setUserRole] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [selectedMessage, setSelectedMessage] = useState(null); // State untuk pesan yang dipilih
+  const [reply, setReply] = useState(""); // State untuk jawaban
+  const [showReplyPopup, setShowReplyPopup] = useState(false); // State untuk mengontrol pop-up
+  const [isSending, setIsSending] = useState(false); // State untuk loading
 
   const navigate = useNavigate();
 
@@ -57,6 +61,38 @@ const MessageList = () => {
     }
   };
 
+  const handleReplyClick = (message) => {
+    setSelectedMessage(message);
+    setShowReplyPopup(true);
+  };
+
+  const handleReplySubmit = async () => {
+    setIsSending(true); // Aktifkan state loading saat proses dimulai
+    try {
+      await axios.post(
+        `${baseURL}/api/contact/reply/${selectedMessage.Id_Contact}`,
+        {
+          message: selectedMessage.Massage, // Pesan asli yang ingin dijawab
+          reply, // Jawaban dari admin
+        },
+        { withCredentials: true }
+      );
+      setReply("");
+      setShowReplyPopup(false);
+      alert("Reply sent successfully!");
+    } catch (error) {
+      console.error("Error sending reply", error);
+      alert("Failed to send reply.");
+    } finally {
+      setIsSending(false); // Nonaktifkan loading setelah proses selesai
+    }
+  };
+
+  const handlePopupClose = () => {
+    setShowReplyPopup(false);
+    setReply("");
+  };
+
   return (
     <>
       <div className="container mx-auto p-4 rounded mb-4 max-w-screen-xl">
@@ -78,15 +114,22 @@ const MessageList = () => {
               <tbody className="bg-white divide-y text-center divide-gray-200">
                 {messages.map((message) => (
                   <tr key={message.Id_Contact}>
-                    <td className="px-4 py-2 whitespace-nowrap">{new Date(message.tanggal).toLocaleDateString()}</td>
-                    <td className="px-4 py-2 whitespace-nowrap">{message.Name}</td>
-                    <td className="px-4 py-2 whitespace-nowrap">{message.Email}</td>
+                    <td className="px-4 py-2 whitespace-nowrap">
+                      {new Date(message.tanggal).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-2 whitespace-nowrap">
+                      {message.Name}
+                    </td>
+                    <td className="px-4 py-2 whitespace-nowrap">
+                      {message.Email}
+                    </td>
                     <td className="px-4 py-2 whitespace-nowrap text-wrap">
                       {message.Massage}
                     </td>
                     <td className="px-4 py-2 whitespace-nowrap text-sm leading-5 font-medium">
                       <button
                         className="text-white-600 hover:text-indigo-900 mr-2 bg-green-500 text-white py-1 px-4 rounded"
+                        onClick={() => handleReplyClick(message)}
                       >
                         Reply
                       </button>
@@ -104,6 +147,49 @@ const MessageList = () => {
           </div>
         </div>
       </div>
+
+      {/* Reply Popup */}
+      {showReplyPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg max-w-lg w-full">
+            <h2 className="text-xl kodchasan-bold mb-4">Reply to Message</h2>
+            <div className="mb-4">
+              <p className="text-gray-700">
+                <strong>From:</strong> {selectedMessage.Name} (
+                {selectedMessage.Email})
+              </p>
+              <p className="text-gray-700">
+                <strong>Message:</strong> {selectedMessage.Massage}
+              </p>
+            </div>
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-500"
+              rows="4"
+              value={reply}
+              onChange={(e) => setReply(e.target.value)}
+              placeholder="Type your reply here..."
+            ></textarea>
+            <div className="flex justify-end mt-4">
+              <button
+                className="mr-2 bg-red-500 text-white py-2 px-4 rounded"
+                onClick={handlePopupClose}
+              >
+                Cancel
+              </button>
+              <button
+                className={`bg-green-500 text-white py-2 px-4 rounded ${
+                  isSending ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                onClick={handleReplySubmit}
+                disabled={isSending} // Nonaktifkan tombol saat sedang loading
+              >
+                {isSending ? "Sending..." : "Send Reply"}{" "}
+                {/* Ubah teks menjadi loading */}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

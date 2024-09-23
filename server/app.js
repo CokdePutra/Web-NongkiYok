@@ -394,6 +394,84 @@ app.post("/verify-email", (req, res) => {
     }
   });
 });
+// contact email send
+app.post("/api/contact/reply/:id", async (req, res) => {
+  const { id } = req.params;
+  const { message } = req.body;
+  const { reply } = req.body;
+  try {
+    // Query ke database untuk mendapatkan data pesan dari ID
+    const query = "SELECT * FROM contact WHERE Id_Contact = ?";
+    db.query(query, [id], (err, result) => {
+      if (err) {
+        console.error("Error fetching message:", err);
+        return res.status(500).json({ message: "Database error" });
+      }
+
+      if (result.length === 0) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+
+      const messageData = result[0];
+      const recipientEmail = messageData.Email; // Email penerima dari penanya
+
+      // Konfigurasi email yang akan dikirim
+      const mailOptions = {
+        from: {
+          name: "Nongki YOK",
+          address: process.env.EMAIL_USER,
+        },
+        to: recipientEmail,
+        subject: `Reply to ${messageData.Name} Message`,
+        html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <p style="font-size: 16px; color: #333;">Dear <strong>${messageData.Name}</strong>,</p>
+
+  <p style="font-size: 16px;">
+    Thank you for reaching out to us. We truly value your engagement and appreciate the time you took to send us your message. Below is a summary of your message and our response:
+  </p>
+
+  <div style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 10px 0; margin: 20px 0;">
+    <p style="font-size: 16px;"><strong>Your Message:</strong></p>
+    <blockquote style="margin: 10px 0; padding-left: 15px; border-left: 4px solid #f0a500; color: #555;">
+      "${message}"
+    </blockquote>
+
+    <p style="font-size: 16px;"><strong>Our Reply:</strong></p>
+    <blockquote style="margin: 10px 0; padding-left: 15px; border-left: 4px solid #1e90ff; color: #555;">
+      "${reply}"
+    </blockquote>
+  </div>
+
+  <p style="font-size: 16px;">
+    If you have any further questions or need additional assistance, feel free to reach out again. We are always here to help!
+  </p>
+
+  <p style="font-size: 16px;">
+    Warm regards,<br />
+    <strong>The Nongki Yok Team</strong><br />
+    <span style="font-style: italic; color: #666;">Find the best spots to hang out near you!</span>
+  </p>
+</div>
+`,
+      };
+
+      // Mengirim email
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error("Error sending email:", error);
+          return res.status(500).json({ message: "Error sending email" });
+        } else {
+          console.log("Email sent: " + info.response);
+          return res.status(200).json({ message: "Reply sent successfully" });
+        }
+      });
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
 
 // LOGIN
 app.post("/login", (req, res) => {
@@ -726,7 +804,6 @@ app.get("/api/totalplaces", (req, res) => {
   });
 });
 // search places by name
-// Search places by name (better endpoint with query)
 app.get("/card/search/:query?", (req, res) => {
   const searchQuery = req.params.query || ""; // Ambil query, jika tidak ada jadikan string kosong
   console.log("search query", searchQuery);
