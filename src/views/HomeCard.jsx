@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
 import Card from "../components/Card/Card";
-
+import FloatingSearchBar from "../components/Navbar/FloatingSearchBar";
 const HomeCard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [cards, setCards] = useState([]);
@@ -50,6 +50,7 @@ const HomeCard = () => {
   return (
     <>
       <Navbar />
+      <FloatingSearchBar />
       <div className="container-card flex flex-wrap justify-center items-stretch gap-4 p-4">
         {cards.map((card, index) => (
           <Card
@@ -65,11 +66,11 @@ const HomeCard = () => {
           />
         ))}
       </div>
-      <div className="mt-2 ml-3 mb-4 fixed bottom-3 left-0">
+      <div className="mt-2 ml-3 mb-4 fixed bottom-3 left-1">
         <img
           src="./img/Card/Tune.png"
           alt="Filter"
-          className="w-[67%] h-[auto] cursor-pointer"
+          className="w-[65%] h-[auto] cursor-pointer"
           onClick={() => setIsFilterOpen(true)}
         />
       </div>
