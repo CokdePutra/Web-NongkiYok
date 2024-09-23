@@ -19,13 +19,21 @@ const Contact = () => {
         email,
         message,
       });
-      alert("Your message has been sent successfully!");
+      Swal.fire({
+        title: "Success sending!",
+        text: "Your message has been sent successfully!",
+        icon: "success",
+      });
       setName("");
       setEmail("");
       setMessage("");
     } catch (error) {
       console.error("Error sending message", error);
-      alert("Failed to send your message. Please try again later.");
+      Swal.fire({
+        title: "Error sending message!",
+        text: "Failed to send your message. Please try again later.",
+        icon: "error",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -74,12 +82,14 @@ const Contact = () => {
                 rows="6"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                required></textarea>
+                required
+              ></textarea>
             </div>
             <button
               type="submit"
               className="jura-medium w-full bg-black text-yellow-500 p-4 rounded-lg text-lg hover:bg-yellow-600 hover:text-black transition-colors"
-              disabled={isSubmitting}>
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Sending..." : "Send"}
             </button>
           </form>
