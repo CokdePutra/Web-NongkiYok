@@ -3,14 +3,17 @@ import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
 import Card from "../components/Card/Card";
 import FloatingSearchBar from "../components/Navbar/FloatingSearchBar";
+
 const HomeCard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [cards, setCards] = useState([]);
   const [sortOrder, setSortOrder] = useState("up");
-  const [selectedSize, setSelectedSize] = useState(""); // Untuk menyimpan pilihan size
-  const [selectedCategory, setSelectedCategory] = useState(""); // Untuk menyimpan pilihan category
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // State untuk search
 
+  // Fetch data ketika halaman dimuat atau ada perubahan pada state filter
   useEffect(() => {
     const fetchCards = async () => {
       try {
@@ -25,6 +28,14 @@ const HomeCard = () => {
 
     fetchCards();
   }, [sortOrder, selectedSize, baseURL, selectedCategory]);
+
+  // Fungsi untuk meng-handle pencarian
+  const handleSearchResults = (results) => {
+    if (results.length === 0) {
+      console.log("No results found");
+    }
+    setCards(results); // Update cards dengan hasil pencarian
+  };
 
   const handleSort = (order) => {
     setSortOrder(order);
@@ -42,15 +53,16 @@ const HomeCard = () => {
   };
 
   const handleResetFilters = () => {
-    setSortOrder("up"); // Reset ke harga tertinggi
-    setSelectedSize(""); // Reset pilihan size
-    setSelectedCategory(""); // Reset pilihan kategori
+    setSortOrder("up");
+    setSelectedSize("");
+    setSelectedCategory("");
   };
 
   return (
     <>
       <Navbar />
-      <FloatingSearchBar />
+      <FloatingSearchBar onSearchResults={handleSearchResults} />{" "}
+      {/* Terhubung dengan search bar */}
       <div className="container-card flex flex-wrap justify-center items-stretch gap-4 p-4">
         {cards.map((card, index) => (
           <Card
@@ -74,7 +86,6 @@ const HomeCard = () => {
           onClick={() => setIsFilterOpen(true)}
         />
       </div>
-
       {/* Popup untuk filter */}
       {isFilterOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

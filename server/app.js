@@ -725,6 +725,44 @@ app.get("/api/totalplaces", (req, res) => {
     res.json(results[0]);
   });
 });
+// search places by name
+// Search places by name (better endpoint with query)
+app.get("/card/search/:query?", (req, res) => {
+  const searchQuery = req.params.query || ""; // Ambil query, jika tidak ada jadikan string kosong
+  console.log("search query", searchQuery);
+
+  // Jika searchQuery kosong, ambil semua tempat
+  if (searchQuery.trim() === "") {
+    const query = "SELECT * FROM places";
+    // Query ke database untuk semua tempat
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      // Kirim semua data tempat
+      res.json(results);
+    });
+  } else {
+    // Query ke database berdasarkan pencarian
+    const query = "SELECT * FROM places WHERE Name LIKE ?";
+    db.query(query, [`%${searchQuery}%`], (err, results) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      // Jika tidak ada hasil yang ditemukan
+      if (results.length === 0) {
+        return res.status(404).json({ message: "No places found" });
+      }
+
+      // Kirim hasil pencarian
+      res.json(results);
+    });
+  }
+});
+
 //==========================================================================
 // =============================== FAVORITE ================================
 
