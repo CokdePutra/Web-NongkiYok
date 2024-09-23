@@ -3,6 +3,7 @@ import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -47,8 +48,11 @@ const Login = () => {
         navigate(redirectUrl);
       }
     } catch (error) {
-      console.error("Error logging in", error);
-      alert("Login failed. Please check your username and password.");
+      Swal.fire({
+        title: "Login Faild!",
+        text: "Please check your username and password.",
+        icon: "error",
+      });
     }
   };
 
@@ -59,7 +63,10 @@ const Login = () => {
           LOGIN
         </h1>
         <div className="border-b-4 border-color-yellow m-5 h-2 w-full"></div>
-        <form onSubmit={handleLogin} className="w-full flex flex-col items-center">
+        <form
+          onSubmit={handleLogin}
+          className="w-full flex flex-col items-center"
+        >
           <UserInput
             type="text"
             id="usernameLogin"
@@ -76,17 +83,27 @@ const Login = () => {
             className="w-full"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <a href="" className="text-color-yellow m-2 text-sm md:text-base hover:text-color-gold-card">
+          <a
+            href=""
+            className="text-color-yellow m-2 text-sm md:text-base hover:text-color-gold-card"
+          >
             Forgot Password?..
           </a>
-          <ButtonLogin text="Login" className="w-full md:w-1/2 hover:bg-color-gold-card" />
+          <ButtonLogin
+            text="Login"
+            className="w-full md:w-1/2 hover:bg-color-gold-card"
+          />
         </form>
-        <a href="/sign-up" className="text-white m-2 text-sm md:text-base hover:text-color-gold-card">
+        <a
+          href="/sign-up"
+          className="text-white m-2 text-sm md:text-base hover:text-color-gold-card"
+        >
           Don't have an account? Make an account...
         </a>
         <a
           href="./"
-          className="absolute hover:text-color-gold-card left-5 bottom-5 text-color-primary text-sm md:text-base">
+          className="absolute hover:text-color-gold-card left-5 bottom-5 text-color-primary text-sm md:text-base"
+        >
           Back
         </a>
       </div>
