@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
-
+import Swal from "sweetalert2";
 const VerifyEmail = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const location = useLocation();
@@ -18,7 +18,15 @@ const VerifyEmail = () => {
     e.preventDefault();
 
     if (!verificationCode) {
-      setMessage({ text: "Kode verifikasi tidak boleh kosong", isError: true });
+      Swal.fire({
+        title: "Oops!",
+        text: "The verification code cannot be empty",
+        icon: "error",
+      });
+      setMessage({
+        text: "The verification code cannot be empty",
+        isError: true,
+      });
       return;
     }
 
@@ -29,12 +37,23 @@ const VerifyEmail = () => {
         email: email,
         verificationToken: verificationCode,
       });
-
-      setMessage({ text: "Email berhasil diverifikasi!", isError: false });
+      Swal.fire({
+        title: "Verified Successfully!",
+        text: "Email successfully verified!",
+        icon: "success",
+      });
+      setMessage({ text: "Email successfully verified!", isError: false });
       navigate("/login"); // Arahkan ke halaman login setelah verifikasi berhasil
     } catch (error) {
-      console.error("Error verifying email:", error);
-      setMessage({ text: "Verifikasi gagal. Kode salah atau sudah kadaluarsa.", isError: true });
+      Swal.fire({
+        title: "Verification Failed.",
+        text: "Verification failed. The code is incorrect or expired.",
+        icon: "error",
+      });
+      setMessage({
+        text: "Verification failed. The code is incorrect or expired.",
+        isError: true,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +75,7 @@ const VerifyEmail = () => {
             onChange={(e) => setVerificationCode(e.target.value)}
             className="w-full"
           />
-          
+
           <div className="flex justify-center">
             <ButtonLogin
               text={isLoading ? "Processing..." : "Verify"}
@@ -67,12 +86,19 @@ const VerifyEmail = () => {
         </form>
 
         {message.text && (
-          <p className={message.isError ? "text-color-red m-2" : "text-color-green m-2"}>
+          <p
+            className={
+              message.isError ? "text-color-red m-2" : "text-color-green m-2"
+            }
+          >
             {message.text}
           </p>
         )}
 
-        <a href="/sign-up" className="text-white m-2 text-sm md:text-base hover:text-color-gold-card">
+        <a
+          href="/sign-up"
+          className="text-white m-2 text-sm md:text-base hover:text-color-gold-card"
+        >
           Back to Sign Up
         </a>
       </div>
