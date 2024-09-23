@@ -27,7 +27,7 @@ const SearchBar = () => {
         type="text"
         value={searchQuery}
         onChange={handleSearchChange}
-        className="w-90 sm:w-80 md:w-96 pl-5 pr-5 py-2 rounded-full border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out"
+        className="w-90 sm:w-80 md:w-96 pl-5 pr-5 py-2 rounded-full border border-color-gold-card  shadow-sm focus:outline-none focus:ring-1 focus:ring-color-gold-card transition duration-300 ease-in-out"
         placeholder="Search Location..."
       />
 
