@@ -11,7 +11,7 @@ This website is here to help! It has a handy feature that lets you search for ha
 - CRUD Location
 - CRUD User
 - Email Verfication
-- AI sugestion (powerd by gemini)
+- AI sugestion (powered by gemini)
 
 ## Authors
 
@@ -20,7 +20,7 @@ This website is here to help! It has a handy feature that lets you search for ha
 - [@KanhaMahesyogi](https://www.github.com/kanhamahesyogi)
 - [@AdiDharma26](https://www.github.com/AdiDharma26)
 
-## Install liblary
+## Install library
 
 Install required libraries
 

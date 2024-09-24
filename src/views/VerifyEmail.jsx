@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserInput from "../components/UserInput/UserInput";
@@ -14,8 +14,19 @@ const VerifyEmail = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false); // State untuk Resend OTP
   const [resendMessage, setResendMessage] = useState(""); // State untuk pesan Resend OTP
+  const [countdown, setCountdown] = useState(0); // State untuk countdown timer
 
   const email = location.state?.email || useParams().email;
+
+  useEffect(() => {
+    let timer;
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer); // Bersihkan interval saat countdown selesai
+  }, [countdown]);
 
   // Fungsi untuk verifikasi email
   const handleVerifyEmail = async (e) => {
@@ -63,7 +74,7 @@ const VerifyEmail = () => {
     }
   };
 
-  // Fungsi untuk Resend OTP
+  // Fungsi untuk Resend OTP dengan countdown 1 menit
   const handleResendOTP = async () => {
     setIsResending(true);
     try {
@@ -74,6 +85,7 @@ const VerifyEmail = () => {
         text: `A new verification code has been sent to your email at ${email}.`,
         icon: "success",
       });
+      setCountdown(60); // Set countdown menjadi 60 detik (1 menit)
     } catch (error) {
       setResendMessage(`Failed to resend OTP at ${email}. Please try again.`);
       Swal.fire({
@@ -115,7 +127,9 @@ const VerifyEmail = () => {
         {message.text && (
           <p
             className={
-              message.isError ? "text-color-red m-2" : "text-color-green m-2"
+              message.isError
+                ? "text-color-red text-sm"
+                : "text-color-green text-sm"
             }
           >
             {message.text}
@@ -123,15 +137,27 @@ const VerifyEmail = () => {
         )}
 
         {/* Tombol Resend OTP */}
-        <button
-          onClick={handleResendOTP}
-          className="text-color-yellow m-2 text-sm md:text-base hover:text-color-gold-card"
-          disabled={isResending}
-        >
-          {isResending ? "Resending..." : "Resend OTP"}
-        </button>
+        {countdown === 0 && (
+          <button
+            onClick={handleResendOTP}
+            className="text-color-yellow m-2 text-sm md:text-base hover:text-color-gold-card"
+            disabled={isResending} // Hanya disable saat proses resend sedang berjalan
+          >
+            {isResending ? "Resending..." : "Resend OTP"}
+          </button>
+        )}
 
-        {resendMessage && <p className="text-red-500 m-2">{resendMessage}</p>}
+        {countdown > 0 && (
+          <p className="text-red-500 text-sm mb-8 mt-1">
+            You can request OTP again in {countdown} seconds.
+          </p>
+        )}
+
+        {resendMessage && (
+          <p className="text-color-green text-sm flex text-center">
+            {resendMessage}
+          </p>
+        )}
 
         <a
           href="/login"
