@@ -63,7 +63,7 @@ Username : Kanha
 All password :
 
 ```bash
-    admin#1234
+admin#1234
 ```
 
 ## Important Note
