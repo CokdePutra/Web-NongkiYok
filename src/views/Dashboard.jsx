@@ -23,7 +23,6 @@ const Dashboard = () => {
         const role = response.data.role;
         setUserRole(role);
 
-
         if (role !== "Guide" && role !== "Admin" && role !== "User") {
           navigate("/");
         }
@@ -40,12 +39,9 @@ const Dashboard = () => {
     if (userRole === "Guide" || userRole === "Admin") {
       const fetchFavorites = async () => {
         try {
-          const response = await axios.get(
-            `${baseURL}/api/FavPlaces`,
-            {
-              withCredentials: true,
-            }
-          );
+          const response = await axios.get(`${baseURL}/api/FavPlaces`, {
+            withCredentials: true,
+          });
           setFavorites(response.data);
         } catch (error) {
           console.error("Error fetching favorite places", error);
@@ -54,6 +50,7 @@ const Dashboard = () => {
 
       fetchFavorites();
     }
+
     if (userRole === "User") {
       const fetchFavorites = async () => {
         try {
@@ -73,12 +70,9 @@ const Dashboard = () => {
     if (userRole === "Guide" || userRole === "Admin") {
       const fetchTotal = async () => {
         try {
-          const response = await axios.get(
-            `${baseURL}/api/AllPlaces`,
-            {
-              withCredentials: true,
-            }
-          );
+          const response = await axios.get(`${baseURL}/api/AllPlaces`, {
+            withCredentials: true,
+          });
           setTotal(response.data);
         } catch (error) {
           console.error("Error fetching total places", error);
@@ -86,6 +80,18 @@ const Dashboard = () => {
       };
 
       fetchTotal();
+      const fetchCards = async () => {
+        try {
+          const response = await axios.get(`${baseURL}/api/card/fav`, {
+            withCredentials: true,
+          });
+          setCards(response.data);
+        } catch (error) {
+          console.error("Error fetching cards:", error);
+        }
+      };
+
+      fetchCards();
     } else if (userRole === "User") {
       const fetchCards = async () => {
         try {
@@ -106,43 +112,59 @@ const Dashboard = () => {
     <>
       <Navbar />
       <div className="flex justify-center">
-      <CardPlace
-        src={userRole === "Guide" || userRole === "Admin" ? "./img/Card/star.png" : "./img/Card/bookmarks.png"}
-        title={favorites.total_favorites || 0}
-        desc={userRole === "Guide" || userRole === "Admin" ? "Tempat Populer" : "Wishlist"}
+        <CardPlace
+          src={
+            userRole === "Guide" || userRole === "Admin"
+              ? "./img/Card/star.png"
+              : "./img/Card/bookmarks.png"
+          }
+          title={favorites.total_favorites || 0}
+          desc={
+            userRole === "Guide" || userRole === "Admin"
+              ? "Tempat Populer"
+              : "Wishlist"
+          }
         />
         {(userRole === "Guide" || userRole === "Admin") && (
           <CardPlace
-          src={"./img/Card/Map.png"}
-          title={total.total ? total.total : 0}
-          desc={"Tempat yang ditambahkan"}
+            src={"./img/Card/Map.png"}
+            title={total.total ? total.total : 0}
+            desc={"Tempat yang ditambahkan"}
           />
         )}
       </div>
-      {userRole === "Guide" || userRole === "Admin" ? (
-        <TableDashboard />
-      ) : (
-        userRole === "User" && (
+      <div>
+        {/* Hanya Guide dan Admin yang bisa melihat TableDashboard */}
+        {userRole === "Guide" || userRole === "Admin" ? (
+          <TableDashboard />
+        ) : null}
+        {(userRole === "User" ||
+          userRole === "Guide" ||
+          userRole === "Admin") && (
           <div className="container mx-auto p-4 rounded mb-4 max-w-screen-xl">
-            <h1 className="text-2xl ml-[8%] kodchasan-bold text-white">Lokasi Favorite Mu</h1>
-          <div className="container-card flex justify-center flex-wrap items-stretch gap-4 p-4">
-            {cards.map((card, index) => (
-              <Card
-                placeId={card.Id_Places}
-                key={index}
-                title={card.Name}
-                imgSrc={card.Image ? `./${card.Image}` : "./img/Card/image-ex.png"}
-                description={card.Description}
-                link={card.Link}
-                price={card.AVG_Price}
-                category={card.Category}
-                size={card.Size}
-              />
-            ))}
+            <h1 className="text-2xl ml-[8%] kodchasan-bold text-white">
+              Lokasi Favorite Mu
+            </h1>
+            <div className="container-card flex justify-center flex-wrap items-stretch gap-4 p-4">
+              {cards.map((card, index) => (
+                <Card
+                  placeId={card.Id_Places}
+                  key={index}
+                  title={card.Name}
+                  imgSrc={
+                    card.Image ? `./${card.Image}` : "./img/Card/image-ex.png"
+                  }
+                  description={card.Description}
+                  link={card.Link}
+                  price={card.AVG_Price}
+                  category={card.Category}
+                  size={card.Size}
+                />
+              ))}
+            </div>
           </div>
-          </div>
-        )
-      )}
+        )}
+      </div>
     </>
   );
 };
