@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
@@ -12,8 +12,7 @@ const VerifyEmail = () => {
   const [message, setMessage] = useState({ text: "", isError: false });
   const [isLoading, setIsLoading] = useState(false);
 
-  const email = location.state?.email;
-
+  const email = location.state?.email || useParams().email;
   const handleVerifyEmail = async (e) => {
     e.preventDefault();
 
@@ -96,7 +95,7 @@ const VerifyEmail = () => {
         )}
 
         <a
-          href="/sign-up"
+          href="/login"
           className="text-white m-2 text-sm md:text-base hover:text-color-gold-card"
         >
           Back to Sign Up

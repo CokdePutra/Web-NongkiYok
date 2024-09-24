@@ -105,7 +105,7 @@ const SignUp = () => {
         text: "Registration successful! Check your email for verification.",
         isError: false,
       });
-      navigate("/verify-email", { state: { email: formData.email } }); // Kirim email ke halaman verifikasi
+      navigate(`/verify-email/${formData.email}`); // Kirim email ke halaman verifikasi
     } catch (error) {
       Swal.fire({
         title: "Registration Faild!",

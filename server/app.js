@@ -11,6 +11,8 @@ import { redirect } from "react-router-dom";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { FunctionDeclarationSchemaType } from "@google/generative-ai";
 import nodemailer from "nodemailer";
+import Swal from "sweetalert2";
+import e from "express";
 //=================================SETUP=================================
 dotenv.config();
 
@@ -480,8 +482,14 @@ app.post("/login", (req, res) => {
   db.query(query, [username], (err, results) => {
     if (err) return res.status(500).send("Server Error");
     if (results.length === 0) return res.status(401).send("User not found");
-
+    console.log("IsVerified", results[0].IsVerified);
     const user = results[0];
+    if (!user.IsVerified) {
+      return res.status(403).json({
+        message: "Email not verified",
+        verifyUrl: `${process.env.FRONTEND_URL}/verify-email/${user.Email}`,
+      });
+    }
     bcrypt.compare(password, user.Password, (err, result) => {
       if (err) return res.status(500).send("Server Error");
       if (!result) return res.status(401).send("Invalid password");

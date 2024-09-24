@@ -48,11 +48,20 @@ const Login = () => {
         navigate(redirectUrl);
       }
     } catch (error) {
-      Swal.fire({
-        title: "Login Faild!",
-        text: "Please check your username and password.",
-        icon: "error",
-      });
+      if (error.response && error.response.status === 403) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Your email is not verified",
+          footer: `<a href="${error.response.data.verifyUrl}">Verify here</a>`,
+        });
+      } else {
+        Swal.fire({
+          title: "Login Failed!",
+          text: "Please check your username and password.",
+          icon: "error",
+        });
+      }
     }
   };
 
