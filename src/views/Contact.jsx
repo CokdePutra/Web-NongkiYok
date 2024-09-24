@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 import Navbar from "../components/Navbar/Navbar";
 
 const Contact = () => {
@@ -8,10 +9,45 @@ const Contact = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailError, setEmailError] = useState("");
+
+  // Function to validate email format
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Fetch user email from session when the component mounts
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/api/session/`, {
+          withCredentials: true,
+        });
+        if (response.data) {
+          setEmail(response.data.email);
+          setName(response.data.name);
+        }
+      } catch (error) {
+        console.error("Error fetching user email from session");
+      }
+    };
+
+    fetchUserEmail();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    // Validate email format before submitting
+    if (!validateEmail(email)) {
+      setEmailError("Please enter a valid email address.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    setEmailError(""); // Clear the error message if email is valid
 
     try {
       await axios.post(`${baseURL}/api/contact`, {
@@ -59,7 +95,7 @@ const Contact = () => {
               <input
                 type="text"
                 placeholder="Name . . ."
-                className=" jura-medium w-full p-4 rounded-lg text-lg border border-gray-300 focus:border-yellow-700 focus:ring-2 focus:ring-yellow-500"
+                className="jura-medium w-full p-4 rounded-lg text-lg border border-gray-300 focus:border-yellow-700 focus:ring-2 focus:ring-yellow-500"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -74,6 +110,11 @@ const Contact = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
+              {emailError && (
+                <p className="text-color-red text-sm mt-2 font-bold">
+                  {emailError}
+                </p>
+              )}
             </div>
             <div className="mb-6">
               <textarea
