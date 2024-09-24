@@ -4,6 +4,7 @@ import axios from "axios";
 import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
 import Swal from "sweetalert2";
+
 const VerifyEmail = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const location = useLocation();
@@ -11,8 +12,12 @@ const VerifyEmail = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [message, setMessage] = useState({ text: "", isError: false });
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false); // State untuk Resend OTP
+  const [resendMessage, setResendMessage] = useState(""); // State untuk pesan Resend OTP
 
   const email = location.state?.email || useParams().email;
+
+  // Fungsi untuk verifikasi email
   const handleVerifyEmail = async (e) => {
     e.preventDefault();
 
@@ -58,6 +63,29 @@ const VerifyEmail = () => {
     }
   };
 
+  // Fungsi untuk Resend OTP
+  const handleResendOTP = async () => {
+    setIsResending(true);
+    try {
+      const response = await axios.post(`${baseURL}/resend-otp`, { email });
+      setResendMessage(`OTP has been resent to ${email}.`);
+      Swal.fire({
+        title: "OTP Resent",
+        text: `A new verification code has been sent to your email at ${email}.`,
+        icon: "success",
+      });
+    } catch (error) {
+      setResendMessage(`Failed to resend OTP at ${email}. Please try again.`);
+      Swal.fire({
+        title: "Resend Failed",
+        text: `Failed to resend the verification code at ${email}.`,
+        icon: "error",
+      });
+    } finally {
+      setIsResending(false);
+    }
+  };
+
   return (
     <div className="container-VerifyEmail h-screen flex justify-center items-center px-5">
       <div className="content kodchasan-bold w-full md:w-3/4 lg:w-1/4 flex flex-col items-center">
@@ -94,11 +122,22 @@ const VerifyEmail = () => {
           </p>
         )}
 
+        {/* Tombol Resend OTP */}
+        <button
+          onClick={handleResendOTP}
+          className="text-color-yellow m-2 text-sm md:text-base hover:text-color-gold-card"
+          disabled={isResending}
+        >
+          {isResending ? "Resending..." : "Resend OTP"}
+        </button>
+
+        {resendMessage && <p className="text-red-500 m-2">{resendMessage}</p>}
+
         <a
           href="/login"
           className="text-white m-2 text-sm md:text-base hover:text-color-gold-card"
         >
-          Back to Sign Up
+          Back to Login
         </a>
       </div>
     </div>
