@@ -107,14 +107,21 @@ const SignUp = () => {
       });
       navigate(`/verify-email/${formData.email}`); // Kirim email ke halaman verifikasi
     } catch (error) {
-      Swal.fire({
-        title: "Registration Faild!",
-        text: "Something went wrong. Please try again.",
-        icon: "error",
-      });
-      console.error("Error registering user:", error);
+      if (error.response && error.response.status === 400) {
+        Swal.fire({
+          title: "Registration Failed!",
+          text: error.response.data.message,
+          icon: "error",
+        });
+      } else {
+        Swal.fire({
+          title: "Registration Failed!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+        });
+      }
       setMessage({
-        text: "Registration Faild. Plase try again.",
+        text: "Registration Failed. Please try again.",
         isError: true,
       });
     } finally {
