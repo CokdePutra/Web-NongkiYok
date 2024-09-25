@@ -93,7 +93,7 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
           <a
-            href=""
+            href="/reset-pw"
             className="text-color-yellow m-2 text-sm md:text-base hover:text-color-gold-card"
           >
             Forgot Password?..
