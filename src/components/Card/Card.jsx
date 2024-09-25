@@ -79,7 +79,7 @@ const Card = ({
       return 1;
     } else if (price >= 35000 && price <= 60000) {
       return 2;
-    } else if (price <= 80000) {
+    } else if (price >= 60001) {
       return 3;
     }
   };

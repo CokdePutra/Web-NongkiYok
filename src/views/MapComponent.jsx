@@ -13,7 +13,7 @@ const getMarkerColor = (price) => {
     return "green"; // Cheap (below 35000)
   } else if (price >= 35000 && price <= 60000) {
     return "blue"; // Moderate (35000 - 60000)
-  } else if (price <= 80000) {
+  } else if (price >= 60001) {
     return "violet"; // Expensive (60000 - 80000)
   }
   return "gray"; // Default color if price doesn't match
@@ -34,7 +34,7 @@ const createCustomIcon = (color) => {
 
 // Function to create a custom icon for user's location
 const userIcon = new L.Icon({
-  iconUrl: './img/man.png', // Path to your custom image
+  iconUrl: "./img/man.png", // Path to your custom image
   iconSize: [50, 50], // Adjust size as needed
   iconAnchor: [25, 50], // Adjust anchor to match the size
   popupAnchor: [0, -40], // Adjust popup position relative to the icon
@@ -88,7 +88,7 @@ const MapComponent = () => {
       return 1;
     } else if (price >= 35000 && price <= 60000) {
       return 2;
-    } else if (price <= 80000) {
+    } else if (price >= 60001) {
       return 3;
     }
     return 0; // Default return value if price doesn't match any condition
@@ -102,12 +102,13 @@ const MapComponent = () => {
       <MapContainer
         center={position}
         zoom={13}
-        className="absolute top-0 left-0 right-0 bottom-0 z-0">
+        className="absolute top-0 left-0 right-0 bottom-0 z-0"
+      >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        
+
         {/* Render the user's custom marker if location access is allowed */}
         {userPosition && (
           <Marker position={userPosition} icon={userIcon}>
@@ -119,28 +120,40 @@ const MapComponent = () => {
           <Marker
             key={index}
             position={[location.Latitude, location.Longtitude]}
-            icon={createCustomIcon(getMarkerColor(location.AVG_Price))}>
+            icon={createCustomIcon(getMarkerColor(location.AVG_Price))}
+          >
             <Popup>
-              <a href={location.Link} target="_blank" rel="noopener noreferrer" className="!text-black font-bold">
+              <a
+                href={location.Link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="!text-black font-bold"
+              >
                 <strong className="kodchasan-bold">{location.Name}</strong>
               </a>
               <hr className="m-1 bg-color-primary" />
               <div className="container jura-medium">
                 <img
-                  src={location.Image ? `./${location.Image}` : './img/Card/image-ex.png'}
+                  src={
+                    location.Image
+                      ? `./${location.Image}`
+                      : "./img/Card/image-ex.png"
+                  }
                   alt="img-card"
                   className="rounded-t-lg w-full h-28 object-cover"
                 />
                 <div className="flex items-center">
                   <div className="flex">
-                    {[...Array(getMoneyIcons(location.AVG_Price))].map((_, idx) => (
-                      <img
-                        key={idx}
-                        src="./img/Card/money2.png"
-                        alt="icon-money"
-                        className="h-6 w-6"
-                      />
-                    ))}
+                    {[...Array(getMoneyIcons(location.AVG_Price))].map(
+                      (_, idx) => (
+                        <img
+                          key={idx}
+                          src="./img/Card/money2.png"
+                          alt="icon-money"
+                          className="h-6 w-6"
+                        />
+                      )
+                    )}
                   </div>
                 </div>
                 <span className="inline-flex mt-1 ms-auto items-center self-end rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-black ring-1 ring-inset ring-yellow-600/20">
