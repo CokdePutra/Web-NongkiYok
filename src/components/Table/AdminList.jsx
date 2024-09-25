@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import 'boxicons';
+import "boxicons";
 
 const AdminList = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -20,11 +20,11 @@ const AdminList = () => {
   }, []);
   return (
     <div className="container mx-auto p-4 rounded mb-4 max-w-screen-xl">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl kodchasan-bold text-white">Admin</h1>
-        </div>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl kodchasan-bold text-white">Admin</h1>
+      </div>
       <div className="overflow-x-auto">
-        <div className="relative max-h-[500px] overflow-y-auto">
+        <div className="relative max-h-[500px] overflow-y-auto rounded-lg">
           <table className="min-w-full table-fixed bg-white">
             <thead className="sticky top-0 text-bo bg-white shadow">
               <tr>

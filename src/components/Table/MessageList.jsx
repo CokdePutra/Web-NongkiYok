@@ -125,7 +125,7 @@ const MessageList = () => {
           <h1 className="text-2xl kodchasan-bold text-white">Message List</h1>
         </div>
         <div className="overflow-x-auto">
-          <div className="relative max-h-[500px] overflow-y-auto">
+          <div className="relative max-h-[500px] overflow-y-auto rounded-lg">
             <table className="min-w-full table-fixed bg-white">
               <thead className="sticky top-0 text-bo bg-white shadow">
                 <tr>
@@ -175,8 +175,8 @@ const MessageList = () => {
 
       {/* Reply Popup */}
       {showReplyPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg max-w-lg w-full">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center ">
+          <div className="bg-white p-6 rounded-lg max-w-lg w-full ">
             <h2 className="text-xl kodchasan-bold mb-4">Reply to Message</h2>
             <div className="mb-4">
               <p className="text-gray-700">

@@ -55,7 +55,7 @@ const TableUser = () => {
         <h1 className="text-2xl kodchasan-bold text-white">User Management</h1>
       </div>
       <div className="overflow-x-auto">
-        <div className="relative max-h-[500px] overflow-y-auto">
+        <div className="relative max-h-[500px] overflow-y-auto rounded-lg">
           <table className="min-w-full table-fixed bg-white">
             <thead className="sticky top-0 text-bo bg-white shadow">
               <tr>
