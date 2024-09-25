@@ -60,10 +60,11 @@ const Navbar = ({ className }) => {
           className={`flex justify-between items-center p-5 rounded-lg bg-navbar-color ${className}`}
         >
           {/* Left Section */}
-          <h1 className="text-4xl text-color-yellow kodchasan-bold">
-            Nongki-Yok
-          </h1>
-
+          <a href="/">
+            <h1 className="text-4xl text-color-yellow kodchasan-bold">
+              Nongki-Yok
+            </h1>
+          </a>
           {/* Hamburger Button for Mobile */}
           <button
             className="block md:hidden text-white focus:outline-none hover:text-color-gold-card"
