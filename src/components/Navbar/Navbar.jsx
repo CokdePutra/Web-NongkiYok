@@ -325,13 +325,13 @@ const Navbar = ({ className }) => {
               (user.role === "Guide" ||
                 user.role === "Admin" ||
                 user.role === "User") ? (
-                <button
+                <a
                   onClick={handleLogout}
                   className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2"
                 >
                   <box-icon name="log-out"></box-icon>
                   <span>Logout</span>
-                </button>
+                </a>
               ) : user.role === "Guide" || user.role === "User" ? (
                 <a
                   href="/dashboard"
@@ -349,13 +349,13 @@ const Navbar = ({ className }) => {
                   <span>Dashboard</span>
                 </a>
               ) : (
-                <button
+                <a
                   onClick={handleLogout}
                   className="bg-color-yellow hover:bg-color-gold-card text-black py-3 px-4 rounded-lg border-b border-gray-700 jura-medium flex items-center space-x-2"
                 >
                   <box-icon name="log-out"></box-icon>
                   <span>Logout</span>
-                </button>
+                </a>
               )
             ) : (
               <a
