@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
 import Swal from "sweetalert2";
+
 const SignUp = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL; // URL dari API Backend
   const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ const SignUp = () => {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // State untuk mengelola visibilitas password
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
@@ -169,14 +171,26 @@ const SignUp = () => {
             <p className="text-color-red text-sm">{usernameError}</p>
           )}
 
-          <UserInput
-            type="password"
-            name="password"
-            placeholder="Password..."
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full"
-          />
+          <div className="relative w-full">
+            <UserInput
+              type={showPassword ? "text" : "password"} // Mengubah type berdasarkan state showPassword
+              name="password"
+              placeholder="Password..."
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)} // Toggle showPassword
+              className="absolute right-3 top-3 mt-[4px]"
+            >
+              <box-icon
+                name={showPassword ? "hide" : "show"} // Ganti ikon berdasarkan state
+                type="solid"
+              ></box-icon>
+            </button>
+          </div>
           {passwordError && (
             <p className="text-color-red text-sm">{passwordError}</p>
           )}

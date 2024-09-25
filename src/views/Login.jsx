@@ -9,6 +9,7 @@ const Login = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State untuk show password
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -84,14 +85,25 @@ const Login = () => {
             className="w-full"
             onChange={(e) => setUsername(e.target.value)}
           />
-          <UserInput
-            type="password"
-            id="passwordLogin"
-            name="password"
-            placeholder="Password..."
-            className="w-full"
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="relative w-full">
+            <UserInput
+              type={showPassword ? "text" : "password"} // Ubah type berdasarkan state
+              id="passwordLogin"
+              name="password"
+              placeholder="Password..."
+              className="w-full pr-10" // Tambahkan padding untuk space icon
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <span
+              className="absolute right-2 top-1/2 mt-[4px] transform -translate-y-1/2 cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)} // Toggle showPassword
+            >
+              <box-icon
+                name={showPassword ? "hide" : "show"}
+                type="solid"
+              ></box-icon>
+            </span>
+          </div>
           <a
             href="/reset-pw"
             className="text-color-yellow m-2 text-sm md:text-base hover:text-color-gold-card"
