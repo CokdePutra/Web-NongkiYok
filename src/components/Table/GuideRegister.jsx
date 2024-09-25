@@ -52,6 +52,7 @@ const GuideRegister = () => {
           text: "User approved successfully!",
           icon: "success",
         });
+        window.location.reload();
       } catch (error) {
         console.error("Error approving user", error);
       }
@@ -80,6 +81,7 @@ const GuideRegister = () => {
           text: "User request has been rejected.",
           icon: "success",
         });
+        window.location.reload();
       } catch (error) {
         console.error("Error rejecting user", error);
       }

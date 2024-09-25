@@ -71,6 +71,7 @@ const MessageList = () => {
           text: "Message has been deleted.",
           icon: "success",
         });
+        window.location.reload();
       } catch (error) {
         console.error("Error deleting message", error);
       }
