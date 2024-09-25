@@ -1,6 +1,6 @@
 # Nongki Yok
 
-ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda berupa cafe ataupun restoran
+This website is here to help! It has a handy feature that lets you search for hangout places near you, like cafes or restaurants. It's perfect for those of you who are looking for a new hangout spot that fits your style.
 
 ## Features
 
@@ -11,7 +11,7 @@ ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda ber
 - CRUD Location
 - CRUD User
 - Email Verfication
-- AI sugestion (powerd by gemini)
+- AI sugestion (powered by gemini)
 
 ## Authors
 
@@ -20,9 +20,9 @@ ini adalah website yang memiliki fitur mencari tempat nongki di sekitar anda ber
 - [@KanhaMahesyogi](https://www.github.com/kanhamahesyogi)
 - [@AdiDharma26](https://www.github.com/AdiDharma26)
 
-## Install liblary
+## Install library
 
-Install Liblary yang di butuhkan
+Install required libraries
 
 ```bash
   npm Install
@@ -63,18 +63,18 @@ Username : Kanha
 All password :
 
 ```bash
-    admin#1234
+admin#1234
 ```
 
 ## Important Note
 
-Remember to import the sql file with the named "NongkiNew.sql"
+Remember to import the sql file with the name "nongki-yok-testing.sql", and rename .env.example to .env to create environment variables. and adjust the configuration needed in the env file.
 
 ## Tech Stack
 
-**Client:** React, TailwindCSS
+**Client:** React.js, TailwindCSS
 
-**Server:** Node, Express
+**Server:** Node.Js, Express.Js
 
 ## Feedback
 

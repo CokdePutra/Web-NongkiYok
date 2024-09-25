@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "boxicons";
+import Swal from "sweetalert2";
 
 const Card = ({
   placeId,
@@ -21,17 +22,15 @@ const Card = ({
     const fetchFavoriteStatus = async () => {
       try {
         // Check if the user is logged in
-        const sessionResponse = await axios.get(
-          `${baseURL}api/session`,
-          {
-            withCredentials: true,
-          }
-        );
+        const sessionResponse = await axios.get(`${baseURL}/api/session`, {
+          withCredentials: true,
+        });
+        console.log(sessionResponse);
         setIsLoggedIn(true); // User is logged in
 
         // If the user is logged in, fetch the favorite status
         const response = await axios.get(
-          `${baseURL}api/favorite/status/${placeId}`,
+          `${baseURL}/api/favorite/status/${placeId}`,
           {
             withCredentials: true,
           }
@@ -61,17 +60,17 @@ const Card = ({
           }
         );
       } else {
-        await axios.delete(
-          `${baseURL}/api/delete/favorites/${placeId}`,
-          {
-            withCredentials: true,
-          }
-        );
+        await axios.delete(`${baseURL}/api/delete/favorites/${placeId}`, {
+          withCredentials: true,
+        });
       }
       setIsFavorited(!isFavorited);
     } catch (error) {
-      console.error("Error updating favorite status", error);
-      alert("Anda harus login untuk menambahkan ke favorit.");
+      Swal.fire({
+        title: "Login Required",
+        text: "You must be logged in to add to favorites.",
+        icon: "error",
+      });
     }
   };
 
@@ -80,7 +79,7 @@ const Card = ({
       return 1;
     } else if (price >= 35000 && price <= 60000) {
       return 2;
-    } else if (price <= 80000) {
+    } else if (price >= 60001) {
       return 3;
     }
   };
@@ -97,7 +96,8 @@ const Card = ({
             color="#FCBC36"
             size="md"
             onClick={handleFavoriteClick}
-            style={{ cursor: "pointer" }}></box-icon>
+            style={{ cursor: "pointer" }}
+          ></box-icon>
         </div>
       )}
       <img

@@ -38,12 +38,9 @@ const DashboardAdmin = () => {
   useEffect(() => {
     const fetchTotalPlace = async () => {
       try {
-        const response = await axios.get(
-          `${baseURL}/api/totalplaces`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${baseURL}/api/totalplaces`, {
+          withCredentials: true,
+        });
         setTotalPlace(response.data);
       } catch (error) {
         console.error("Error fetching total place", error);
@@ -56,12 +53,9 @@ const DashboardAdmin = () => {
   useEffect(() => {
     const fetchTotalUser = async () => {
       try {
-        const response = await axios.get(
-          `${baseURL}/api/totalusers/User`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${baseURL}/api/totalusers/User`, {
+          withCredentials: true,
+        });
         setTotalUser(response.data);
       } catch (error) {
         console.error("Error fetching total user", error);
@@ -74,12 +68,9 @@ const DashboardAdmin = () => {
   useEffect(() => {
     const fetchallUser = async () => {
       try {
-        const response = await axios.get(
-          `${baseURL}/api/all/users`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${baseURL}/api/all/users`, {
+          withCredentials: true,
+        });
         setallUser(response.data);
       } catch (error) {
         console.error("Error fetching total user", error);
@@ -92,12 +83,9 @@ const DashboardAdmin = () => {
   useEffect(() => {
     const fetchTotalGuide = async () => {
       try {
-        const response = await axios.get(
-          `${baseURL}/api/totalusers/Guide`,
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get(`${baseURL}/api/totalusers/Guide`, {
+          withCredentials: true,
+        });
         setTotalGuide(response.data);
       } catch (error) {
         console.error("Error fetching total guide", error);
@@ -110,8 +98,8 @@ const DashboardAdmin = () => {
   return (
     <>
       <Navbar />
-      <div className="flex justify-center">
-        <div className="grid grid-cols-1 justify-items-center">
+      <div className="flex justify-center flex-wrap">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 justify-items-center">
           <CardPlace
             src={"./img/Card/Users.png"}
             title={totalUser.total}
@@ -122,8 +110,6 @@ const DashboardAdmin = () => {
             title={totalGuide.total}
             desc={"Total Guide"}
           />
-        </div>
-        <div className="grid grid-cols-1 justify-items-center">
           <CardPlace
             src={"./img/Card/Person.png"}
             title={allUser.total}
@@ -136,15 +122,16 @@ const DashboardAdmin = () => {
           />
         </div>
       </div>
+
       <div className="flex flex-col items-center">
         <div className="w-11/12 max-w-screen-xl mt-2">
           <GuideRegister />
         </div>
-        <div className="flex justify-center space-x-1 w-11/12 max-w-screen-xl">
-          <div className="w-9/12">
+        <div className="flex flex-col md:flex-row justify-center space-x-0 md:space-x-1 w-11/12 max-w-screen-xl">
+          <div className="w-full md:w-9/12 mb-4 md:mb-0">
             <TableUser />
           </div>
-          <div className="w-3/12">
+          <div className="w-full md:w-3/12">
             <AdminList />
           </div>
         </div>

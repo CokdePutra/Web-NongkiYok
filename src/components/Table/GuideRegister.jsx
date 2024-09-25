@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const GuideRegister = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -20,15 +21,37 @@ const GuideRegister = () => {
   }, []);
 
   const handleApprove = async (userId) => {
-    if (window.confirm("Are you sure you want to approve this user as a Guide?")) {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to approve this user as a Guide?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, approve it!",
+    });
+
+    if (result.isConfirmed) {
       try {
-        await axios.put(`${baseURL}/api/users/update/${userId}`, {}, {
-          withCredentials: true,
+        await axios.put(
+          `${baseURL}/api/users/update/${userId}`,
+          {},
+          {
+            withCredentials: true,
+          }
+        );
+        setUsers(
+          users.map((user) =>
+            user.Id_User === userId
+              ? { ...user, Status: "Approved", Role: "Guide" }
+              : user
+          )
+        );
+        Swal.fire({
+          title: "Approved!",
+          text: "User approved successfully!",
+          icon: "success",
         });
-        setUsers(users.map((user) => 
-          user.Id_User === userId ? { ...user, Status: "Approved", Role: "Guide" } : user
-        ));
-        alert("User approved successfully!");
       } catch (error) {
         console.error("Error approving user", error);
       }
@@ -36,12 +59,27 @@ const GuideRegister = () => {
   };
 
   const handleReject = async (userId) => {
-    if (window.confirm("Are you sure you want to reject this user?")) {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to reject this user?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, reject it!",
+    });
+
+    if (result.isConfirmed) {
       try {
         await axios.delete(`${baseURL}/api/users/deleterequest/${userId}`, {
           withCredentials: true,
         });
         setUsers(users.filter((user) => user.Id_User !== userId));
+        Swal.fire({
+          title: "Rejected!",
+          text: "User request has been rejected.",
+          icon: "success",
+        });
       } catch (error) {
         console.error("Error rejecting user", error);
       }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import UserInput from "../components/UserInput/UserInput";
 import { useNavigate, Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const LocationInput = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -10,7 +11,7 @@ const LocationInput = () => {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
-    Size:"",
+    Size: "",
     Category: "",
     longitude: "",
     latitude: "",
@@ -70,6 +71,11 @@ const LocationInput = () => {
     e.preventDefault();
 
     if (!isLoggedIn) {
+      Swal.fire({
+        title: "Login Faild!",
+        text: "You must be logged in to add a place.",
+        icon: "error",
+      });
       setError("You must be logged in to add a place");
       return;
     }
@@ -90,11 +96,20 @@ const LocationInput = () => {
         },
       })
       .then((response) => {
-        console.log(response.data);
+        Swal.fire({
+          title: "Success Add!",
+          text: "Place has been added.",
+          icon: "success",
+        });
         setError(null);
         navigate("/dashboard");
       })
       .catch((error) => {
+        Swal.fire({
+          title: "Error adding place!",
+          text: "Error adding place. Please try again.",
+          icon: "error",
+        });
         console.error("Error adding place", error);
         setError(error.response ? error.response.data : "Error adding place");
       });
@@ -169,9 +184,7 @@ const LocationInput = () => {
               value={formData.Size}
               onChange={handleChange}
             >
-              <option value="">
-                Pilih Size
-              </option>
+              <option value="">Pilih Size</option>
               <option value="Small">Small</option>
               <option value="Medium">Medium</option>
               <option value="Large">Large</option>
@@ -226,7 +239,7 @@ const LocationInput = () => {
             <label className="block text-color-yellow jura-medium">
               Upload Image
             </label>
-                        <div className="formInput w-full">
+            <div className="formInput w-full">
               <input
                 autoComplete="off"
                 type="file"
@@ -234,7 +247,7 @@ const LocationInput = () => {
                 name="image"
                 className="bg-hover-button text-black rounded-md h-9 p-5 m-2 w-full px-3 py-[2px] border ml-[-2px]"
                 onChange={handleImageChange}
-                />
+              />
             </div>
           </div>
         </div>

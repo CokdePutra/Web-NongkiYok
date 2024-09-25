@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 17 Sep 2024 pada 02.27
+-- Waktu pembuatan: 24 Sep 2024 pada 13.21
 -- Versi server: 10.4.28-MariaDB
 -- Versi PHP: 8.2.4
 
@@ -40,7 +40,7 @@ CREATE TABLE `contact` (
 --
 
 INSERT INTO `contact` (`Id_Contact`, `tanggal`, `Name`, `Email`, `Massage`) VALUES
-(5, '2024-08-16 23:43:30', 'gung nanda', 'gungnands@gmail.com', 'test 2');
+(6, '2024-09-23 21:37:38', 'gung nanda', 'gungnanda14@gmail.com', 'test message');
 
 -- --------------------------------------------------------
 
@@ -69,7 +69,10 @@ INSERT INTO `favorite` (`Id_Favorite`, `Id_User`, `Id_Places`) VALUES
 (52, 10, 26),
 (53, 10, 7),
 (54, 10, 3),
-(55, 7, 27);
+(55, 7, 27),
+(59, 10, 5),
+(60, 30, 4),
+(61, 30, 26);
 
 -- --------------------------------------------------------
 
@@ -127,7 +130,8 @@ INSERT INTO `registerguide` (`Id_Register`, `Id_User`, `Status`, `Alasan`) VALUE
 (3, 6, 'Approved', 'test request'),
 (5, 6, 'Approved', 'ass'),
 (6, 6, 'Approved', 'Saya ingin membantu untuk menemukan tempat tempat yang hiden gem'),
-(7, 11, 'Pending', 'saya ingin berkontribusi dalam membatu umkm terutama untuk tempat tempat yang hiden gem');
+(7, 11, 'Pending', 'saya ingin berkontribusi dalam membatu umkm terutama untuk tempat tempat yang hiden gem'),
+(8, 16, 'Approved', '...');
 
 -- --------------------------------------------------------
 
@@ -151,11 +155,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`Name`, `Id_User`, `Email`, `Password`, `Role`, `Username`, `VerificationToken`, `IsVerified`) VALUES
+('Gung Nanda', 6, 'gungbisma2345@gmail.com', '$2a$10$4ck0zcmAAOj9JHh2DXySkeO7oLPuEgPVDzsQQE1oPNS46c8iOo3xK', 'Guide', 'zephyrus', '376749', 1),
 ('Gung Nanda', 7, 'gn.nanda0@gmail.com', '$2a$10$t2dw6aol9DjpKvzgxh1Ql.25ySD/IAXLwAzGOOKsFR3o3vWOBGEVq', 'Admin', 'Zayuran', NULL, 1),
 ('Adi dharma', 10, 'adidharma@gmail.com', '$2a$10$diUtDpsnX1jkoWL6sAhppeKDbI4lrCvNcqHtO5QQ4KMxw/OeMYrly', 'User', 'Adidoy', NULL, 1),
 ('Kanha', 11, 'Kanhamahesyogi@gmail.com', '$2a$10$U9dNKQUbxvqoXA9CGQstP.n8r1Dhl0czmfquxhHljauOqPcUl48ci', 'User', 'Kanha', NULL, 1),
 ('Cokde', 12, 'cokde@gmail.com', '$2a$10$bQ8Wm3Si.DPifdf2UQir3ejZ0DBiwAM4h3f9f.7nbhpC8Z/s4oQ6G', 'Admin', 'Gmoons', NULL, 1),
-('nanda', 15, 'gungnands@gmail.com', '$2a$10$C6u9MlbJojKe1hgREWeb.ej.o1lZnuvRMGFU4JWc51FmiESDepOYy', 'User', 'nanda1234', '599642', 1);
+('nanda', 15, 'gungnands@gmail.com', '$2a$10$C6u9MlbJojKe1hgREWeb.ej.o1lZnuvRMGFU4JWc51FmiESDepOYy', 'User', 'nanda1234', '599642', 1),
 
 --
 -- Indexes for dumped tables
@@ -201,31 +206,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT untuk tabel `contact`
 --
 ALTER TABLE `contact`
-  MODIFY `Id_Contact` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `Id_Contact` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `favorite`
 --
 ALTER TABLE `favorite`
-  MODIFY `Id_Favorite` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `Id_Favorite` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT untuk tabel `places`
 --
 ALTER TABLE `places`
-  MODIFY `Id_Places` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `Id_Places` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT untuk tabel `registerguide`
 --
 ALTER TABLE `registerguide`
-  MODIFY `Id_Register` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `Id_Register` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `Id_User` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `Id_User` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

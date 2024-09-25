@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import 'boxicons';
+import "boxicons";
 
 const TableDashboard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -21,19 +21,33 @@ const TableDashboard = () => {
   }, []);
 
   const handleDelete = async (placeId) => {
-    if (window.confirm("Are you sure you want to delete this place?")) {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this place?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
       try {
-        await axios.delete(
-          `${baseURL}/api/places/delete/${placeId}`,
-          {
-            withCredentials: true,
-          }
-        );
+        await axios.delete(`${baseURL}/api/places/delete/${placeId}`, {
+          withCredentials: true,
+        });
         // Remove the deleted place from the state
         setPlaces(places.filter((place) => place.id !== placeId));
 
-        // Redirect to the dashboard page after successful deletion
-        window.location.href = "/dashboard";
+        // Show success message and redirect after deletion
+        Swal.fire({
+          title: "Deleted!",
+          text: "Place has been deleted.",
+          icon: "success",
+        }).then(() => {
+          // Redirect to the dashboard page after successful deletion
+          window.location.href = "/dashboard";
+        });
       } catch (error) {
         console.error("Error deleting place", error);
       }
@@ -71,21 +85,36 @@ const TableDashboard = () => {
               {places.map((place) => (
                 <tr key={place.id}>
                   <td className="px-4 py-2 whitespace-nowrap">{place.Name}</td>
-                  <td className="px-4 py-2 whitespace-nowrap">{place.Category}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    {place.Category}
+                  </td>
                   <td className="px-4 py-2 whitespace-nowrap">{place.Size}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-wrap">
                     {place.Description}
                   </td>
-                  <td className="px-4 py-2 whitespace-nowrap">{place.AVG_Price}</td>
-                  <td className="px-4 py-2 whitespace-nowrap">{place.Latitude}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    {place.AVG_Price}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    {place.Latitude}
+                  </td>
                   <td className="px-4 py-2 whitespace-nowrap">
                     {place.Longtitude}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
                     {place.Image ? (
-                      <a href={place.Image ? `./${place.Image}` : './img/Card/image-ex.png'} target="_blanks">
+                      <a
+                        href={
+                          place.Image
+                            ? `./${place.Image}`
+                            : "./img/Card/image-ex.png"
+                        }
+                        target="_blanks"
+                      >
                         <div className="icon-location flex justify-center">
-                          <box-icon type='solid' name='image'>icon</box-icon>
+                          <box-icon type="solid" name="image">
+                            icon
+                          </box-icon>
                         </div>
                       </a>
                     ) : (
@@ -106,13 +135,16 @@ const TableDashboard = () => {
                   <td className="px-4 py-2 whitespace-nowrap text-sm leading-5 font-medium">
                     <button
                       className="text-white-600 hover:text-indigo-900 mr-2 bg-blue-500 text-white py-1 px-4 rounded"
-                      onClick={() => window.location.href = `/EditLocation/${place.Id_Places}`}
+                      onClick={() =>
+                        (window.location.href = `/EditLocation/${place.Id_Places}`)
+                      }
                     >
                       Edit
                     </button>
                     <button
                       className="text-white-600 hover:text-indigo-900 mr-2 bg-red-500 text-white py-1 px-4 rounded"
-                      onClick={() => handleDelete(place.Id_Places)}>
+                      onClick={() => handleDelete(place.Id_Places)}
+                    >
                       Delete
                     </button>
                   </td>

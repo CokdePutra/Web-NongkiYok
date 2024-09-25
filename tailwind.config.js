@@ -12,7 +12,6 @@ export default {
         "color-red": "#ff0f0f",
         "color-green": "#00ff83",
         "color-gold-card": "#FFD369",
-        
       },
     },
   },

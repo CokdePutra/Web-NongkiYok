@@ -30,7 +30,7 @@ function App() {
           <Route path="/Admin" element={<DashboardAdmin />} />
           <Route path="/ListContact" element={<ContactList />} />
           <Route path="/GuideRequest" element={<GuideRequest />} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/verify-email/:email" element={<VerifyEmail />} />
         </Routes>
       </Router>
     </>

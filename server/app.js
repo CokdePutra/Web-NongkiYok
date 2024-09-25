@@ -11,6 +11,8 @@ import { redirect } from "react-router-dom";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { FunctionDeclarationSchemaType } from "@google/generative-ai";
 import nodemailer from "nodemailer";
+import Swal from "sweetalert2";
+import e from "express";
 //=================================SETUP=================================
 dotenv.config();
 
@@ -48,7 +50,7 @@ db.connect((err) => {
     console.error("Error connecting to the database:", err);
     return;
   }
-  console.log("Connected to the database");
+  console.log("Connected to the database", db.config.database);
 });
 
 // Multer storage configuration
@@ -74,14 +76,17 @@ const transporter = nodemailer.createTransport({
   },
 });
 // ============================== EMAIL TEST =============================
-// console.log("email user", process.env.EMAIL_USER);
-// console.log("Pass", process.env.EMAIL_PASS);
-// console.log("Host", process.env.EMAIL_HOST);
+console.log("email user", process.env.EMAIL_USER);
+console.log("Pass", process.env.EMAIL_PASS);
+console.log("Host", process.env.EMAIL_HOST);
 // let mailOptions = {
-//   from: process.env.EMAIL_USER,
-//   to: "gungnanda14@gmail.com",
+//   from: {
+//     name: "Nongki YOK",
+//     address: process.env.EMAIL_USER,
+//   },
+//   to: ["cokgdeputrawidnyana25@gmail.com", "gungnanda14@gmail.com"],
 //   subject: "Test Email",
-//   text: "This is a test email sent using Nodemailer!",
+//   html: "<h1>Test email</h1><p>This is a test email</p>",
 // };
 
 // transporter.sendMail(mailOptions, (error, info) => {
@@ -151,72 +156,237 @@ let modeladd = genAI.getGenerativeModel({
 // REGISTER
 app.post("/register", (req, res) => {
   const { name, email, password, role, username } = req.body;
-
-  // Membuat token verifikasi sederhana
-  const verificationToken = Math.floor(
-    100000 + Math.random() * 900000
-  ).toString();
-
-  bcrypt.hash(password, saltRounds, (err, hash) => {
+  const checkQuery = "SELECT * FROM users WHERE Email = ? OR Username = ?";
+  db.query(checkQuery, [email, username], (err, results) => {
     if (err) {
       return res.status(500).send("Server Error");
     }
+    // Jika email atau username sudah terdaftar
+    if (results.length > 0) {
+      const isEmailTaken = results.some((user) => user.Email === email);
+      const isUsernameTaken = results.some(
+        (user) => user.Username === username
+      );
 
-    const query =
-      "INSERT INTO users (Name, Email, Password, Role, Username, VerificationToken, IsVerified) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-    db.query(
-      query,
-      [name, email, hash, role, username, verificationToken, false],
-      (err, results) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).send("Error creating user");
-        }
-
-        // Mengirim email verifikasi
-        const mailOptions = {
-          from: process.env.EMAIL_USER,
-          to: email,
-          subject: "Email Verification",
-          text: `Your verification code is ${verificationToken}. Please verify your email.`,
-        };
-
-        transporter.sendMail(mailOptions, (error, info) => {
-          if (error) {
-            console.log(error);
-            return res.status(500).send("Error sending verification email");
-          }
-          res.status(201).send("User registered. Please verify your email.");
-        });
+      if (isEmailTaken && isUsernameTaken) {
+        return res
+          .status(400)
+          .json({ message: "Email dan Username sudah digunakan" });
+      } else if (isEmailTaken) {
+        return res.status(400).json({ message: "Email sudah digunakan" });
+      } else if (isUsernameTaken) {
+        return res.status(400).json({ message: "Username sudah digunakan" });
       }
-    );
-    app.post("/verify-email", (req, res) => {
-      const { email, verificationToken } = req.body;
+    }
+    // Membuat token verifikasi sederhana
+    const verificationToken = Math.floor(
+      100000 + Math.random() * 900000
+    ).toString();
+
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+      if (err) {
+        return res.status(500).send("Server Error");
+      }
 
       const query =
-        "SELECT * FROM users WHERE Email = ? AND VerificationToken = ?";
-      db.query(query, [email, verificationToken], (err, results) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).send("Error verifying email");
-        }
+        "INSERT INTO users (Name, Email, Password, Role, Username, VerificationToken, IsVerified) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        if (results.length > 0) {
-          const updateQuery =
-            "UPDATE users SET IsVerified = true WHERE Email = ?";
-          db.query(updateQuery, [email], (err, updateResults) => {
-            if (err) {
-              console.log(err);
-              return res
-                .status(500)
-                .send("Error updating user verification status");
+      db.query(
+        query,
+        [name, email, hash, role, username, verificationToken, false],
+        (err, results) => {
+          if (err) {
+            console.log(err);
+            return res.status(500).send("Error creating user");
+          }
+
+          // Mengirim email verifikasi
+          let mailOptions = {
+            from: {
+              name: "Nongki YOK",
+              address: process.env.EMAIL_USER,
+            },
+            to: email,
+            subject: "Email Verification",
+            html: `<!DOCTYPE html>
+        <html lang="en">
+        
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+            <title>Nongki-YOk</title>
+        
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+        </head>
+        
+        <body style="
+              margin: 0;
+              font-family: 'Poppins', sans-serif;
+              background: #393E46;
+              font-size: 14px;
+            ">
+            <div style="
+                max-width: 680px;
+                margin: 0 auto;
+                padding: 45px 30px 60px;
+                background: #393E46;
+                background-repeat: no-repeat;
+                background-size: 800px 452px;
+                background-position: top center;
+                font-size: 14px;
+                color: #434343;
+              ">
+        
+                <main>
+                    <div style="
+                    margin: 0;
+                    margin-top: 70px;
+                    padding: 92px 30px 115px;
+                    background: #ffffffee;
+                    border-radius: 30px;
+                    text-align: center;
+                  ">
+                        <div style="width: 100%; max-width: 489px; margin: 0 auto;">
+                            <h1 style="
+                        margin: 0;
+                        font-size: 24px;
+                        font-weight: 500;
+                        color: #1f1f1f;
+                      ">
+                                Your verification code
+                            </h1>
+                            <p style="
+                        margin: 0;
+                        margin-top: 17px;
+                        font-size: 16px;
+                        font-weight: 500;
+                      ">
+                                Hey ,${name}
+                            </p>
+                            <p style="
+                        margin: 0;
+                        margin-top: 17px;
+                        font-weight: 500;
+                        letter-spacing: 0.56px;
+                      ">
+                                Thank you for creating account in Nongki-Yok. Use the following OTP
+                                to complete the procedure to change your email address. OTP is
+                                valid for
+                                <span style="font-weight: 600; color: #1f1f1f;">5 minutes</span>.
+                                Do not share this code with anyone.
+                            </p>
+                            <p style="
+                        margin: 0;
+                        margin-top: 60px;
+                        font-size: 25px;
+                        font-weight: 600;
+                        letter-spacing: 20px;
+                        color: #ba3d4f;
+                      ">
+                        ${verificationToken}
+                            </p>
+                        </div>
+                    </div>
+        
+                    <p style="
+                    max-width: 400px;
+                    margin: 0 auto;
+                    margin-top: 90px;
+                    text-align: center;
+                    font-weight: 500;
+                    color: #ffffff;
+                  ">
+                        Need help? Ask at
+                        <a href="mailto:archisketch@gmail.com"
+                            style="color: #FCBC36; text-decoration: none;">nongki-yok@gungnanda.com</a>
+                        or visit our
+                        <a href="http://localhost:5173/Contact" target="_blank"
+                            style="color: #FCBC36; text-decoration: none;">Help Center</a>
+                    </p>
+                </main>
+        
+                <footer style="
+                  width: 100%;
+                  max-width: 490px;
+                  margin: 20px auto 0;
+                  text-align: center;
+                  border-top: 1px solid #e6ebf1;
+                ">
+                    <p style="
+                    margin: 0;
+                    margin-top: 40px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #FCBC36;
+                  ">
+                        Nongki-Yok
+                    </p>
+                    <p style="margin: 0; margin-top: 8px; color: #ffffff;">
+                        Denpasar No666, Bali, Indonesia
+                    </p>
+                    <div style="margin: 0; margin-top: 16px;">
+                        <a href="" target="_blank" style="display: inline-block;">
+                            <img width="36px" alt="Facebook"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661502815169_682499/email-template-icon-facebook" />
+                        </a>
+                        <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
+                            <img width="36px" alt="Instagram"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661504218208_684135/email-template-icon-instagram" /></a>
+                        <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
+                            <img width="36px" alt="Twitter"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503043040_372004/email-template-icon-twitter" />
+                        </a>
+                        <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
+                            <img width="36px" alt="Youtube"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503195931_210869/email-template-icon-youtube" /></a>
+                    </div>
+                    <p style="margin: 0; margin-top: 16px; color: #434343;">
+                        Copyright © 2024 Nongki Yok. All rights reserved.
+                    </p>
+                </footer>
+            </div>
+        </body>
+        
+        </html>`,
+          };
+
+          transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.log(error);
+              return res.status(500).send("Error sending verification email");
             }
-            res.status(200).send("Email verified successfully");
+            res.status(201).send("User registered. Please verify your email.");
           });
-        } else {
-          res.status(400).send("Invalid verification token");
         }
+      );
+      app.post("/verify-email", (req, res) => {
+        const { email, verificationToken } = req.body;
+
+        const query =
+          "SELECT * FROM users WHERE Email = ? AND VerificationToken = ?";
+        db.query(query, [email, verificationToken], (err, results) => {
+          if (err) {
+            console.log(err);
+            return res.status(500).send("Error verifying email");
+          }
+
+          if (results.length > 0) {
+            const updateQuery =
+              "UPDATE users SET IsVerified = true WHERE Email = ?";
+            db.query(updateQuery, [email], (err, updateResults) => {
+              if (err) {
+                console.log(err);
+                return res
+                  .status(500)
+                  .send("Error updating user verification status");
+              }
+              res.status(200).send("Email verified successfully");
+            });
+          } else {
+            res.status(400).send("Invalid verification token");
+          }
+        });
       });
     });
   });
@@ -248,7 +418,288 @@ app.post("/verify-email", (req, res) => {
     }
   });
 });
+// contact email send
+app.post("/api/contact/reply/:id", async (req, res) => {
+  const { id } = req.params;
+  const { message } = req.body;
+  const { reply } = req.body;
+  try {
+    // Query ke database untuk mendapatkan data pesan dari ID
+    const query = "SELECT * FROM contact WHERE Id_Contact = ?";
+    db.query(query, [id], (err, result) => {
+      if (err) {
+        console.error("Error fetching message:", err);
+        return res.status(500).json({ message: "Database error" });
+      }
 
+      if (result.length === 0) {
+        return res.status(404).json({ message: "Message not found" });
+      }
+
+      const messageData = result[0];
+      const recipientEmail = messageData.Email; // Email penerima dari penanya
+
+      // Konfigurasi email yang akan dikirim
+      const mailOptions = {
+        from: {
+          name: "Nongki YOK",
+          address: process.env.EMAIL_USER,
+        },
+        to: recipientEmail,
+        subject: `Reply to ${messageData.Name} Message`,
+        html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <p style="font-size: 16px; color: #333;">Dear <strong>${messageData.Name}</strong>,</p>
+
+  <p style="font-size: 16px;">
+    Thank you for reaching out to us. We truly value your engagement and appreciate the time you took to send us your message. Below is a summary of your message and our response:
+  </p>
+
+  <div style="border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; padding: 10px 0; margin: 20px 0;">
+    <p style="font-size: 16px;"><strong>Your Message:</strong></p>
+    <blockquote style="margin: 10px 0; padding-left: 15px; border-left: 4px solid #f0a500; color: #555;">
+      "${message}"
+    </blockquote>
+
+    <p style="font-size: 16px;"><strong>Our Reply:</strong></p>
+    <blockquote style="margin: 10px 0; padding-left: 15px; border-left: 4px solid #1e90ff; color: #555;">
+      "${reply}"
+    </blockquote>
+  </div>
+
+  <p style="font-size: 16px;">
+    If you have any further questions or need additional assistance, feel free to reach out again. We are always here to help!
+  </p>
+
+  <p style="font-size: 16px;">
+    Warm regards,<br />
+    <strong>The Nongki Yok Team</strong><br />
+    <span style="font-style: italic; color: #666;">Find the best spots to hang out near you!</span>
+  </p>
+</div>
+`,
+      };
+
+      // Mengirim email
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error("Error sending email:", error);
+          return res.status(500).json({ message: "Error sending email" });
+        } else {
+          console.log("Email sent: " + info.response);
+          return res.status(200).json({ message: "Reply sent successfully" });
+        }
+      });
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+// resend email verification
+app.post("/resend-otp", (req, res) => {
+  const { email } = req.body;
+
+  // Cek apakah user sudah ada di database
+  const query = "SELECT * FROM users WHERE Email = ?";
+  db.query(query, [email], (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send("Error mencari user");
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send("User tidak ditemukan");
+    }
+
+    const user = results[0];
+
+    // Cek apakah user sudah terverifikasi
+    if (user.IsVerified) {
+      return res.status(400).send("Email sudah diverifikasi");
+    }
+
+    // Membuat OTP baru
+    const newOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Update token verifikasi di database
+    const updateQuery =
+      "UPDATE users SET VerificationToken = ? WHERE Email = ?";
+    db.query(updateQuery, [newOTP, email], (updateErr) => {
+      if (updateErr) {
+        console.log(updateErr);
+        return res.status(500).send("Error memperbarui token verifikasi");
+      }
+      // Konfigurasi email yang akan dikirim
+      const mailOptions = {
+        from: {
+          name: "Nongki YOK",
+          address: process.env.EMAIL_USER,
+        },
+        to: email,
+        subject: "Resend Email Verification",
+        html: `
+          <h1>Email Verification Code</h1>
+          <p>Hi ${user.Name},</p>
+          <p>Use the following verification code to verify your email:</p>
+          <h2>${newOTP}</h2>
+          <p>Code is valid for 5 minutes.</p>
+        `,
+        html: `<!DOCTYPE html>
+        <html lang="en">
+        
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+            <title>Nongki-YOk</title>
+        
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+        </head>
+        
+        <body style="
+              margin: 0;
+              font-family: 'Poppins', sans-serif;
+              background: #393E46;
+              font-size: 14px;
+            ">
+            <div style="
+                max-width: 680px;
+                margin: 0 auto;
+                padding: 45px 30px 60px;
+                background: #393E46;
+                background-repeat: no-repeat;
+                background-size: 800px 452px;
+                background-position: top center;
+                font-size: 14px;
+                color: #434343;
+              ">
+        
+                <main>
+                    <div style="
+                    margin: 0;
+                    margin-top: 70px;
+                    padding: 92px 30px 115px;
+                    background: #ffffffee;
+                    border-radius: 30px;
+                    text-align: center;
+                  ">
+                        <div style="width: 100%; max-width: 489px; margin: 0 auto;">
+                            <h1 style="
+                        margin: 0;
+                        font-size: 24px;
+                        font-weight: 500;
+                        color: #1f1f1f;
+                      ">
+                                Your verification code
+                            </h1>
+                            <p style="
+                        margin: 0;
+                        margin-top: 17px;
+                        font-size: 16px;
+                        font-weight: 500;
+                      ">
+                                Hey ,${user.Name}
+                            </p>
+                            <p style="
+                        margin: 0;
+                        margin-top: 17px;
+                        font-weight: 500;
+                        letter-spacing: 0.56px;
+                      ">
+                                Thank you for creating account in Nongki-Yok. Use the following OTP
+                                to complete the procedure to change your email address. OTP is
+                                valid for
+                                <span style="font-weight: 600; color: #1f1f1f;">5 minutes</span>.
+                                Do not share this code with anyone.
+                            </p>
+                            <p style="
+                        margin: 0;
+                        margin-top: 60px;
+                        font-size: 25px;
+                        font-weight: 600;
+                        letter-spacing: 20px;
+                        color: #ba3d4f;
+                      ">
+                      ${newOTP}
+                            </p>
+                        </div>
+                    </div>
+        
+                    <p style="
+                    max-width: 400px;
+                    margin: 0 auto;
+                    margin-top: 90px;
+                    text-align: center;
+                    font-weight: 500;
+                    color: #ffffff;
+                  ">
+                        Need help? Ask at
+                        <a href="mailto:archisketch@gmail.com"
+                            style="color: #FCBC36; text-decoration: none;">nongki-yok@gungnanda.com</a>
+                        or visit our
+                        <a href="http://localhost:5173/Contact" target="_blank"
+                            style="color: #FCBC36; text-decoration: none;">Help Center</a>
+                    </p>
+                </main>
+        
+                <footer style="
+                  width: 100%;
+                  max-width: 490px;
+                  margin: 20px auto 0;
+                  text-align: center;
+                  border-top: 1px solid #e6ebf1;
+                ">
+                    <p style="
+                    margin: 0;
+                    margin-top: 40px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #FCBC36;
+                  ">
+                        Nongki-Yok
+                    </p>
+                    <p style="margin: 0; margin-top: 8px; color: #ffffff;">
+                        Denpasar No666, Bali, Indonesia
+                    </p>
+                    <div style="margin: 0; margin-top: 16px;">
+                        <a href="" target="_blank" style="display: inline-block;">
+                            <img width="36px" alt="Facebook"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661502815169_682499/email-template-icon-facebook" />
+                        </a>
+                        <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
+                            <img width="36px" alt="Instagram"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661504218208_684135/email-template-icon-instagram" /></a>
+                        <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
+                            <img width="36px" alt="Twitter"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503043040_372004/email-template-icon-twitter" />
+                        </a>
+                        <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
+                            <img width="36px" alt="Youtube"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503195931_210869/email-template-icon-youtube" /></a>
+                    </div>
+                    <p style="margin: 0; margin-top: 16px; color: #434343;">
+                        Copyright © 2024 Nongki Yok. All rights reserved.
+                    </p>
+                </footer>
+            </div>
+        </body>
+        
+        </html>`,
+      };
+
+      // Mengirim email
+      transporter.sendMail(mailOptions, (mailErr, info) => {
+        if (mailErr) {
+          console.log(mailErr);
+          return res.status(500).send("Error mengirim email verifikasi ulang");
+        }
+
+        res.status(200).send("Kode verifikasi baru telah dikirim");
+      });
+    });
+  });
+});
 // LOGIN
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
@@ -256,8 +707,14 @@ app.post("/login", (req, res) => {
   db.query(query, [username], (err, results) => {
     if (err) return res.status(500).send("Server Error");
     if (results.length === 0) return res.status(401).send("User not found");
-
+    console.log("IsVerified", results[0].IsVerified);
     const user = results[0];
+    if (!user.IsVerified) {
+      return res.status(403).json({
+        message: "Email not verified",
+        verifyUrl: `${process.env.FRONTEND_URL}/verify-email/${user.Email}`,
+      });
+    }
     bcrypt.compare(password, user.Password, (err, result) => {
       if (err) return res.status(500).send("Server Error");
       if (!result) return res.status(401).send("Invalid password");
@@ -478,29 +935,62 @@ app.delete("/api/places/delete/:id", (req, res) => {
 //===== LOGIC =====
 //card logic main
 app.get("/card/:sort", (req, res) => {
-  if (req.params.sort === "up") {
-    console.log("sort harga naik");
-    const query = `SELECT * FROM places ORDER BY AVG_Price DESC`;
-    db.query(query, (err, results) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.json(results);
-      }
-    });
-  } else if (req.params.sort === "down") {
-    console.log("sort harga turun");
-    const query = `SELECT * FROM places ORDER BY AVG_Price ASC`;
-    db.query(query, (err, results) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.json(results);
-      }
-    });
-  } else {
-    res.status(500).send("Invalid sort parameter");
+  const sortOrder = req.params.sort;
+  const size = req.query.size; // Ambil query parameter 'size' dari request
+  const category = req.query.category; // Ambil query parameter 'category' dari request
+  console.log(
+    "sort by",
+    req.params.sort,
+    "size",
+    req.query.size,
+    "category",
+    req.query.category
+  );
+  let query = "SELECT * FROM places";
+  let queryParams = [];
+
+  // Cek apakah ada filter size dan category
+  if (size || category) {
+    query += " WHERE";
+
+    if (size) {
+      query += " Size = ?";
+      queryParams.push(size);
+    }
+
+    if (category) {
+      if (size) query += " AND"; // Tambahkan 'AND' jika size sudah ada
+      query += " Category = ?";
+      queryParams.push(category);
+    }
   }
+
+  // Sorting berdasarkan parameter yang diterima
+  switch (sortOrder) {
+    case "up":
+      query += " ORDER BY AVG_Price DESC";
+      break;
+    case "down":
+      query += " ORDER BY AVG_Price ASC";
+      break;
+    case "name-az":
+      query += " ORDER BY Name ASC";
+      break;
+    case "name-za":
+      query += " ORDER BY Name DESC";
+      break;
+    default:
+      return res.status(500).send("Invalid sort parameter");
+  }
+
+  // Eksekusi query
+  db.query(query, queryParams, (err, results) => {
+    if (err) {
+      res.status(500).send(err);
+    } else {
+      res.json(results);
+    }
+  });
 });
 // user fav card
 app.get("/api/card/fav", (req, res) => {
@@ -546,6 +1036,43 @@ app.get("/api/totalplaces", (req, res) => {
     res.json(results[0]);
   });
 });
+// search places by name
+app.get("/card/search/:query?", (req, res) => {
+  const searchQuery = req.params.query || ""; // Ambil query, jika tidak ada jadikan string kosong
+  console.log("search query", searchQuery);
+
+  // Jika searchQuery kosong, ambil semua tempat
+  if (searchQuery.trim() === "") {
+    const query = "SELECT * FROM places";
+    // Query ke database untuk semua tempat
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      // Kirim semua data tempat
+      res.json(results);
+    });
+  } else {
+    // Query ke database berdasarkan pencarian
+    const query = "SELECT * FROM places WHERE Name LIKE ?";
+    db.query(query, [`%${searchQuery}%`], (err, results) => {
+      if (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ message: "Internal server error" });
+      }
+
+      // Jika tidak ada hasil yang ditemukan
+      if (results.length === 0) {
+        return res.status(404).json({ message: "No places found" });
+      }
+
+      // Kirim hasil pencarian
+      res.json(results);
+    });
+  }
+});
+
 //==========================================================================
 // =============================== FAVORITE ================================
 

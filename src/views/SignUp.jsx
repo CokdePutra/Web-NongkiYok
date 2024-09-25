@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import UserInput from "../components/UserInput/UserInput";
 import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
-
+import Swal from "sweetalert2";
 const SignUp = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL; // URL dari API Backend
   const [formData, setFormData] = useState({
@@ -36,7 +36,7 @@ const SignUp = () => {
     // Validasi email
     if (name === "email") {
       if (!validateEmail(value)) {
-        setEmailError("Email tidak valid");
+        setEmailError("Email is invalid");
       } else {
         setEmailError("");
       }
@@ -45,7 +45,7 @@ const SignUp = () => {
     // Validasi nama
     if (name === "name") {
       if (value.trim() === "") {
-        setNameError("Nama tidak boleh kosong");
+        setNameError("Name cannot be empty");
       } else {
         setNameError("");
       }
@@ -54,7 +54,7 @@ const SignUp = () => {
     // Validasi username
     if (name === "username") {
       if (value.trim().length < 4) {
-        setUsernameError("Username minimal 4 karakter");
+        setUsernameError("Username minimum 4 characters");
       } else {
         setUsernameError("");
       }
@@ -63,7 +63,7 @@ const SignUp = () => {
     // Validasi password
     if (name === "password") {
       if (!validatePassword(value)) {
-        setPasswordError("Password minimal 6 karakter");
+        setPasswordError("Password must be 6 characters or more");
       } else {
         setPasswordError("");
       }
@@ -75,8 +75,13 @@ const SignUp = () => {
 
     // Cek jika ada error
     if (emailError || nameError || usernameError || passwordError) {
+      Swal.fire({
+        title: "The form is invalid!",
+        text: "Check your input. There are invalid fields.",
+        icon: "error",
+      });
       setMessage({
-        text: "Formulir tidak valid. Periksa input Anda.",
+        text: "The form is invalid. Check your input.",
         isError: true,
       });
       return;
@@ -90,14 +95,33 @@ const SignUp = () => {
         ...formData,
         role: "User",
       });
-
+      Swal.fire({
+        title: "Registration successful!",
+        text: "Check your email for verification.",
+        icon: "warning",
+      });
       // Beri pesan sukses dan arahkan pengguna ke halaman verifikasi
-      setMessage({ text: "Registrasi berhasil! Periksa email untuk verifikasi.", isError: false });
-      navigate("/verify-email", { state: { email: formData.email } }); // Kirim email ke halaman verifikasi
-    } catch (error) {
-      console.error("Error registering user:", error);
       setMessage({
-        text: "Registrasi gagal. Silakan coba lagi.",
+        text: "Registration successful! Check your email for verification.",
+        isError: false,
+      });
+      navigate(`/verify-email/${formData.email}`); // Kirim email ke halaman verifikasi
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        Swal.fire({
+          title: "Registration Failed!",
+          text: error.response.data.message,
+          icon: "error",
+        });
+      } else {
+        Swal.fire({
+          title: "Registration Failed!",
+          text: "Something went wrong. Please try again.",
+          icon: "error",
+        });
+      }
+      setMessage({
+        text: "Registration Failed. Please try again.",
         isError: true,
       });
     } finally {
@@ -141,7 +165,9 @@ const SignUp = () => {
             onChange={handleChange}
             className="w-full"
           />
-          {usernameError && <p className="text-color-red text-sm">{usernameError}</p>}
+          {usernameError && (
+            <p className="text-color-red text-sm">{usernameError}</p>
+          )}
 
           <UserInput
             type="password"
@@ -151,7 +177,9 @@ const SignUp = () => {
             onChange={handleChange}
             className="w-full"
           />
-          {passwordError && <p className="text-color-red text-sm">{passwordError}</p>}
+          {passwordError && (
+            <p className="text-color-red text-sm">{passwordError}</p>
+          )}
 
           <div className="flex justify-center">
             <ButtonLogin
@@ -163,22 +191,48 @@ const SignUp = () => {
         </form>
 
         {message.text && (
-          <p className={message.isError ? "text-color-red m-2" : "text-color-green m-2"}>
+          <p
+            className={
+              message.isError ? "text-color-red m-2" : "text-color-green m-2"
+            }
+          >
             {message.text}
           </p>
         )}
 
-        <a href="/login" className="text-white m-2 text-sm md:text-base hover:text-color-gold-card">
+        <a
+          href="/login"
+          className="text-white m-2 text-sm md:text-base hover:text-color-gold-card"
+        >
           Already have an account? Login...
         </a>
-        <a href="./" className="absolute hover:text-color-gold-card left-5 bottom-5 text-color-primary text-sm md:text-base">
+        <a
+          href="./"
+          className="absolute hover:text-color-gold-card left-5 bottom-5 text-color-primary text-sm md:text-base"
+        >
           Back
         </a>
       </div>
-      <img src="./img/Login/Polygon1.png" alt="" className="absolute w-1/4 md:w-1/5 bottom-0 left-0 -z-10" />
-      <img src="./img/Login/Polygon2.png" alt="" className="absolute w-1/4 md:w-1/5 top-0 right-0 -z-10" />
-      <img src="./img/Login/Ellipse.png" alt="" className="absolute w-1/6 md:w-1/10 top-[5rem] left-[2rem] md:left-[4rem] -z-10" />
-      <img src="./img/Login/Ellipse.png" alt="" className="absolute w-1/6 md:w-1/10 bottom-[2rem] right-[2rem] md:right-[4rem] -z-10" />
+      <img
+        src="./img/Login/Polygon1.png"
+        alt=""
+        className="absolute w-1/4 md:w-1/5 bottom-0 left-0 -z-10"
+      />
+      <img
+        src="./img/Login/Polygon2.png"
+        alt=""
+        className="absolute w-1/4 md:w-1/5 top-0 right-0 -z-10"
+      />
+      <img
+        src="./img/Login/Ellipse.png"
+        alt=""
+        className="absolute w-1/6 md:w-1/10 top-[5rem] left-[2rem] md:left-[4rem] -z-10"
+      />
+      <img
+        src="./img/Login/Ellipse.png"
+        alt=""
+        className="absolute w-1/6 md:w-1/10 bottom-[2rem] right-[2rem] md:right-[4rem] -z-10"
+      />
     </div>
   );
 };
