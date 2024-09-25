@@ -28,7 +28,7 @@ const Login = () => {
           navigate("/");
         }
       } catch (error) {
-        console.log("ok", error);
+        console.error("Error fetching session data");
       }
     };
 

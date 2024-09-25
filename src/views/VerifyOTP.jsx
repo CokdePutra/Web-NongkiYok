@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -9,9 +9,22 @@ const VerifyOTP = () => {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // State untuk kontrol show/hide password
+  const [showPassword, setShowPassword] = useState(false);
+  const [isResending, setIsResending] = useState(false); // State untuk Resend OTP
+  const [countdown, setCountdown] = useState(0); // State untuk countdown timer
   const baseURL = import.meta.env.VITE_REACT_API_URL;
-  const email = location.state?.email; // Ambil email dari state yang dikirim dari halaman ForgotPassword
+  const email = location.state?.email;
+
+  // Menghitung mundur
+  useEffect(() => {
+    let timer;
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [countdown]);
 
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
@@ -39,7 +52,7 @@ const VerifyOTP = () => {
           text: "Your password has been successfully reset.",
           icon: "success",
         });
-        navigate("/login"); // Arahkan ke halaman login setelah password direset
+        navigate("/login");
       }
     } catch (error) {
       Swal.fire({
@@ -54,7 +67,29 @@ const VerifyOTP = () => {
   };
 
   const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev); // Mengubah state showPassword
+    setShowPassword((prev) => !prev);
+  };
+
+  // Fungsi untuk Resend OTP
+  const handleResendOTP = async () => {
+    setIsResending(true);
+    try {
+      await axios.post(`${baseURL}/resend-otp2`, { email });
+      Swal.fire({
+        title: "OTP Resent",
+        text: `A new OTP has been sent to ${email}.`,
+        icon: "success",
+      });
+      setCountdown(60); // Set countdown menjadi 60 detik
+    } catch (error) {
+      Swal.fire({
+        title: "Resend Failed",
+        text: `Failed to resend OTP. Please try again.`,
+        icon: "error",
+      });
+    } finally {
+      setIsResending(false);
+    }
   };
 
   return (
@@ -71,7 +106,7 @@ const VerifyOTP = () => {
           />
           <div className="relative">
             <input
-              type={showPassword ? "text" : "password"} // Ubah tipe input berdasarkan state showPassword
+              type={showPassword ? "text" : "password"}
               placeholder="Enter new password..."
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
@@ -95,6 +130,23 @@ const VerifyOTP = () => {
             {isLoading ? "Resetting Password..." : "Reset Password"}
           </button>
         </form>
+
+        {/* Tombol Resend OTP */}
+        {countdown === 0 && (
+          <button
+            onClick={handleResendOTP}
+            className="text-color-yellow m-2 text-sm md:text-base hover:text-color-gold-card"
+            disabled={isResending}
+          >
+            {isResending ? "Resending..." : "Resend OTP"}
+          </button>
+        )}
+
+        {countdown > 0 && (
+          <p className="text-red-500 text-sm mb-8 mt-1">
+            You can request OTP again in {countdown} seconds.
+          </p>
+        )}
       </div>
       <img
         src="./img/Login/Polygon1.png"
