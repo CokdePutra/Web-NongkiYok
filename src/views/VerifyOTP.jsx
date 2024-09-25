@@ -9,7 +9,7 @@ const VerifyOTP = () => {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
   const email = location.state?.email; // Ambil email dari state yang dikirim dari halaman ForgotPassword
 
   const handleVerifyOTP = async (e) => {
@@ -26,24 +26,25 @@ const VerifyOTP = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_REACT_API_URL}/verify-reset-otp`,
-        {
-          email,
-          otp,
-          newPassword,
-        }
-      );
-      Swal.fire({
-        title: "Success!",
-        text: "Your password has been successfully reset.",
-        icon: "success",
+      const response = await axios.post(`${baseURL}/verify-reset-otp`, {
+        email,
+        otp,
+        newPassword,
       });
-      navigate("/login"); // Arahkan ke halaman login setelah password direset
+
+      if (response.status === 200) {
+        Swal.fire({
+          title: "Success!",
+          text: "Your password has been successfully reset.",
+          icon: "success",
+        });
+        navigate("/login"); // Arahkan ke halaman login setelah password direset
+      }
     } catch (error) {
       Swal.fire({
         title: "Failed",
-        text: "Invalid OTP or expired.",
+        text:
+          error.response?.data?.message || "Invalid OTP or an error occurred.",
         icon: "error",
       });
     } finally {
