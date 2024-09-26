@@ -4,7 +4,7 @@ const InfoAlert = ({ title, text, link, linkname }) => {
   return (
     <div className="relative flex items-center justify-center w-full max-w-lg lg:max-w-2xl mx-auto gap-4 p-5 mt-5">
       <div
-        className="flex items-center p-4 mb-4 text-base md:text-sm lg:text-base text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+        className="flex items-center p-4 mb-4 text-base md:text-sm lg:text-base text-green-800 rounded-lg bg-green-50 dark:bg-gray-700 dark:text-green-400 shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
         role="alert"
       >
         <svg
