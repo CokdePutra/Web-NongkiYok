@@ -1600,32 +1600,40 @@ app.get("/gemini", async (req, res) => {
   try {
     const response = await fetch("http://localhost:5000/card/up");
     const ListTempat = await response.json();
-    const ketentuan = {
-      kriteria: req.query.kriteria,
-    };
-    const prompt = `
-      Saya memiliki daftar tempat berikut: ${JSON.stringify(ListTempat)}.
-      Bantu saya mencari tempat terbaik berdasarkan kriteria berikut:
-      ${ketentuan.kriteria}
-      Jika informasi dari tempat yang ada di daftar saya tidak lengkap atau tidak memenuhi seluruh kriteria, 
-      gunakan pengetahuanmu untuk melengkapi dan mencari tempat yang paling sesuai
-    `;
-    let result = await model.generateContent(prompt);
-    let geminiResponse = JSON.parse(result.response.text());
-    const idPlacesArray = geminiResponse.map((place) => place.Id_Places);
-    if (idPlacesArray.length === 0) {
-      return res
-        .status(400)
-        .json({ error: "No Id_Places found in the request" });
-    }
-    const query = `SELECT * FROM places WHERE 	Id_Places IN (?)`;
-    db.query(query, [idPlacesArray], (err, results) => {
-      if (err) {
-        console.error("Error querying database:", err);
-        return res.status(500).json({ error: "Database query failed" });
+
+    const kriteria = req.query.kriteria; // Mengambil kriteria dari query
+    let result;
+
+    if (kriteria) {
+      const prompt = `
+        Saya memiliki daftar tempat berikut: ${JSON.stringify(ListTempat)}.
+        Bantu saya mencari tempat terbaik berdasarkan kriteria berikut:
+        ${kriteria}
+        Jika informasi dari tempat yang ada di daftar saya tidak lengkap atau tidak memenuhi seluruh kriteria, 
+        gunakan pengetahuanmu untuk melengkapi dan mencari tempat yang paling sesuai.
+      `;
+      result = await model.generateContent(prompt);
+      const geminiResponse = JSON.parse(result.response.text());
+      const idPlacesArray = geminiResponse.map((place) => place.Id_Places);
+
+      if (idPlacesArray.length === 0) {
+        return res
+          .status(400)
+          .json({ error: "No Id_Places found in the request" });
       }
-      res.json(results);
-    });
+
+      const query = `SELECT * FROM places WHERE Id_Places IN (?)`;
+      db.query(query, [idPlacesArray], (err, results) => {
+        if (err) {
+          console.error("Error querying database:", err);
+          return res.status(500).json({ error: "Database query failed" });
+        }
+        res.json(results);
+      });
+    } else {
+      // Jika tidak ada kriteria, kirimkan data ListTempat biasa
+      res.json(ListTempat);
+    }
   } catch (error) {
     console.error("Error generating content:", error);
     res.status(500).json({ error: "Failed to generate content" });

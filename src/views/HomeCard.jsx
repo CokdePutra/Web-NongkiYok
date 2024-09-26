@@ -14,6 +14,8 @@ const HomeCard = () => {
   const [searchQuery, setSearchQuery] = useState(""); // State untuk search
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State untuk popup
   const [criteria, setCriteria] = useState(""); // State untuk menyimpan kriteria
+  const [loadingAI, setLoadingAI] = useState(false);
+
   // Fetch data ketika halaman dimuat atau ada perubahan pada state filter
   useEffect(() => {
     const fetchCards = async () => {
@@ -58,10 +60,21 @@ const HomeCard = () => {
     setSelectedSize("");
     setSelectedCategory("");
   };
-  const handlePopupSubmit = () => {
-    // Lakukan aksi ketika user submit kriteria
-    console.log("Kriteria yang dimasukkan:", criteria);
-    setIsPopupOpen(false); // Menutup popup setelah submit
+
+  const handlePopupSubmit = async () => {
+    setLoadingAI(true);
+    try {
+      const response = await axios.get(`${baseURL}/gemini`, {
+        params: { kriteria: criteria },
+      });
+
+      setCards(response.data);
+      setIsPopupOpen(false);
+    } catch (error) {
+      console.error("Error fetching cards with criteria:", error);
+    } finally {
+      setLoadingAI(false);
+    }
   };
 
   return (
@@ -117,7 +130,7 @@ const HomeCard = () => {
             <div className="mb-4">
               <p className="text-gray-700">
                 Enter your criteria to get the best recommendation for you.
-                Powerd by Gemini AI.
+                Powered by Gemini AI.
               </p>
             </div>
             <textarea
@@ -128,10 +141,17 @@ const HomeCard = () => {
               onChange={(e) => setCriteria(e.target.value)}
             ></textarea>
             <button
+              disabled={loadingAI}
               className="mt-4 w-full bg-color-yellow text-black py-2 rounded-lg hover:bg-color-gold-card"
               onClick={handlePopupSubmit} // Meng-handle submit
             >
-              Sugess me
+              {loadingAI ? (
+                <div className="animate-spin flex justify-center items-center dura">
+                  <box-icon name="loader" color="#000000" size="sm"></box-icon>
+                </div>
+              ) : (
+                <div className="mt-2">Suggess me a place!</div>
+              )}
             </button>
           </div>
         </div>
@@ -237,20 +257,8 @@ const HomeCard = () => {
               </li>
 
               {/* Filter Kategori */}
-              <div className="flex justify-between items-center">
-                <h4 className="text-lg font-semibold ">Category</h4>
-              </div>
+              <h4 className="text-lg font-semibold mt-2">Category </h4>
               <li className="flex gap-2.5 justify-start">
-                <button
-                  className={`px-4 py-2 text-sm rounded-full border-2 border-color-yellow hover:bg-color-yellow hover:text-black ${
-                    selectedCategory === "Resto"
-                      ? "bg-color-yellow text-black"
-                      : "text-black"
-                  }`}
-                  onClick={() => handleCategoryChange("Resto")}
-                >
-                  Resto
-                </button>
                 <button
                   className={`px-4 py-2 text-sm rounded-full border-2 border-color-yellow hover:bg-color-yellow hover:text-black ${
                     selectedCategory === "Cafe"
@@ -260,6 +268,16 @@ const HomeCard = () => {
                   onClick={() => handleCategoryChange("Cafe")}
                 >
                   Cafe
+                </button>
+                <button
+                  className={`px-4 py-2 text-sm rounded-full border-2 border-color-yellow hover:bg-color-yellow hover:text-black ${
+                    selectedCategory === "Restaurant"
+                      ? "bg-color-yellow text-black"
+                      : "text-black"
+                  }`}
+                  onClick={() => handleCategoryChange("Restaurant")}
+                >
+                  Restaurant
                 </button>
               </li>
             </ul>
