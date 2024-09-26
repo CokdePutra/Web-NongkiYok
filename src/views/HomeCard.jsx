@@ -12,7 +12,8 @@ const HomeCard = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(""); // State untuk search
-
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // State untuk popup
+  const [criteria, setCriteria] = useState(""); // State untuk menyimpan kriteria
   // Fetch data ketika halaman dimuat atau ada perubahan pada state filter
   useEffect(() => {
     const fetchCards = async () => {
@@ -57,6 +58,11 @@ const HomeCard = () => {
     setSelectedSize("");
     setSelectedCategory("");
   };
+  const handlePopupSubmit = () => {
+    // Lakukan aksi ketika user submit kriteria
+    console.log("Kriteria yang dimasukkan:", criteria);
+    setIsPopupOpen(false); // Menutup popup setelah submit
+  };
 
   return (
     <>
@@ -86,6 +92,50 @@ const HomeCard = () => {
           onClick={() => setIsFilterOpen(true)}
         />
       </div>
+      <div className="mt-2 ml-3 mb-4 fixed bottom-3 right-1">
+        <img
+          src="./img/Card/AI2.png"
+          alt="AI"
+          className="cursor-pointer"
+          onClick={() => setIsPopupOpen(true)} // Membuka popup saat diklik
+        />
+      </div>
+      {/* Popup untuk AI */}
+      {isPopupOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl w-4/5 max-w-md relative">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-semibold mb-4">Input Criteria</h3>
+              <button
+                className="text-gray-500 hover:text-gray-700 text-3xl font-bold"
+                onClick={() => setIsPopupOpen(false)} // Menutup popup
+              >
+                &times;
+              </button>
+            </div>
+            <hr className="my-1 mb-3 border-t border-gray-300" />
+            <div className="mb-4">
+              <p className="text-gray-700">
+                Enter your criteria to get the best recommendation for you.
+                Powerd by Gemini AI.
+              </p>
+            </div>
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-500"
+              rows="4"
+              placeholder="Type your Criteria."
+              value={criteria}
+              onChange={(e) => setCriteria(e.target.value)}
+            ></textarea>
+            <button
+              className="mt-4 w-full bg-color-yellow text-black py-2 rounded-lg hover:bg-color-gold-card"
+              onClick={handlePopupSubmit} // Meng-handle submit
+            >
+              Sugess me
+            </button>
+          </div>
+        </div>
+      )}
       {/* Popup untuk filter */}
       {isFilterOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

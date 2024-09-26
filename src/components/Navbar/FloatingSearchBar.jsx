@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "boxicons";
-
+import Swall from "sweetalert2";
 const SearchBar = ({ onSearchResults }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -39,10 +39,19 @@ const SearchBar = ({ onSearchResults }) => {
         const response = await axios.get(
           `${baseURL}/card/search/${searchQuery}`
         );
-        onSearchResults(response.data); // Kirim hasil pencarian ke parent component
+        onSearchResults(response.data);
       }
     } catch (error) {
-      console.error("Error during search:", error);
+      console.error("Error during search");
+      if (error.response.status === 404) {
+        onSearchResults([]);
+        Swall.fire({
+          title: "Not Found",
+          text: "Location not found. Please try again.",
+          icon: "error",
+          confirmButtonColor: "#f6ad55",
+        });
+      }
     } finally {
       setLoading(false);
     }
