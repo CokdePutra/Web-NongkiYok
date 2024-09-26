@@ -160,7 +160,7 @@ const HomeCard = () => {
                   <box-icon name="loader" color="#000000" size="sm"></box-icon>
                 </div>
               ) : (
-                <div className="mt-2">Suggess me a place!</div>
+                <div>Suggess me a place!</div>
               )}
             </button>
           </div>
