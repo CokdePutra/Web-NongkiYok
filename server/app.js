@@ -67,7 +67,7 @@ const upload = multer({ storage: storage });
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
-  secure: true,
+  secure: process.env.EMAIL_SECURE, // Gunakan TLS atau SSL
   auth: {
     user: process.env.EMAIL_USER, // Email pengirim
     pass: process.env.EMAIL_PASS, // Password atau App password (jika menggunakan Gmail)
