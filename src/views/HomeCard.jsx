@@ -88,7 +88,7 @@ const HomeCard = () => {
         <img
           src="./img/Card/Tune.png"
           alt="Filter"
-          className="w-[65%] h-[auto] cursor-pointer"
+          className="w-[58%] h-[auto] cursor-pointer"
           onClick={() => setIsFilterOpen(true)}
         />
       </div>
