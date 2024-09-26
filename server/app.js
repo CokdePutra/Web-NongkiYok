@@ -11,8 +11,6 @@ import { redirect } from "react-router-dom";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { FunctionDeclarationSchemaType } from "@google/generative-ai";
 import nodemailer from "nodemailer";
-import Swal from "sweetalert2";
-import e from "express";
 //=================================SETUP=================================
 dotenv.config();
 
@@ -102,7 +100,7 @@ console.log("Host", process.env.EMAIL_HOST);
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // config model for get place by gemini
 let model = genAI.getGenerativeModel({
-  model: "gemini-1.5-pro",
+  model: "gemini-1.5-flash",
   generationConfig: {
     responseMimeType: "application/json",
     responseSchema: {
@@ -114,12 +112,6 @@ let model = genAI.getGenerativeModel({
             type: FunctionDeclarationSchemaType.INTEGER,
           },
           Name: {
-            type: FunctionDeclarationSchemaType.STRING,
-          },
-          Latitude: {
-            type: FunctionDeclarationSchemaType.STRING,
-          },
-          Longtitude: {
             type: FunctionDeclarationSchemaType.STRING,
           },
         },
@@ -1612,19 +1604,15 @@ app.get("/gemini", async (req, res) => {
 
     // Ketentuan yang digunakan untuk filter tempat
     const ketentuan = {
-      budget: req.query.budget,
-      ukuran: req.query.ukuran,
-      category: req.query.category,
+      kriteria: req.query.kriteria,
     };
 
     // Membuat prompt untuk Google Generative AI
     const prompt = `
-      Saya memiliki daftar tempat berikut: ${JSON.stringify(ListTempat)}.
-      berikan tempat terbaik untuk saya berdasarkan ketentuan berikut:
-      - Budget sekitar: ${ketentuan.budget}
-      - Category: ${ketentuan.category}
-      cari tempat yang sesuai dari daftar saya ataupun yang paling 
-      mendekati sesuai dari ketentuan di atas.
+Saya memiliki daftar tempat berikut: ${JSON.stringify(ListTempat)}.
+Bantu saya mencari tempat terbaik berdasarkan kriteria berikut:
+${ketentuan.kriteria}
+Jika informasi dari tempat yang ada di daftar saya tidak lengkap atau tidak memenuhi seluruh kriteria, gunakan pengetahuanmu untuk melengkapi dan mencari tempat yang paling sesu
     `;
 
     // Menghasilkan konten dengan Google Generative AI
@@ -1638,26 +1626,8 @@ app.get("/gemini", async (req, res) => {
     res.status(500).json({ error: "Failed to generate content" });
   }
 });
-// add place by gemini
-app.get("/api/gemini/add", async (req, res) => {
-  const ketentuan = {
-    budget: req.query.budget,
-    ukuran: req.query.ukuran,
-    category: req.query.category,
-    lokasi: req.query.lokasi,
-    kriteria: req.query.kriteria,
-  };
-  const prompt = `berikan saya 1 tempat terbaik dengan kriteria ${ketentuan.kriteria} untuk saya 
-  sekitaran ${ketentuan.lokasi}, 
-  dengan budget sekitar ${ketentuan.budget}, dan ukuran ${ketentuan.ukuran} 
-  dengan kategori ${ketentuan.category}.`;
-  // Menghasilkan konten dengan Google Generative AI
-  let result = await modeladd.generateContent(prompt);
-  let place = JSON.parse(result.response.text());
+//sugesstion by gemini request by user
 
-  // Mengirimkan hasilnya sebagai respons JSON
-  res.json(place);
-});
 //========================== SERVER RUNNING =======================
 // check runing
 const PORT = process.env.PORT || 5000;
