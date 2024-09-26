@@ -47,7 +47,7 @@ const Navbar = ({ className }) => {
   const isAdminPage =
     location.pathname === "/Admin" || location.pathname === "/ListContact";
   const isuserPage = location.pathname === "/dashboard";
-
+  const IsLocation = location.pathname === "/homecard";
   return (
     <div className="sticky top-0 w-full z-[999]">
       {/* Tambahkan kondisi untuk menyembunyikan navbar saat mobile menu terbuka */}
@@ -157,14 +157,15 @@ const Navbar = ({ className }) => {
                 <span>Guide Dashboard</span>
               </a>
             )}
-
-            <a href="" className="flex items-center space-x-2">
-              <img
-                src="./img/Card/AI.png"
-                alt="AI"
-                className="h-7 w-7 object-cover"
-              />
-            </a>
+            {!IsLocation && (
+              <a href="/homecard" className="flex items-center space-x-2">
+                <img
+                  src="./img/Card/AI.png"
+                  alt="AI"
+                  className="h-7 w-7 object-cover"
+                />
+              </a>
+            )}
             {user ? (
               isDashboardPage &&
               (user.role === "Guide" ||
@@ -309,17 +310,19 @@ const Navbar = ({ className }) => {
               <span>Dashboard Guide</span>
             </a>
           )}
-          <a
-            href=""
-            className="items-center flex py-2 px-4 border-b border-gray-700 hover:text-color-gold-card"
-          >
-            <img
-              src="./img/Card/AI.png"
-              alt="AI"
-              className="h-6 w-6 object-cover"
-            />
-            <p className=" text-wrap ms-2">Powerd by Gemini</p>
-          </a>
+          {!IsLocation && (
+            <a
+              href="/homecard"
+              className="items-center flex py-2 px-4 border-b border-gray-700 hover:text-color-gold-card"
+            >
+              <img
+                src="./img/Card/AI.png"
+                alt="AI"
+                className="h-6 w-6 object-cover"
+              />
+              <p className=" text-wrap ms-2">Powerd by Gemini</p>
+            </a>
+          )}
           <div className="hover:text-color-gold-card">
             {user ? (
               isDashboardPage &&
