@@ -3,6 +3,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar/Navbar";
 import Card from "../components/Card/Card";
 import FloatingSearchBar from "../components/Navbar/FloatingSearchBar";
+import InfoAlert from "../components/alert/AlertsInfo";
 
 const HomeCard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -15,7 +16,7 @@ const HomeCard = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false); // State untuk popup
   const [criteria, setCriteria] = useState(""); // State untuk menyimpan kriteria
   const [loadingAI, setLoadingAI] = useState(false);
-
+  const [alert, setAlert] = useState(false);
   // Fetch data ketika halaman dimuat atau ada perubahan pada state filter
   useEffect(() => {
     const fetchCards = async () => {
@@ -63,6 +64,7 @@ const HomeCard = () => {
 
   const handlePopupSubmit = async () => {
     setLoadingAI(true);
+    setAlert(true);
     try {
       const response = await axios.get(`${baseURL}/gemini`, {
         params: { kriteria: criteria },
@@ -82,6 +84,14 @@ const HomeCard = () => {
       <Navbar />
       <FloatingSearchBar onSearchResults={handleSearchResults} />{" "}
       {/* Terhubung dengan search bar */}
+      {alert && (
+        <InfoAlert
+          title="this is it for you!"
+          text="Here are the recommended places by Gemini, based on your criteria."
+          link={"/homecard"}
+          linkname="Reset Suggestions"
+        />
+      )}
       <div className="container-card flex flex-wrap justify-center items-stretch gap-4 p-4">
         {cards.map((card, index) => (
           <Card
