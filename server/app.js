@@ -1598,29 +1598,34 @@ app.delete("/api/contact/delete/:id", (req, res) => {
 // search by gemini
 app.get("/gemini", async (req, res) => {
   try {
-    // Mengambil daftar tempat dari API lokal
     const response = await fetch("http://localhost:5000/card/up");
     const ListTempat = await response.json();
-
-    // Ketentuan yang digunakan untuk filter tempat
     const ketentuan = {
       kriteria: req.query.kriteria,
     };
-
-    // Membuat prompt untuk Google Generative AI
     const prompt = `
-Saya memiliki daftar tempat berikut: ${JSON.stringify(ListTempat)}.
-Bantu saya mencari tempat terbaik berdasarkan kriteria berikut:
-${ketentuan.kriteria}
-Jika informasi dari tempat yang ada di daftar saya tidak lengkap atau tidak memenuhi seluruh kriteria, gunakan pengetahuanmu untuk melengkapi dan mencari tempat yang paling sesu
+      Saya memiliki daftar tempat berikut: ${JSON.stringify(ListTempat)}.
+      Bantu saya mencari tempat terbaik berdasarkan kriteria berikut:
+      ${ketentuan.kriteria}
+      Jika informasi dari tempat yang ada di daftar saya tidak lengkap atau tidak memenuhi seluruh kriteria, 
+      gunakan pengetahuanmu untuk melengkapi dan mencari tempat yang paling sesuai
     `;
-
-    // Menghasilkan konten dengan Google Generative AI
     let result = await model.generateContent(prompt);
-    let place = JSON.parse(result.response.text());
-
-    // Mengirimkan hasilnya sebagai respons JSON
-    res.json(place);
+    let geminiResponse = JSON.parse(result.response.text());
+    const idPlacesArray = geminiResponse.map((place) => place.Id_Places);
+    if (idPlacesArray.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "No Id_Places found in the request" });
+    }
+    const query = `SELECT * FROM places WHERE 	Id_Places IN (?)`;
+    db.query(query, [idPlacesArray], (err, results) => {
+      if (err) {
+        console.error("Error querying database:", err);
+        return res.status(500).json({ error: "Database query failed" });
+      }
+      res.json(results);
+    });
   } catch (error) {
     console.error("Error generating content:", error);
     res.status(500).json({ error: "Failed to generate content" });
