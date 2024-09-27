@@ -77,23 +77,36 @@ const transporter = nodemailer.createTransport({
 console.log("email user", process.env.EMAIL_USER);
 console.log("Pass", process.env.EMAIL_PASS);
 console.log("Host", process.env.EMAIL_HOST);
-// let mailOptions = {
-//   from: {
-//     name: "Nongki YOK",
-//     address: process.env.EMAIL_USER,
-//   },
-//   to: ["cokgdeputrawidnyana25@gmail.com", "gungnanda14@gmail.com"],
-//   subject: "Test Email",
-//   html: "<h1>Test email</h1><p>This is a test email</p>",
-// };
+app.get("/send-test-email", async (req, res) => {
+  let mailOptions = {
+    from: {
+      name: "Nongki YOK",
+      address: process.env.EMAIL_USER,
+    },
+    to: ["gungnanda14@gmail.com"], // Ganti dengan email tujuan
+    subject: "Test Email",
+    html: "<h1>Test email</h1><p>This is a test email</p>",
+  };
 
-// transporter.sendMail(mailOptions, (error, info) => {
-//   if (error) {
-//     console.log("Error sending email: ", error);
-//   } else {
-//     console.log("Email sent: " + info.response);
-//   }
-// });
+  // Kirim email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Error sending email: ", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error sending email",
+        error: error.message,
+      });
+    } else {
+      console.log("Email sent: " + info.response);
+      return res.status(200).json({
+        success: true,
+        message: "Email sent successfully",
+        info: info.response,
+      });
+    }
+  });
+});
 // ============================== END EMAIL TEST =============================
 //=====================================================================
 //============================= GEMINI SETUP================================
@@ -921,19 +934,22 @@ app.post("/verify-reset-otp", (req, res) => {
 });
 // LOGIN
 app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  const query = "SELECT * FROM users WHERE Username = ?";
-  db.query(query, [username], (err, results) => {
+  const { username, password, rememberMe } = req.body;
+  const query = "SELECT * FROM users WHERE Username = ? OR Email = ?";
+
+  db.query(query, [username, username], (err, results) => {
     if (err) return res.status(500).send("Server Error");
     if (results.length === 0) return res.status(401).send("User not found");
-    console.log("IsVerified", results[0].IsVerified);
+
     const user = results[0];
+
     if (!user.IsVerified) {
       return res.status(403).json({
         message: "Email not verified",
         verifyUrl: `${process.env.FRONTEND_URL}/verify-email/${user.Email}`,
       });
     }
+
     bcrypt.compare(password, user.Password, (err, result) => {
       if (err) return res.status(500).send("Server Error");
       if (!result) return res.status(401).send("Invalid password");
@@ -947,6 +963,13 @@ app.post("/login", (req, res) => {
         name: user.Name,
       };
 
+      // Set the session cookie maxAge
+      if (rememberMe) {
+        // Set cookie for
+        req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
+      } else {
+        req.session.cookie.expires = false;
+      }
       if (user.Role === "Guide") {
         res
           .status(200)

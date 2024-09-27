@@ -10,7 +10,19 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State untuk show password
+  const [rememberMe, setRememberMe] = useState(false); // State untuk Remember Me
   const navigate = useNavigate();
+
+  // Cek apakah ada data login tersimpan di localStorage
+  useEffect(() => {
+    const savedUsername = localStorage.getItem("username");
+    const savedPassword = localStorage.getItem("password");
+    if (savedUsername && savedPassword) {
+      setUsername(savedUsername);
+      setPassword(savedPassword);
+      setRememberMe(true); // Checkbox otomatis dicentang jika ada data tersimpan
+    }
+  }, []);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -47,6 +59,15 @@ const Login = () => {
       if (response.status === 200) {
         const redirectUrl = response.data.redirectUrl;
         navigate(redirectUrl);
+
+        // Simpan username dan password di localStorage jika Remember Me dicentang
+        if (rememberMe) {
+          localStorage.setItem("username", username);
+          localStorage.setItem("password", password);
+        } else {
+          localStorage.removeItem("username");
+          localStorage.removeItem("password");
+        }
       }
     } catch (error) {
       if (error.response && error.response.status === 403) {
@@ -80,9 +101,10 @@ const Login = () => {
           <UserInput
             type="text"
             id="usernameLogin"
-            placeholder="Username..."
+            placeholder="Username or Email..."
             name="username"
             className="w-full"
+            value={username} // Isi field dengan data dari localStorage jika ada
             onChange={(e) => setUsername(e.target.value)}
           />
           <div className="relative w-full">
@@ -92,6 +114,7 @@ const Login = () => {
               name="password"
               placeholder="Password..."
               className="w-full pr-10" // Tambahkan padding untuk space icon
+              value={password} // Isi field dengan data dari localStorage jika ada
               onChange={(e) => setPassword(e.target.value)}
             />
             <span
@@ -104,16 +127,29 @@ const Login = () => {
               ></box-icon>
             </span>
           </div>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              name="rememberMe"
+              checked={rememberMe} // Bind state Remember Me
+              onChange={(e) => setRememberMe(e.target.checked)} // Update state saat dicentang
+              className="m-2"
+            />
+            <label htmlFor="rememberMe" className="text-white">
+              Remember Me
+            </label>
+          </div>
+          <ButtonLogin
+            text="Login"
+            className="w-full md:w-1/2 hover:bg-color-gold-card mb-3 mt-3"
+          />
           <a
             href="/reset-pw"
             className="text-color-yellow m-2 text-sm md:text-base hover:text-color-gold-card"
           >
             Forgot Password?..
           </a>
-          <ButtonLogin
-            text="Login"
-            className="w-full md:w-1/2 hover:bg-color-gold-card"
-          />
         </form>
         <a
           href="/sign-up"
