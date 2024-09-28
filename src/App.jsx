@@ -13,6 +13,9 @@ import Contact from "./views/Contact";
 import DashboardAdmin from "./views/Admin/DashboardAdmin";
 import ContactList from "./views/Admin/ContactList";
 import GuideRequest from "./views/GuideRequest";
+import Resetpw from "./views/Resetpw";
+import VerifyOTP from "./views/VerifyOTP";
+
 function App() {
   return (
     <>
@@ -31,6 +34,8 @@ function App() {
           <Route path="/ListContact" element={<ContactList />} />
           <Route path="/GuideRequest" element={<GuideRequest />} />
           <Route path="/verify-email/:email" element={<VerifyEmail />} />
+          <Route path="/reset-pw" element={<Resetpw />} />
+          <Route path="/VerifyOTP" element={<VerifyOTP />} />
         </Routes>
       </Router>
     </>

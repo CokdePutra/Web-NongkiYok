@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-
+import InfoAlert from "../components/alert/AlertsInfo";
 const GuideRequest = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const navigate = useNavigate();
@@ -76,26 +76,12 @@ const GuideRequest = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-800 p-6">
       {hasPendingRequest ? (
-        <div
-          className="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md"
-          role="alert"
-        >
-          <div className="flex">
-            <div className="py-1">
-              <svg
-                className="fill-current h-6 w-6 text-teal-500 mr-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-bold">Request Berhasil</p>
-              <p className="text-sm">Tunggu hingga admin menerima anda.</p>
-            </div>
-          </div>
-        </div>
+        <InfoAlert
+          title="Guide Request Pending"
+          text="Your guide request is still pending. Please wait for the admin to make a decision."
+          link={"/dashboard"}
+          linkname="Back to Dashboard"
+        />
       ) : (
         <div className="bg-yellow-500 p-12 rounded-2xl shadow-2xl w-full max-w-xl">
           <h2 className="text-black text-4xl font-extrabold mb-4 kodchasan-bold text-start">

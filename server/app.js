@@ -11,8 +11,6 @@ import { redirect } from "react-router-dom";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { FunctionDeclarationSchemaType } from "@google/generative-ai";
 import nodemailer from "nodemailer";
-import Swal from "sweetalert2";
-import e from "express";
 //=================================SETUP=================================
 dotenv.config();
 
@@ -69,7 +67,7 @@ const upload = multer({ storage: storage });
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
-  secure: true,
+  secure: process.env.EMAIL_SECURE, // Gunakan TLS atau SSL
   auth: {
     user: process.env.EMAIL_USER, // Email pengirim
     pass: process.env.EMAIL_PASS, // Password atau App password (jika menggunakan Gmail)
@@ -79,30 +77,43 @@ const transporter = nodemailer.createTransport({
 console.log("email user", process.env.EMAIL_USER);
 console.log("Pass", process.env.EMAIL_PASS);
 console.log("Host", process.env.EMAIL_HOST);
-// let mailOptions = {
-//   from: {
-//     name: "Nongki YOK",
-//     address: process.env.EMAIL_USER,
-//   },
-//   to: ["cokgdeputrawidnyana25@gmail.com", "gungnanda14@gmail.com"],
-//   subject: "Test Email",
-//   html: "<h1>Test email</h1><p>This is a test email</p>",
-// };
+app.get("/send-test-email", async (req, res) => {
+  let mailOptions = {
+    from: {
+      name: "Nongki YOK",
+      address: process.env.EMAIL_USER,
+    },
+    to: ["gungnanda14@gmail.com"], // Ganti dengan email tujuan
+    subject: "Test Email",
+    html: "<h1>Test email</h1><p>This is a test email</p>",
+  };
 
-// transporter.sendMail(mailOptions, (error, info) => {
-//   if (error) {
-//     console.log("Error sending email: ", error);
-//   } else {
-//     console.log("Email sent: " + info.response);
-//   }
-// });
+  // Kirim email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Error sending email: ", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error sending email",
+        error: error.message,
+      });
+    } else {
+      console.log("Email sent: " + info.response);
+      return res.status(200).json({
+        success: true,
+        message: "Email sent successfully",
+        info: info.response,
+      });
+    }
+  });
+});
 // ============================== END EMAIL TEST =============================
 //=====================================================================
 //============================= GEMINI SETUP================================
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // config model for get place by gemini
 let model = genAI.getGenerativeModel({
-  model: "gemini-1.5-pro",
+  model: "gemini-1.5-flash",
   generationConfig: {
     responseMimeType: "application/json",
     responseSchema: {
@@ -114,12 +125,6 @@ let model = genAI.getGenerativeModel({
             type: FunctionDeclarationSchemaType.INTEGER,
           },
           Name: {
-            type: FunctionDeclarationSchemaType.STRING,
-          },
-          Latitude: {
-            type: FunctionDeclarationSchemaType.STRING,
-          },
-          Longtitude: {
             type: FunctionDeclarationSchemaType.STRING,
           },
         },
@@ -700,21 +705,251 @@ app.post("/resend-otp", (req, res) => {
     });
   });
 });
+// resend email verification
+app.post("/resend-otp2", (req, res) => {
+  const { email } = req.body;
+
+  const query = "SELECT * FROM users WHERE Email = ?";
+  db.query(query, [email], (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send("Error mencari user");
+    }
+
+    if (results.length === 0) {
+      return res.status(404).send("User tidak ditemukan");
+    }
+
+    const user = results[0];
+    const newOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Update token verifikasi di database
+    const updateQuery =
+      "UPDATE users SET VerificationToken = ? WHERE Email = ?";
+    db.query(updateQuery, [newOTP, email], (updateErr) => {
+      if (updateErr) {
+        console.log(updateErr);
+        return res.status(500).send("Error memperbarui token verifikasi");
+      }
+      const mailOptions = {
+        from: {
+          name: "Nongki YOK",
+          address: process.env.EMAIL_USER,
+        },
+        to: email,
+        subject: "Reset Password Request",
+        html: `
+          <h1>Reset Password Request</h1>
+          <p>Hi ${user.Name},</p>
+          <p>Use the following verification code to verify your email for reseting password:</p>
+          <h2>${newOTP}</h2>
+          <p>Code is valid for 5 minutes.</p>
+        `,
+        html: `<!DOCTYPE html>
+        <html lang="en">
+        
+        <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+            <title>Nongki-YOk</title>
+        
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
+        </head>
+        
+        <body style="
+              margin: 0;
+              font-family: 'Poppins', sans-serif;
+              background: #393E46;
+              font-size: 14px;
+            ">
+            <div style="
+                max-width: 680px;
+                margin: 0 auto;
+                padding: 45px 30px 60px;
+                background: #393E46;
+                background-repeat: no-repeat;
+                background-size: 800px 452px;
+                background-position: top center;
+                font-size: 14px;
+                color: #434343;
+              ">
+        
+                <main>
+                    <div style="
+                    margin: 0;
+                    margin-top: 70px;
+                    padding: 92px 30px 115px;
+                    background: #ffffffee;
+                    border-radius: 30px;
+                    text-align: center;
+                  ">
+                        <div style="width: 100%; max-width: 489px; margin: 0 auto;">
+                            <h1 style="
+                        margin: 0;
+                        font-size: 24px;
+                        font-weight: 500;
+                        color: #1f1f1f;
+                      ">
+                                Your verification code
+                            </h1>
+                            <p style="
+                        margin: 0;
+                        margin-top: 17px;
+                        font-size: 16px;
+                        font-weight: 500;
+                      ">
+                                Hey ,${user.Name}
+                            </p>
+                            <p style="
+                        margin: 0;
+                        margin-top: 17px;
+                        font-weight: 500;
+                        letter-spacing: 0.56px;
+                      ">
+                                Thank you for using Nongki-Yok. Use the following OTP
+                                to complete the procedure to reset your email address. OTP is
+                                valid for
+                                <span style="font-weight: 600; color: #1f1f1f;">5 minutes</span>.
+                                Do not share this code with anyone.
+                            </p>
+                            <p style="
+                        margin: 0;
+                        margin-top: 60px;
+                        font-size: 25px;
+                        font-weight: 600;
+                        letter-spacing: 20px;
+                        color: #ba3d4f;
+                      ">
+                      ${newOTP}
+                            </p>
+                        </div>
+                    </div>
+        
+                    <p style="
+                    max-width: 400px;
+                    margin: 0 auto;
+                    margin-top: 90px;
+                    text-align: center;
+                    font-weight: 500;
+                    color: #ffffff;
+                  ">
+                        Need help? Ask at
+                        <a href="mailto:archisketch@gmail.com"
+                            style="color: #FCBC36; text-decoration: none;">nongki-yok@gungnanda.com</a>
+                        or visit our
+                        <a href="http://localhost:5173/Contact" target="_blank"
+                            style="color: #FCBC36; text-decoration: none;">Help Center</a>
+                    </p>
+                </main>
+        
+                <footer style="
+                  width: 100%;
+                  max-width: 490px;
+                  margin: 20px auto 0;
+                  text-align: center;
+                  border-top: 1px solid #e6ebf1;
+                ">
+                    <p style="
+                    margin: 0;
+                    margin-top: 40px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #FCBC36;
+                  ">
+                        Nongki-Yok
+                    </p>
+                    <p style="margin: 0; margin-top: 8px; color: #ffffff;">
+                        Denpasar No666, Bali, Indonesia
+                    </p>
+                    <div style="margin: 0; margin-top: 16px;">
+                        <a href="" target="_blank" style="display: inline-block;">
+                            <img width="36px" alt="Facebook"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661502815169_682499/email-template-icon-facebook" />
+                        </a>
+                        <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
+                            <img width="36px" alt="Instagram"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661504218208_684135/email-template-icon-instagram" /></a>
+                        <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
+                            <img width="36px" alt="Twitter"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503043040_372004/email-template-icon-twitter" />
+                        </a>
+                        <a href="" target="_blank" style="display: inline-block; margin-left: 8px;">
+                            <img width="36px" alt="Youtube"
+                                src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503195931_210869/email-template-icon-youtube" /></a>
+                    </div>
+                    <p style="margin: 0; margin-top: 16px; color: #434343;">
+                        Copyright © 2024 Nongki Yok. All rights reserved.
+                    </p>
+                </footer>
+            </div>
+        </body>
+        
+        </html>`,
+      };
+
+      // Mengirim email
+      transporter.sendMail(mailOptions, (mailErr, info) => {
+        if (mailErr) {
+          console.log(mailErr);
+          return res.status(500).send("Error mengirim email verifikasi ulang");
+        }
+
+        res.status(200).send("Kode verifikasi baru telah dikirim");
+      });
+    });
+  });
+});
+// forgot password
+app.post("/verify-reset-otp", (req, res) => {
+  const { email, otp, newPassword } = req.body;
+
+  // Query untuk cek email dan otp
+  const query = "SELECT * FROM users WHERE email = ? AND VerificationToken = ?";
+  db.query(query, [email, otp], async (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send("Error verifying OTP");
+    }
+    if (results.length > 0) {
+      try {
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        // Update password di database
+        const updateQuery = "UPDATE users SET password = ? WHERE email = ?";
+        db.query(updateQuery, [hashedPassword, email], (err, updateResults) => {
+          if (err) {
+            console.log(err);
+            return res.status(500).send("Error updating user password");
+          }
+          res.status(200).send("Password updated successfully");
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("Error hashing password");
+      }
+    } else {
+      res.status(400).send("Invalid OTP");
+    }
+  });
+});
 // LOGIN
 app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  const query = "SELECT * FROM users WHERE Username = ?";
-  db.query(query, [username], (err, results) => {
+  const { username, password, rememberMe } = req.body;
+  const query = "SELECT * FROM users WHERE Username = ? OR Email = ?";
+
+  db.query(query, [username, username], (err, results) => {
     if (err) return res.status(500).send("Server Error");
     if (results.length === 0) return res.status(401).send("User not found");
-    console.log("IsVerified", results[0].IsVerified);
+
     const user = results[0];
+
     if (!user.IsVerified) {
       return res.status(403).json({
         message: "Email not verified",
         verifyUrl: `${process.env.FRONTEND_URL}/verify-email/${user.Email}`,
       });
     }
+
     bcrypt.compare(password, user.Password, (err, result) => {
       if (err) return res.status(500).send("Server Error");
       if (!result) return res.status(401).send("Invalid password");
@@ -728,6 +963,13 @@ app.post("/login", (req, res) => {
         name: user.Name,
       };
 
+      // Set the session cookie maxAge
+      if (rememberMe) {
+        // Set cookie for
+        req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
+      } else {
+        req.session.cookie.expires = false;
+      }
       if (user.Role === "Guide") {
         res
           .status(200)
@@ -1379,58 +1621,49 @@ app.delete("/api/contact/delete/:id", (req, res) => {
 // search by gemini
 app.get("/gemini", async (req, res) => {
   try {
-    // Mengambil daftar tempat dari API lokal
     const response = await fetch("http://localhost:5000/card/up");
     const ListTempat = await response.json();
 
-    // Ketentuan yang digunakan untuk filter tempat
-    const ketentuan = {
-      budget: req.query.budget,
-      ukuran: req.query.ukuran,
-      category: req.query.category,
-    };
+    const kriteria = req.query.kriteria; // Mengambil kriteria dari query
+    let result;
 
-    // Membuat prompt untuk Google Generative AI
-    const prompt = `
-      Saya memiliki daftar tempat berikut: ${JSON.stringify(ListTempat)}.
-      berikan tempat terbaik untuk saya berdasarkan ketentuan berikut:
-      - Budget sekitar: ${ketentuan.budget}
-      - Category: ${ketentuan.category}
-      cari tempat yang sesuai dari daftar saya ataupun yang paling 
-      mendekati sesuai dari ketentuan di atas.
-    `;
+    if (kriteria) {
+      const prompt = `
+        Saya memiliki daftar tempat berikut: ${JSON.stringify(ListTempat)}.
+        Bantu saya mencari tempat terbaik berdasarkan kriteria berikut:
+        ${kriteria}
+        Jika informasi dari tempat yang ada di daftar saya tidak lengkap atau tidak memenuhi seluruh kriteria, 
+        gunakan pengetahuanmu untuk melengkapi dan mencari tempat yang paling sesuai.
+      `;
+      result = await model.generateContent(prompt);
+      const geminiResponse = JSON.parse(result.response.text());
+      const idPlacesArray = geminiResponse.map((place) => place.Id_Places);
 
-    // Menghasilkan konten dengan Google Generative AI
-    let result = await model.generateContent(prompt);
-    let place = JSON.parse(result.response.text());
+      if (idPlacesArray.length === 0) {
+        return res
+          .status(400)
+          .json({ error: "No Id_Places found in the request" });
+      }
 
-    // Mengirimkan hasilnya sebagai respons JSON
-    res.json(place);
+      const query = `SELECT * FROM places WHERE Id_Places IN (?)`;
+      db.query(query, [idPlacesArray], (err, results) => {
+        if (err) {
+          console.error("Error querying database:", err);
+          return res.status(500).json({ error: "Database query failed" });
+        }
+        res.json(results);
+      });
+    } else {
+      // Jika tidak ada kriteria, kirimkan data ListTempat biasa
+      res.json(ListTempat);
+    }
   } catch (error) {
     console.error("Error generating content:", error);
     res.status(500).json({ error: "Failed to generate content" });
   }
 });
-// add place by gemini
-app.get("/api/gemini/add", async (req, res) => {
-  const ketentuan = {
-    budget: req.query.budget,
-    ukuran: req.query.ukuran,
-    category: req.query.category,
-    lokasi: req.query.lokasi,
-    kriteria: req.query.kriteria,
-  };
-  const prompt = `berikan saya 1 tempat terbaik dengan kriteria ${ketentuan.kriteria} untuk saya 
-  sekitaran ${ketentuan.lokasi}, 
-  dengan budget sekitar ${ketentuan.budget}, dan ukuran ${ketentuan.ukuran} 
-  dengan kategori ${ketentuan.category}.`;
-  // Menghasilkan konten dengan Google Generative AI
-  let result = await modeladd.generateContent(prompt);
-  let place = JSON.parse(result.response.text());
+//sugesstion by gemini request by user
 
-  // Mengirimkan hasilnya sebagai respons JSON
-  res.json(place);
-});
 //========================== SERVER RUNNING =======================
 // check runing
 const PORT = process.env.PORT || 5000;
