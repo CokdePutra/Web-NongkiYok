@@ -110,6 +110,54 @@ const EditLocation = () => {
     }
   };
 
+  // Fungsi untuk mendapatkan lokasi pengguna
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You are at the location?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const latitude = position.coords.latitude;
+              const longitude = position.coords.longitude;
+              setFormData((prevData) => ({
+                ...prevData,
+                Latitude: latitude.toString(),
+                Longtitude: longitude.toString(),
+              }));
+              Swal.fire({
+                title: "Added!",
+                text: "Places location has been added same as your location",
+                icon: "success",
+              });
+            },
+            (error) => {
+              Swal.fire({
+                title: "Error!",
+                text: "Unable to retrieve your location. Please enable location permission on your browser, or enter manually.",
+                icon: "error",
+              });
+              console.error(error);
+            }
+          );
+        }
+      });
+    } else {
+      Swal.fire({
+        title: "Error!",
+        text: "Geolocation is not supported by your browser, change your browser or enter manually.",
+        icon: "error",
+      });
+    }
+  };
   return (
     <>
       <h2 className="text-3xl font-bold mb-4 text-center text-color-yellow kodchasan-bold mt-[4vh]">
@@ -186,8 +234,9 @@ const EditLocation = () => {
             </select>
           </div>
         </div>
-        <div className="mb-4 flex space-x-4">
-          <div className="w-1/2">
+        {/* Latitude & Longitude */}
+        <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 ">
+          <div className="w-full">
             <label className="block text-color-yellow jura-medium">
               Latitude
             </label>
@@ -202,23 +251,34 @@ const EditLocation = () => {
               onChange={handleChange}
             />
           </div>
-          <div className="w-1/2">
-            <label className="block text-color-yellow jura-medium">
-              Longitude
-            </label>
-            <UserInput
-              type="text"
-              id="longitude"
-              placeholder="115.1939839..."
-              inputMode="numeric"
-              name="Longtitude"
-              className="w-full px-3 py-2 border rounded-md ml-[-2px]"
-              value={formData.Longtitude}
-              onChange={handleChange}
-            />
+          {/* Longitude and Icon Container */}
+          <div className="w-full flex items-center space-x-3">
+            <div className="flex-grow">
+              <label className="block text-color-yellow jura-medium">
+                Longitude
+              </label>
+              <UserInput
+                type="text"
+                id="longitude"
+                placeholder="115.1939839..."
+                inputMode="numeric"
+                name="Longtitude"
+                className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+                value={formData.Longtitude}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="flex items-center mt-5">
+              <box-icon
+                name="current-location"
+                color="#fcbc36"
+                onClick={getCurrentLocation}
+                style={{ cursor: "pointer" }}
+              ></box-icon>
+            </div>
           </div>
         </div>
-        <div className="mb-4 flex space-x-4">
+        <div className="mb-4 flex space-x-4 mt-4">
           <div className="w-1/2">
             <label className="block text-color-yellow jura-medium">
               Link Google Maps
@@ -249,14 +309,13 @@ const EditLocation = () => {
         </div>
         <div className="mb-4">
           <label className="block text-color-yellow jura-medium">
-            Deskripsi Tempat
+            Deskripsi
           </label>
-          <UserInput
-            type="text"
+          <textarea
             id="description"
-            placeholder="Deskripsi singkat..."
+            placeholder="Deskripsi tempat..."
             name="Description"
-            className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+            className="w-full px-3 py-2 border rounded-md ml-[-2px] min-h-[100px] bg-hover-button"
             value={formData.Description}
             onChange={handleChange}
           />
@@ -268,17 +327,17 @@ const EditLocation = () => {
         >
           Submit
         </button>
+        <Link to="/dashboard">
+          <div className="flex gap-1 mt-6 ml-3 mb-1 bottom-[2rem] left-[2rem]">
+            <img
+              src="../img/Card/Icon.png"
+              alt="Back Icon"
+              className="w-6 h-[auto]"
+            />
+            <h3 className="text-white jura-medium">Back</h3>
+          </div>
+        </Link>
       </form>
-      <Link to="/dashboard">
-        <div className="flex gap-1 mt-2 ml-3 mb-1 absolute bottom-[2rem] left-[2rem]">
-          <img
-            src="../img/Card/Icon.png"
-            alt="Back Icon"
-            className="w-6 h-[auto]"
-          />
-          <h3 className="text-white jura-medium">Back</h3>
-        </div>
-      </Link>
     </>
   );
 };

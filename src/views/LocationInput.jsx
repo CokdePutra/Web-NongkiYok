@@ -115,6 +115,53 @@ const LocationInput = () => {
       });
   };
 
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You are at the location?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const latitude = position.coords.latitude;
+              const longitude = position.coords.longitude;
+              setFormData((prevData) => ({
+                ...prevData,
+                latitude: latitude.toString(),
+                longitude: longitude.toString(),
+              }));
+              Swal.fire({
+                title: "Added!",
+                text: "Places location has been added same as your location",
+                icon: "success",
+              });
+            },
+            (error) => {
+              Swal.fire({
+                title: "Error!",
+                text: "Unable to retrieve your location. Please enable location permission on your browser, or enter manually.",
+                icon: "error",
+              });
+              console.error(error);
+            }
+          );
+        }
+      });
+    } else {
+      Swal.fire({
+        title: "Error!",
+        text: "Geolocation is not supported by your browser, change your browser or enter manually.",
+        icon: "error",
+      });
+    }
+  };
   return (
     <>
       <h2 className="text-3xl font-bold mb-4 text-center text-color-yellow kodchasan-bold mt-[4vh]">
@@ -138,6 +185,7 @@ const LocationInput = () => {
             onChange={handleChange}
           />
         </div>
+
         <div className="mb-4 flex space-x-4">
           <div className="w-1/3">
             <label className="block text-color-yellow jura-medium">
@@ -191,8 +239,10 @@ const LocationInput = () => {
             </select>
           </div>
         </div>
-        <div className="mb-4 flex space-x-4">
-          <div className="w-1/2">
+
+        {/* Latitude & Longitude */}
+        <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 ">
+          <div className="w-full">
             <label className="block text-color-yellow jura-medium">
               Latitude
             </label>
@@ -202,25 +252,39 @@ const LocationInput = () => {
               placeholder="-8.6513135..."
               inputMode="numeric"
               name="latitude"
-              className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+              className="w-full px-3 py-2 border rounded-md"
               onChange={handleChange}
+              value={formData.latitude}
             />
           </div>
-          <div className="w-1/2">
-            <label className="block text-color-yellow jura-medium">
-              Longitude
-            </label>
-            <UserInput
-              type="text"
-              id="longitude"
-              placeholder="115.1939839..."
-              inputMode="numeric"
-              name="longitude"
-              className="w-full px-3 py-2 border rounded-md ml-[-2px]"
-              onChange={handleChange}
-            />
+          {/* Longitude and Icon Container */}
+          <div className="w-full flex items-center space-x-3">
+            <div className="flex-grow">
+              <label className="block text-color-yellow jura-medium">
+                Longitude
+              </label>
+              <UserInput
+                type="text"
+                id="longitude"
+                placeholder="115.1939839..."
+                inputMode="numeric"
+                name="longitude"
+                className="w-full px-3 py-2 border rounded-md"
+                value={formData.longitude}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="flex items-center mt-5">
+              <box-icon
+                name="current-location"
+                color="#fcbc36"
+                onClick={getCurrentLocation}
+                style={{ cursor: "pointer" }}
+              ></box-icon>
+            </div>
           </div>
         </div>
+
         <div className="mb-4 flex space-x-4">
           <div className="w-1/2">
             <label className="block text-color-yellow jura-medium">
@@ -251,16 +315,17 @@ const LocationInput = () => {
             </div>
           </div>
         </div>
+
         <div className="mb-4">
           <label className="block text-color-yellow jura-medium">
             Deskripsi Tempat
           </label>
-          <UserInput
+          <textarea
             type="text"
             id="description"
             placeholder="Deskripsi singkat..."
             name="description"
-            className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+            className="w-full px-3 py-2 border rounded-md ml-[-2px] bg-hover-button"
             onChange={handleChange}
           />
         </div>
@@ -271,17 +336,17 @@ const LocationInput = () => {
         >
           Submit
         </button>
+        <Link to="/dashboard">
+          <div className="flex gap-1 mt-6 ml-3 mb-1 bottom-[2rem] left-[2rem]">
+            <img
+              src="./img/Card/Icon.png"
+              alt="Back Icon"
+              className="w-6 h-[auto]"
+            />
+            <h3 className="text-white jura-medium">Back</h3>
+          </div>
+        </Link>
       </form>
-      <Link to="/dashboard">
-        <div className="flex gap-1 mt-2 ml-3 mb-1 absolute bottom-[2rem] left-[2rem]">
-          <img
-            src="./img/Card/Icon.png"
-            alt="Back Icon"
-            className="w-6 h-[auto]"
-          />
-          <h3 className="text-white jura-medium">Back</h3>
-        </div>
-      </Link>
     </>
   );
 };
