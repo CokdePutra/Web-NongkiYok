@@ -18,7 +18,8 @@ const EditLocation = () => {
     Longtitude: "",
     Link: "",
     Description: "",
-    Img_old: "", // Field to store the old image
+    Img_old: "",
+    latlong: "",
   });
   const [userRole, setUserRole] = useState(null);
   const [image, setImage] = useState(null);
@@ -50,7 +51,12 @@ const EditLocation = () => {
         const response = await axios.get(`${baseURL}/api/get/places/${id}`, {
           withCredentials: true,
         });
-        setFormData({ ...response.data, Img_old: response.data.Image }); // Store the old image in Img_old
+        const koor = response.data.Latitude + ", " + response.data.Longtitude;
+        setFormData({
+          ...response.data,
+          Img_old: response.data.Image,
+          latlong: koor,
+        }); // Store the old image in Img_old
       } catch (error) {
         console.error("Error fetching place data:", error);
         setError("Failed to load place data");
@@ -60,6 +66,15 @@ const EditLocation = () => {
     fetchPlaceData();
   }, [id]);
 
+  const handlecombine = (e) => {
+    const { value } = e.target;
+    setFormData({
+      ...formData,
+      latlong: value,
+    });
+    handleCoordinatesChange(e);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -68,6 +83,17 @@ const EditLocation = () => {
     });
   };
 
+  const handleCoordinatesChange = (e) => {
+    const { value } = e.target;
+    const [latitude, longitude] = value.split(",");
+
+    setFormData({
+      ...formData,
+      latlong: value,
+      latitude: latitude ? latitude.trim() : "",
+      longitude: longitude ? longitude.trim() : "",
+    });
+  };
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
@@ -110,7 +136,6 @@ const EditLocation = () => {
     }
   };
 
-  // Fungsi untuk mendapatkan lokasi pengguna
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
       Swal.fire({
@@ -130,6 +155,7 @@ const EditLocation = () => {
               const longitude = position.coords.longitude;
               setFormData((prevData) => ({
                 ...prevData,
+                latlong: `${latitude}, ${longitude}`,
                 Latitude: latitude.toString(),
                 Longtitude: longitude.toString(),
               }));
@@ -161,7 +187,7 @@ const EditLocation = () => {
   return (
     <>
       <h2 className="text-3xl font-bold mb-4 text-center text-color-yellow kodchasan-bold mt-[4vh]">
-        FORM EDIT TEMPAT
+        Edit Place
       </h2>
 
       <form
@@ -170,7 +196,7 @@ const EditLocation = () => {
       >
         <div className="mb-4">
           <label className="block text-color-yellow jura-medium">
-            Nama Tempat
+            Places Name
           </label>
           <UserInput
             type="text"
@@ -185,7 +211,7 @@ const EditLocation = () => {
         <div className="mb-4 flex space-x-4">
           <div className="w-1/3">
             <label className="block text-color-yellow jura-medium">
-              Rata-Rata Harga
+              AVG Harga
             </label>
             <UserInput
               type="number"
@@ -200,7 +226,7 @@ const EditLocation = () => {
           </div>
           <div className="w-1/3">
             <label className="block text-color-yellow jura-medium">
-              Kategori
+              Category
             </label>
             <select
               required
@@ -210,15 +236,13 @@ const EditLocation = () => {
               value={formData.Category}
               onChange={handleChange}
             >
-              <option value="">Pilih Kategori</option>
+              <option value="">Select Category</option>
               <option value="Cafe">Cafe</option>
               <option value="Resto">Resto</option>
             </select>
           </div>
           <div className="w-1/3">
-            <label className="block text-color-yellow jura-medium">
-              Size lokasi
-            </label>
+            <label className="block text-color-yellow jura-medium">Size</label>
             <select
               required
               className="bg-hover-button text-black rounded-md h-9 p-5 m-2 w-full px-2 py-1 border ml-[-5px]"
@@ -227,11 +251,39 @@ const EditLocation = () => {
               value={formData.Size}
               onChange={handleChange}
             >
-              <option value="">Pilih Size</option>
+              <option value="">Places Size</option>
               <option value="Small">Small</option>
               <option value="Medium">Medium</option>
               <option value="Large">Large</option>
             </select>
+          </div>
+        </div>
+        {/* Input untuk Latitude dan Longitude dengan ikon Current Location di sebelahnya */}
+        <div className="mb-4 flex items-center space-x-3">
+          <div className="flex-grow">
+            <label className="block text-color-yellow jura-medium">
+              Coordinate
+            </label>
+            <UserInput
+              type="text"
+              id="coordinates"
+              placeholder="-8.61181712575918, 115.19184522667429"
+              inputMode="numeric"
+              className="w-full px-3 py-2 border rounded-md"
+              name="latlong"
+              value={formData.latlong}
+              onChange={handlecombine}
+            />
+          </div>
+
+          {/* Icon Current Location di sebelah kanan input */}
+          <div className="flex items-center mt-5">
+            <box-icon
+              name="current-location"
+              color="#fcbc36"
+              onClick={getCurrentLocation}
+              style={{ cursor: "pointer" }}
+            ></box-icon>
           </div>
         </div>
         {/* Latitude & Longitude */}
@@ -267,14 +319,6 @@ const EditLocation = () => {
                 value={formData.Longtitude}
                 onChange={handleChange}
               />
-            </div>
-            <div className="flex items-center mt-5">
-              <box-icon
-                name="current-location"
-                color="#fcbc36"
-                onClick={getCurrentLocation}
-                style={{ cursor: "pointer" }}
-              ></box-icon>
             </div>
           </div>
         </div>

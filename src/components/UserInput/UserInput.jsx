@@ -1,9 +1,20 @@
 import React from "react";
 
-const UserInput = ({ type = "text", id, name, placeholder, value, onChange, className, inpiutMode }) => {
+const UserInput = ({
+  type = "text",
+  id,
+  name,
+  placeholder,
+  value,
+  onChange,
+  className,
+  inpiutMode,
+  Isdisabled,
+}) => {
   return (
     <div className="formInput w-full">
       <input
+        disabled={Isdisabled}
         autoComplete="off"
         required
         type={type}
