@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "../components/Navbar/Navbar";
-import Card from "../components/Card/Card";
-import FloatingSearchBar from "../components/Navbar/FloatingSearchBar";
-import InfoAlert from "../components/alert/AlertsInfo";
+import Navbar from "../../components/Navbar/Navbar";
+import Card from "../../components/Card/Card";
+import FloatingSearchBar from "../../components/Navbar/FloatingSearchBar";
+import InfoAlert from "../../components/alert/AlertsInfo";
 
 const HomeCard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;

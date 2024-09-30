@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import UserInput from "../components/UserInput/UserInput";
+import UserInput from "../../components/UserInput/UserInput";
 import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2";
 

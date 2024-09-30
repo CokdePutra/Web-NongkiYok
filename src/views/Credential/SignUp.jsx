@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import UserInput from "../components/UserInput/UserInput";
-import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
+import UserInput from "../../components/UserInput/UserInput";
+import ButtonLogin from "../../components/ButtonLogin/ButtonLogin";
 import Swal from "sweetalert2";
 
 const SignUp = () => {

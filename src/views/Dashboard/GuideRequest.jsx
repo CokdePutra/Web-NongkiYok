@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import InfoAlert from "../components/alert/AlertsInfo";
+import InfoAlert from "../../components/alert/AlertsInfo";
 const GuideRequest = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const navigate = useNavigate();

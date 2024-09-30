@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
-import CardPlace from "../components/Card/CardPlace";
-import TableDashboard from "../components/Table/TableDashboard.jsx";
-import Card from "../components/Card/Card";
+import Navbar from "../../components/Navbar/Navbar";
+import CardPlace from "../../components/Card/CardPlace";
+import TableDashboard from "../../components/Table/TableDashboard.jsx";
+import Card from "../../components/Card/Card";
 import axios from "axios";
 
 const Dashboard = () => {
