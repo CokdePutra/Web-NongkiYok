@@ -1032,7 +1032,13 @@ app.post("/api/places", upload.single("image"), (req, res) => {
     description,
   } = req.body;
 
-  // check if dupllcate place
+  // Validasi untuk latitude dan longitude
+  const coordinatePattern = /^-?\d+(\.\d+)?$/;
+  if (!coordinatePattern.test(latitude) || !coordinatePattern.test(longitude)) {
+    return res
+      .status(400)
+      .send("Latitude and Longitude must be valid numbers.");
+  }
 
   const image = req.file ? `/uploads/${req.file.filename}` : "";
   const userId = req.session.user.id;
@@ -1120,6 +1126,17 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
     Description,
     Img_old, // The old image path
   } = req.body;
+
+  // Validasi untuk latitude dan longitude
+  const coordinatePattern = /^-?\d+(\.\d+)?$/;
+  if (
+    !coordinatePattern.test(Latitude) ||
+    !coordinatePattern.test(Longtitude)
+  ) {
+    return res
+      .status(400)
+      .send("Latitude and Longitude must be valid numbers.");
+  }
 
   // If a new image is uploaded, use it; otherwise, use the old image
   const image = req.file ? `/uploads/${req.file.filename}` : Img_old;

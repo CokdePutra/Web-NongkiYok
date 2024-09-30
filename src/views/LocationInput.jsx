@@ -64,6 +64,7 @@ const LocationInput = () => {
     });
     handleCoordinatesChange(e);
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
