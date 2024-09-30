@@ -301,6 +301,7 @@ const EditLocation = () => {
               className="w-full px-3 py-2 border rounded-md ml-[-2px]"
               value={formData.Latitude}
               onChange={handleChange}
+              Isdisabled={true}
             />
           </div>
           {/* Longitude and Icon Container */}
@@ -318,6 +319,7 @@ const EditLocation = () => {
                 className="w-full px-3 py-2 border rounded-md ml-[-2px]"
                 value={formData.Longtitude}
                 onChange={handleChange}
+                Isdisabled={true}
               />
             </div>
           </div>
