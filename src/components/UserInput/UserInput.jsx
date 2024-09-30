@@ -8,7 +8,7 @@ const UserInput = ({
   value,
   onChange,
   className,
-  inpiutMode,
+  inputMode,
   Isdisabled,
 }) => {
   return (
@@ -23,7 +23,7 @@ const UserInput = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        inputMode={inpiutMode}
+        inputMode={inputMode}
         className={`bg-hover-button text-black rounded-full h-9 p-5 m-2 w-full ${className}`}
       />
     </div>

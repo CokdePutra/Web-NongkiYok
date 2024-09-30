@@ -90,8 +90,8 @@ const EditLocation = () => {
     setFormData({
       ...formData,
       latlong: value,
-      latitude: latitude ? latitude.trim() : "",
-      longitude: longitude ? longitude.trim() : "",
+      Latitude: latitude ? latitude.trim() : "",
+      Longtitude: longitude ? longitude.trim() : "",
     });
   };
   const handleImageChange = (e) => {
