@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import UserInput from "../components/UserInput/UserInput";
+import UserInput from "../../components/UserInput/UserInput";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -18,7 +18,8 @@ const EditLocation = () => {
     Longtitude: "",
     Link: "",
     Description: "",
-    Img_old: "", // Field to store the old image
+    Img_old: "",
+    latlong: "",
   });
   const [userRole, setUserRole] = useState(null);
   const [image, setImage] = useState(null);
@@ -50,7 +51,12 @@ const EditLocation = () => {
         const response = await axios.get(`${baseURL}/api/get/places/${id}`, {
           withCredentials: true,
         });
-        setFormData({ ...response.data, Img_old: response.data.Image }); // Store the old image in Img_old
+        const koor = response.data.Latitude + ", " + response.data.Longtitude;
+        setFormData({
+          ...response.data,
+          Img_old: response.data.Image,
+          latlong: koor,
+        }); // Store the old image in Img_old
       } catch (error) {
         console.error("Error fetching place data:", error);
         setError("Failed to load place data");
@@ -60,6 +66,15 @@ const EditLocation = () => {
     fetchPlaceData();
   }, [id]);
 
+  const handlecombine = (e) => {
+    const { value } = e.target;
+    setFormData({
+      ...formData,
+      latlong: value,
+    });
+    handleCoordinatesChange(e);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -68,6 +83,17 @@ const EditLocation = () => {
     });
   };
 
+  const handleCoordinatesChange = (e) => {
+    const { value } = e.target;
+    const [latitude, longitude] = value.split(",");
+
+    setFormData({
+      ...formData,
+      latlong: value,
+      Latitude: latitude ? latitude.trim() : "",
+      Longtitude: longitude ? longitude.trim() : "",
+    });
+  };
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
@@ -110,10 +136,58 @@ const EditLocation = () => {
     }
   };
 
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You are at the location?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const latitude = position.coords.latitude;
+              const longitude = position.coords.longitude;
+              setFormData((prevData) => ({
+                ...prevData,
+                latlong: `${latitude}, ${longitude}`,
+                Latitude: latitude.toString(),
+                Longtitude: longitude.toString(),
+              }));
+              Swal.fire({
+                title: "Added!",
+                text: "Places location has been added same as your location",
+                icon: "success",
+              });
+            },
+            (error) => {
+              Swal.fire({
+                title: "Error!",
+                text: "Unable to retrieve your location. Please enable location permission on your browser, or enter manually.",
+                icon: "error",
+              });
+              console.error(error);
+            }
+          );
+        }
+      });
+    } else {
+      Swal.fire({
+        title: "Error!",
+        text: "Geolocation is not supported by your browser, change your browser or enter manually.",
+        icon: "error",
+      });
+    }
+  };
   return (
     <>
       <h2 className="text-3xl font-bold mb-4 text-center text-color-yellow kodchasan-bold mt-[4vh]">
-        FORM EDIT TEMPAT
+        Edit Place
       </h2>
 
       <form
@@ -122,7 +196,7 @@ const EditLocation = () => {
       >
         <div className="mb-4">
           <label className="block text-color-yellow jura-medium">
-            Nama Tempat
+            Places Name
           </label>
           <UserInput
             type="text"
@@ -137,7 +211,7 @@ const EditLocation = () => {
         <div className="mb-4 flex space-x-4">
           <div className="w-1/3">
             <label className="block text-color-yellow jura-medium">
-              Rata-Rata Harga
+              AVG Harga
             </label>
             <UserInput
               type="number"
@@ -152,7 +226,7 @@ const EditLocation = () => {
           </div>
           <div className="w-1/3">
             <label className="block text-color-yellow jura-medium">
-              Kategori
+              Category
             </label>
             <select
               required
@@ -162,15 +236,13 @@ const EditLocation = () => {
               value={formData.Category}
               onChange={handleChange}
             >
-              <option value="">Pilih Kategori</option>
+              <option value="">Select Category</option>
               <option value="Cafe">Cafe</option>
               <option value="Resto">Resto</option>
             </select>
           </div>
           <div className="w-1/3">
-            <label className="block text-color-yellow jura-medium">
-              Size lokasi
-            </label>
+            <label className="block text-color-yellow jura-medium">Size</label>
             <select
               required
               className="bg-hover-button text-black rounded-md h-9 p-5 m-2 w-full px-2 py-1 border ml-[-5px]"
@@ -179,15 +251,44 @@ const EditLocation = () => {
               value={formData.Size}
               onChange={handleChange}
             >
-              <option value="">Pilih Size</option>
+              <option value="">Places Size</option>
               <option value="Small">Small</option>
               <option value="Medium">Medium</option>
               <option value="Large">Large</option>
             </select>
           </div>
         </div>
-        <div className="mb-4 flex space-x-4">
-          <div className="w-1/2">
+        {/* Input untuk Latitude dan Longitude dengan ikon Current Location di sebelahnya */}
+        <div className="mb-4 flex items-center space-x-3">
+          <div className="flex-grow">
+            <label className="block text-color-yellow jura-medium">
+              Coordinate
+            </label>
+            <UserInput
+              type="text"
+              id="coordinates"
+              placeholder="-8.61181712575918, 115.19184522667429"
+              inputMode="numeric"
+              className="w-full px-3 py-2 border rounded-md"
+              name="latlong"
+              value={formData.latlong}
+              onChange={handlecombine}
+            />
+          </div>
+
+          {/* Icon Current Location di sebelah kanan input */}
+          <div className="flex items-center mt-5">
+            <box-icon
+              name="current-location"
+              color="#fcbc36"
+              onClick={getCurrentLocation}
+              style={{ cursor: "pointer" }}
+            ></box-icon>
+          </div>
+        </div>
+        {/* Latitude & Longitude */}
+        <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 ">
+          <div className="w-full">
             <label className="block text-color-yellow jura-medium">
               Latitude
             </label>
@@ -200,25 +301,30 @@ const EditLocation = () => {
               className="w-full px-3 py-2 border rounded-md ml-[-2px]"
               value={formData.Latitude}
               onChange={handleChange}
+              Isdisabled={true}
             />
           </div>
-          <div className="w-1/2">
-            <label className="block text-color-yellow jura-medium">
-              Longitude
-            </label>
-            <UserInput
-              type="text"
-              id="longitude"
-              placeholder="115.1939839..."
-              inputMode="numeric"
-              name="Longtitude"
-              className="w-full px-3 py-2 border rounded-md ml-[-2px]"
-              value={formData.Longtitude}
-              onChange={handleChange}
-            />
+          {/* Longitude and Icon Container */}
+          <div className="w-full flex items-center space-x-3">
+            <div className="flex-grow">
+              <label className="block text-color-yellow jura-medium">
+                Longitude
+              </label>
+              <UserInput
+                type="text"
+                id="longitude"
+                placeholder="115.1939839..."
+                inputMode="numeric"
+                name="Longtitude"
+                className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+                value={formData.Longtitude}
+                onChange={handleChange}
+                Isdisabled={true}
+              />
+            </div>
           </div>
         </div>
-        <div className="mb-4 flex space-x-4">
+        <div className="mb-4 flex space-x-4 mt-4">
           <div className="w-1/2">
             <label className="block text-color-yellow jura-medium">
               Link Google Maps
@@ -249,14 +355,13 @@ const EditLocation = () => {
         </div>
         <div className="mb-4">
           <label className="block text-color-yellow jura-medium">
-            Deskripsi Tempat
+            Deskripsi
           </label>
-          <UserInput
-            type="text"
+          <textarea
             id="description"
-            placeholder="Deskripsi singkat..."
+            placeholder="Deskripsi tempat..."
             name="Description"
-            className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+            className="w-full px-3 py-2 border rounded-md ml-[-2px] min-h-[100px] bg-hover-button"
             value={formData.Description}
             onChange={handleChange}
           />
@@ -268,17 +373,17 @@ const EditLocation = () => {
         >
           Submit
         </button>
+        <Link to="/dashboard">
+          <div className="flex gap-1 mt-6 ml-3 mb-1 bottom-[2rem] left-[2rem]">
+            <img
+              src="../img/Card/Icon.png"
+              alt="Back Icon"
+              className="w-6 h-[auto]"
+            />
+            <h3 className="text-white jura-medium">Back</h3>
+          </div>
+        </Link>
       </form>
-      <Link to="/dashboard">
-        <div className="flex gap-1 mt-2 ml-3 mb-1 absolute bottom-[2rem] left-[2rem]">
-          <img
-            src="../img/Card/Icon.png"
-            alt="Back Icon"
-            className="w-6 h-[auto]"
-          />
-          <h3 className="text-white jura-medium">Back</h3>
-        </div>
-      </Link>
     </>
   );
 };

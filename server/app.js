@@ -1032,50 +1032,65 @@ app.post("/api/places", upload.single("image"), (req, res) => {
     description,
   } = req.body;
 
+  // Validasi untuk latitude dan longitude
+  const coordinatePattern = /^-?\d+(\.\d+)?$/;
+  if (!coordinatePattern.test(latitude) || !coordinatePattern.test(longitude)) {
+    return res
+      .status(400)
+      .send("Latitude and Longitude must be valid numbers.");
+  }
+
   const image = req.file ? `/uploads/${req.file.filename}` : "";
   const userId = req.session.user.id;
 
   // Check if a place with the same name already exists
-  const checkQuery = `SELECT * FROM places WHERE name = ?`;
-  db.query(checkQuery, [name], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("Error checking for existing place");
-    }
+  const checkQuery = `
+    SELECT * FROM places WHERE name = ? OR 
+    (Latitude = ? AND Longtitude = ?) 
+    OR Link = ? 
+  `;
+  db.query(
+    checkQuery,
+    [name, latitude, longitude, googleMapsLink],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).send("Error checking for existing place");
+      }
+      if (results.length > 0) {
+        // Place with the same name already exists
+        return res.status(409).send("Place with the same name already exists");
+      }
 
-    if (results.length > 0) {
-      // Place with the same name already exists
-      return res.status(409).send("Place with the same name already exists");
-    }
-
-    // No duplicate found, proceed with the insertion
-    const insertQuery = `
+      // No duplicate found, proceed with the insertion
+      const insertQuery = `
       INSERT INTO places (name, AVG_Price, Size, Category, Longtitude, Latitude, Link, Description, Image, Id_User)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    db.query(
-      insertQuery,
-      [
-        name,
-        price,
-        Size,
-        Category,
-        longitude, // pastikan urutannya sesuai
-        latitude,
-        googleMapsLink,
-        description,
-        image,
-        userId,
-      ],
-      (err, results) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).send("Error adding place");
+      db.query(
+        insertQuery,
+        [
+          name,
+          price,
+          Size,
+          Category,
+          longitude, // pastikan urutannya sesuai
+          latitude,
+          googleMapsLink,
+          description,
+          image,
+          userId,
+        ],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send("Error adding place");
+          }
+          res.status(201).send("Place added successfully");
         }
-        res.status(201).send("Place added successfully");
-      }
-    );
-  });
+      );
+    }
+  );
 });
 
 // get place by id
@@ -1111,44 +1126,83 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
     Description,
     Img_old, // The old image path
   } = req.body;
+
+  // Validasi untuk latitude dan longitude
+  const coordinatePattern = /^-?\d+(\.\d+)?$/;
+  if (
+    !coordinatePattern.test(Latitude) ||
+    !coordinatePattern.test(Longtitude)
+  ) {
+    return res
+      .status(400)
+      .send("Latitude and Longitude must be valid numbers.");
+  }
+
   // If a new image is uploaded, use it; otherwise, use the old image
   const image = req.file ? `/uploads/${req.file.filename}` : Img_old;
   const userId = req.session.user.id;
 
-  const query = `
-    UPDATE places 
-    SET name = ?, AVG_Price = ?,Size = ?, Category = ?, Latitude = ?, Longtitude = ?, Link = ?, Description = ?, Image = ?
-    WHERE Id_Places = ? AND Id_User = ?
+  // Check if a place with the same name or coordinates already exists, excluding the current place
+  const checkQuery = `
+    SELECT * FROM places 
+    WHERE (name = ? OR (Latitude = ? AND Longtitude = ?) OR Link = ?) 
+    AND Id_Places != ? 
   `;
+
   db.query(
-    query,
-    [
-      Name,
-      AVG_Price,
-      Size,
-      Category,
-      Latitude,
-      Longtitude,
-      Link,
-      Description,
-      image,
-      placeId,
-      userId,
-    ],
+    checkQuery,
+    [Name, Latitude, Longtitude, Link, placeId],
     (err, results) => {
       if (err) {
         console.error(err);
-        return res.status(500).send("Error updating place");
+        return res.status(500).send("Error checking for existing place");
       }
-      if (results.affectedRows === 0) {
-        return res.status(404).send("Place not found or not authorized");
+      if (results.length > 0) {
+        // Place with the same name or coordinates already exists
+        return res
+          .status(409)
+          .send("Place with the same name or coordinates already exists");
       }
-      res
-        .status(200)
-        .json({ message: "Update successful", redirectUrl: "/dashboard" });
+
+      // Update the place
+      const updateQuery = `
+        UPDATE places 
+        SET name = ?, AVG_Price = ?, Size = ?, Category = ?, Latitude = ?, Longtitude = ?, Link = ?, Description = ?, Image = ? 
+        WHERE Id_Places = ? AND Id_User = ?
+      `;
+
+      db.query(
+        updateQuery,
+        [
+          Name,
+          AVG_Price,
+          Size,
+          Category,
+          Latitude,
+          Longtitude,
+          Link,
+          Description,
+          image,
+          placeId,
+          userId,
+        ],
+        (err, results) => {
+          if (err) {
+            console.error(err);
+            return res.status(500).send("Error updating place");
+          }
+          if (results.affectedRows === 0) {
+            return res.status(404).send("Place not found or not authorized");
+          }
+          res
+            .status(200)
+            .json({ message: "Update successful", redirectUrl: "/dashboard" });
+        }
+      );
     }
   );
 });
+
 // delete place
 app.delete("/api/places/delete/:id", (req, res) => {
   if (!req.session.user) {

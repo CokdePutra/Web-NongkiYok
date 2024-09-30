@@ -45,15 +45,15 @@ const ContactList = () => {
   }, []);
   return (
     <>
-    <Navbar />
+      <Navbar />
       <div className="flex justify-center">
-      <CardPlace
+        <CardPlace
           src={"./img/Card/Users.png"}
           title={totalMessages.total}
           desc={"Total Messages"}
         />
       </div>
-        <MessageList />
+      <MessageList />
     </>
   );
 };

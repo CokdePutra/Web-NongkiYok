@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import UserInput from "../components/UserInput/UserInput";
-import ButtonLogin from "../components/ButtonLogin/ButtonLogin";
+import UserInput from "../../components/UserInput/UserInput";
+import ButtonLogin from "../../components/ButtonLogin/ButtonLogin";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";

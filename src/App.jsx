@@ -1,20 +1,24 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
+//views
 import Home from "./views/Home";
-import Login from "./views/Login";
-import VerifyEmail from "./views/VerifyEmail";
-import SignUp from "./views/SignUp";
-import HomeCard from "./views/HomeCard";
-import MapComponent from "./views/MapComponent";
-import Dashboard from "./views/Dashboard";
-import LocationInput from "./views/LocationInput";
-import EditLocation from "./views/EditLocation";
 import Contact from "./views/Contact";
-import DashboardAdmin from "./views/Admin/DashboardAdmin";
-import ContactList from "./views/Admin/ContactList";
-import GuideRequest from "./views/GuideRequest";
-import Resetpw from "./views/Resetpw";
-import VerifyOTP from "./views/VerifyOTP";
+//credential
+import Login from "./views/Credential/Login";
+import SignUp from "./views/Credential/SignUp";
+import VerifyEmail from "./views/Credential/VerifyEmail";
+import Resetpw from "./views/Credential/Resetpw";
+import VerifyOTP from "./views/Credential/VerifyOTP";
+//dashboard
+import DashboardAdmin from "./views/Dashboard/DashboardAdmin";
+import ContactList from "./views/Dashboard/ContactList";
+import Dashboard from "./views/Dashboard/Dashboard";
+import GuideRequest from "./views/Dashboard/GuideRequest";
+//Location
+import LocationInput from "./views/Location/LocationInput";
+import EditLocation from "./views/Location/EditLocation";
+import HomeCard from "./views/Location/HomeCard";
+import MapComponent from "./views/Location/MapComponent";
 
 function App() {
   return (
