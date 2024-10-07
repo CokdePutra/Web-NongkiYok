@@ -4,6 +4,8 @@ import ButtonLogin from "../../components/ButtonLogin/ButtonLogin";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Cookies from "js-cookie";
+import CryptoJS from "crypto-js";
 
 const Login = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -12,15 +14,23 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false); // State untuk show password
   const [rememberMe, setRememberMe] = useState(false); // State untuk Remember Me
   const navigate = useNavigate();
-
-  // Cek apakah ada data login tersimpan di localStorage
+  const secretKey = import.meta.env.VITE_REACT_SECRET_KEY;
+  // encrypt and decrypt password
+  const encryptData = (data) => {
+    return CryptoJS.AES.encrypt(data, secretKey).toString();
+  };
+  const decryptData = (ciphertext) => {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, secretKey);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  };
+  // Cek login status
   useEffect(() => {
-    const savedUsername = localStorage.getItem("username");
-    const savedPassword = localStorage.getItem("password");
+    const savedUsername = Cookies.get("username");
+    const savedPassword = Cookies.get("password");
     if (savedUsername && savedPassword) {
-      setUsername(savedUsername);
-      setPassword(savedPassword);
-      setRememberMe(true); // Checkbox otomatis dicentang jika ada data tersimpan
+      setUsername(decryptData(savedUsername));
+      setPassword(decryptData(savedPassword));
+      setRememberMe(true);
     }
   }, []);
 
@@ -31,7 +41,6 @@ const Login = () => {
           withCredentials: true,
         });
         const role = response.data.role;
-        // Redirect if already logged in
         if (role === "Guide") {
           navigate("/dashboard");
         } else if (role === "Admin") {
@@ -59,14 +68,14 @@ const Login = () => {
       if (response.status === 200) {
         const redirectUrl = response.data.redirectUrl;
         navigate(redirectUrl);
-
-        // Simpan username dan password di localStorage jika Remember Me dicentang
         if (rememberMe) {
-          localStorage.setItem("username", username);
-          localStorage.setItem("password", password);
+          const encryptedUsername = encryptData(username);
+          const encryptedPassword = encryptData(password);
+          Cookies.set("username", encryptedUsername, { expires: 3 }); // Simpan username ke session 3 hari
+          Cookies.set("password", encryptedPassword, { expires: 3 });
         } else {
-          localStorage.removeItem("username");
-          localStorage.removeItem("password");
+          Cookies.remove("username");
+          Cookies.remove("password");
         }
       }
     } catch (error) {
