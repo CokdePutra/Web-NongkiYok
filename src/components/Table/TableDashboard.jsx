@@ -57,7 +57,9 @@ const TableDashboard = () => {
     const cleanHtml = DOMPurify.sanitize(html);
     return cleanHtml.replace(/<[^>]*>/g, ""); // Menghapus semua tag HTML
   };
-
+  const truncateDescription = (text, maxLength = 150) => {
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
   return (
     <div className="container mx-auto p-4 rounded mb-4 max-w-screen-xl">
       <div className="flex items-center justify-between mb-4">
@@ -94,7 +96,7 @@ const TableDashboard = () => {
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">{place.Size}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-wrap">
-                    {removeHtmlTags(place.Description)}
+                    {removeHtmlTags(truncateDescription(place.Description))}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
                     {place.AVG_Price}

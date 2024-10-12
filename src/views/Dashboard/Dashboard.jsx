@@ -5,6 +5,7 @@ import CardPlace from "../../components/Card/CardPlace";
 import TableDashboard from "../../components/Table/TableDashboard.jsx";
 import Card from "../../components/Card/Card";
 import axios from "axios";
+import DOMPurify from "dompurify";
 
 const Dashboard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -107,7 +108,13 @@ const Dashboard = () => {
       fetchCards();
     }
   }, [userRole, navigate]);
-
+  const removeHtmlTags = (html) => {
+    const cleanHtml = DOMPurify.sanitize(html);
+    return cleanHtml.replace(/<[^>]*>/g, ""); // Menghapus semua tag HTML
+  };
+  const truncateDescription = (text, maxLength = 150) => {
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
   return (
     <>
       <Navbar />
@@ -154,7 +161,9 @@ const Dashboard = () => {
                   imgSrc={
                     card.Image ? `./${card.Image}` : "./img/Card/image-ex.png"
                   }
-                  description={card.Description}
+                  description={removeHtmlTags(
+                    truncateDescription(card.Description)
+                  )}
                   link={card.Link}
                   price={card.AVG_Price}
                   category={card.Category}

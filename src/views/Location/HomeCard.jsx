@@ -82,6 +82,9 @@ const HomeCard = () => {
     const cleanHtml = DOMPurify.sanitize(html);
     return cleanHtml.replace(/<[^>]*>/g, ""); // Menghapus semua tag HTML
   };
+  const truncateDescription = (text, maxLength = 100) => {
+    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
   return (
     <>
       <Navbar />
@@ -102,7 +105,7 @@ const HomeCard = () => {
             key={index}
             title={card.Name}
             imgSrc={card.Image ? `./${card.Image}` : "./img/Card/image-ex.png"}
-            description={removeHtmlTags(card.Description)}
+            description={removeHtmlTags(truncateDescription(card.Description))}
             link={card.Link}
             price={card.AVG_Price}
             category={card.Category}
