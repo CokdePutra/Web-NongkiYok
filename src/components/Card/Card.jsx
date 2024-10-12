@@ -115,7 +115,14 @@ const Card = ({
           {size}
         </span>
       </div>
-      <h1 className="title kodchasan-bold text-2xl mt-1 text-white">{title}</h1>
+      <h1 className="title kodchasan-bold text-2xl mt-1 text-white">
+        <a
+          href={`/detail/places/${placeId}`}
+          className="inline-flex rounded-md text-white hover:text-color-gold-card transition duration-300 ease-in-out"
+        >
+          {title}
+        </a>
+      </h1>
       <p className="description text-gray-300 mt-2">{description}</p>
       <div className="flex justify-between mt-4 h-auto">
         <div className="icon-money flex items-center">
