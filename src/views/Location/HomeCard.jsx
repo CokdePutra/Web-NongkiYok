@@ -26,7 +26,7 @@ const HomeCard = () => {
         );
         setCards(response.data);
       } catch (error) {
-        console.error("Error fetching cards:", error);
+        console.error("Error fetching cards");
       }
     };
 
@@ -83,8 +83,13 @@ const HomeCard = () => {
     return cleanHtml.replace(/<[^>]*>/g, ""); // Menghapus semua tag HTML
   };
   const truncateDescription = (text, maxLength = 100) => {
-    return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength);
+    }
+
+    return text;
   };
+
   return (
     <>
       <Navbar />
@@ -105,7 +110,7 @@ const HomeCard = () => {
             key={index}
             title={card.Name}
             imgSrc={card.Image ? `./${card.Image}` : "./img/Card/image-ex.png"}
-            description={removeHtmlTags(truncateDescription(card.Description))}
+            description={truncateDescription(removeHtmlTags(card.Description))}
             link={card.Link}
             price={card.AVG_Price}
             category={card.Category}

@@ -25,7 +25,9 @@ const Card = ({
         const sessionResponse = await axios.get(`${baseURL}/api/session`, {
           withCredentials: true,
         });
-        console.log(sessionResponse);
+        sessionResponse
+          ? console.log("User is logged in")
+          : console.log("User is not logged in");
         setIsLoggedIn(true); // User is logged in
 
         // If the user is logged in, fetch the favorite status
@@ -40,7 +42,7 @@ const Card = ({
         if (error.response && error.response.status === 401) {
           setIsLoggedIn(false); // User is not logged in
         } else {
-          console.error("Error fetching favorite status", error);
+          console.error("Error fetching favorite status");
         }
       }
     };
