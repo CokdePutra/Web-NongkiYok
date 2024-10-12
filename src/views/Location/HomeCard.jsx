@@ -4,7 +4,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Card from "../../components/Card/Card";
 import FloatingSearchBar from "../../components/Navbar/FloatingSearchBar";
 import InfoAlert from "../../components/alert/AlertsInfo";
-
+import DOMPurify from "dompurify";
 const HomeCard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [cards, setCards] = useState([]);
@@ -78,7 +78,10 @@ const HomeCard = () => {
       setLoadingAI(false);
     }
   };
-
+  const removeHtmlTags = (html) => {
+    const cleanHtml = DOMPurify.sanitize(html);
+    return cleanHtml.replace(/<[^>]*>/g, ""); // Menghapus semua tag HTML
+  };
   return (
     <>
       <Navbar />
@@ -99,7 +102,7 @@ const HomeCard = () => {
             key={index}
             title={card.Name}
             imgSrc={card.Image ? `./${card.Image}` : "./img/Card/image-ex.png"}
-            description={card.Description}
+            description={removeHtmlTags(card.Description)}
             link={card.Link}
             price={card.AVG_Price}
             category={card.Category}

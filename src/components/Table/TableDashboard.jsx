@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "boxicons";
-
+import DOMPurify from "dompurify";
 const TableDashboard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [places, setPlaces] = useState([]);
@@ -53,6 +53,10 @@ const TableDashboard = () => {
       }
     }
   };
+  const removeHtmlTags = (html) => {
+    const cleanHtml = DOMPurify.sanitize(html);
+    return cleanHtml.replace(/<[^>]*>/g, ""); // Menghapus semua tag HTML
+  };
 
   return (
     <div className="container mx-auto p-4 rounded mb-4 max-w-screen-xl">
@@ -90,7 +94,7 @@ const TableDashboard = () => {
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">{place.Size}</td>
                   <td className="px-4 py-2 whitespace-nowrap text-wrap">
-                    {place.Description}
+                    {removeHtmlTags(place.Description)}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
                     {place.AVG_Price}
