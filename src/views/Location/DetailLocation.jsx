@@ -231,6 +231,26 @@ const DetailLocation = () => {
             </SwiperSlide>
           </Swiper>
         </div>
+        <img
+          src="../img/Login/Polygon2.png"
+          alt=""
+          className="absolute w-1/4 md:w-1/5 top-0 right-0 -z-10"
+        />
+        <img
+          src="../img/Login/Ellipse.png"
+          alt=""
+          className="absolute w-1/6 md:w-1/10 top-[5rem] left-[2rem] md:left-[4rem] -z-10"
+        />
+        <img
+          src="../img/Login/Ellipse.png"
+          alt=""
+          className="absolute w-1/6 md:w-1/10 bottom-[2rem] right-[2rem] md:right-[4rem] -z-10"
+        />
+        <img
+          src="../img/Login/Ellipse.png"
+          alt=""
+          className="absolute top-[132%] w-1/4 md:w-1/5 bottom-0 left-0 -z-10"
+        />
       </div>
     </>
   );
