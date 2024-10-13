@@ -8,13 +8,44 @@ import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import Swal from "sweetalert2";
 
 const DetailLocation = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
-  const navigate = useNavigate();
   const { id } = useParams();
   const [data, setData] = useState({});
   const [reviews, setReviews] = useState([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [UserReview, setUserReview] = useState("");
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [IdUser, setIdUser] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(`${baseURL}/api/session`, { withCredentials: true })
+      .then((response) => {
+        if (response.data && response.data.id) {
+          setIsLoggedIn(true);
+          setIdUser(response.data.id);
+        } else {
+          setIsLoggedIn(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching session:", error);
+        setIsLoggedIn(false); // In case of error, user is not logged in
+      });
+  }, []);
+
+  // Menghitung Avg rating
+  const calculateAverageRating = () => {
+    if (reviews.length === 0) return 0;
+    const totalRating = reviews.reduce((sum, review) => sum + review.Rating, 0);
+    return (totalRating / reviews.length).toFixed(1);
+  };
+
+  const AerageRating = calculateAverageRating();
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -67,6 +98,56 @@ const DetailLocation = () => {
     );
   };
 
+  const handleRatingClick = (rating) => {
+    setSelectedRating(rating);
+  };
+
+  const handleReviewSubmit = async () => {
+    if (selectedRating === 0 || UserReview.trim() === "") {
+      Swal.fire({
+        title: "Error!",
+        text: "Please provide both a rating and a review.",
+        icon: "error",
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${baseURL}/api/review/add`,
+        {
+          PlaceId: id,
+          Rating: selectedRating,
+          Review: UserReview,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      // Menambahkan review baru ke state
+      setReviews([
+        ...reviews,
+        {
+          ...response.data,
+          Rating: selectedRating,
+          Review: UserReview,
+          Username: "Your Username",
+        },
+      ]); // Ganti dengan username yang sesuai
+      setIsPopupOpen(false);
+      setUserReview("");
+      setSelectedRating(0);
+    } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: "Error submitting review. Please try again later.",
+        icon: "error",
+      });
+      console.error("Error submitting review:", error);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -105,23 +186,43 @@ const DetailLocation = () => {
         </div>
 
         {/* Description */}
-        <div className="text-gray-300 mb-12 text-start px-5 md:px-20 text-xl">
+        <div className="text-gray-300 mb-7 text-start px-5 md:px-20 text-xl">
           <p dangerouslySetInnerHTML={{ __html: data.Description }}></p>
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-start ml-[5.5%]">
           <a
             href="/homecard"
-            className="bg-color-yellow text-black py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:bg-color-gold-card hover:text-white hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-color-yellow mb-5"
+            className="bg-color-yellow text-black py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:bg-color-gold-card hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-color-yellow mb-10 inline-flex items-center space-x-2"
           >
-            Back
+            <box-icon name="arrow-back" className="w-5 h-5"></box-icon>
+            <span>Back</span>
           </a>
         </div>
 
         {/* Reviews Section */}
         <div className="mb-10 px-5">
-          <h2 className="text-2xl font-bold mb-5">
-            Location Review ({reviews.length})
-          </h2>
+          <div className="flex justify-between items-center mb-1">
+            <h2 className="text-4xl font-bold">Location Review</h2>
+            <button
+              className="bg-green-700 text-white py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:bg-green-800 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700 inline-flex items-center justify-center"
+              onClick={() => setIsPopupOpen(true)}
+            >
+              <box-icon
+                name="news"
+                type="solid"
+                color="#ffffff"
+                className="w-5 h-5"
+              ></box-icon>
+              <span className="ml-2">Reviews</span>
+            </button>
+          </div>
+          <h3 className="text-2xl font-bold mb-5">
+            {AerageRating} / 5{" "}
+            <span className="text-yellow-400">
+              {renderRatingStars(AerageRating)}
+            </span>{" "}
+            ({reviews.length})
+          </h3>
           <Swiper
             modules={[Navigation, Pagination, Scrollbar, A11y]}
             spaceBetween={20}
@@ -150,7 +251,7 @@ const DetailLocation = () => {
                       by {review.Username}
                     </span>
                     <span className="text-sm text-gray-400">
-                      {new Date(review.created_at).toLocaleDateString("id-ID", {
+                      {new Date(review.created_at).toLocaleDateString("en-ID", {
                         day: "2-digit",
                         month: "short",
                         year: "numeric",
@@ -181,6 +282,54 @@ const DetailLocation = () => {
             ))}
           </Swiper>
         </div>
+        {/* Popup untuk AI */}
+        {isPopupOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-xl w-4/5 max-w-md relative">
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-semibold mb-4 text-black">
+                  Rate Location
+                </h3>
+                <button
+                  className="text-gray-500 hover:text-gray-700 text-3xl font-bold"
+                  onClick={() => setIsPopupOpen(false)} // Menutup popup
+                >
+                  &times;
+                </button>
+              </div>
+              <hr className="my-1 mb-3 border-t border-gray-300" />
+
+              {/* Bintang Rating */}
+              <div className="flex justify-center mb-4 mt-3">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <box-icon
+                    key={star}
+                    name="star"
+                    color="#FCBC36"
+                    Size="35px"
+                    type={selectedRating >= star ? "solid" : "regular"}
+                    onClick={() => handleRatingClick(star)}
+                    className="cursor-pointer w-8 h-8"
+                  />
+                ))}
+              </div>
+
+              <textarea
+                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-1 text-black focus:ring-slate-500"
+                rows="4"
+                placeholder="Type your Review."
+                value={UserReview}
+                onChange={(e) => setUserReview(e.target.value)}
+              ></textarea>
+              <button
+                className="mt-4 w-full bg-color-yellow text-black py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-600"
+                onClick={handleReviewSubmit}
+              >
+                Submit Review
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

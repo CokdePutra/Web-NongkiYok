@@ -1734,6 +1734,34 @@ app.get("/api/review/:id", (req, res) => {
     res.json(results);
   });
 });
+app.post("/api/review/add", (req, res) => {
+  const { PlaceId, Rating, Review } = req.body;
+  const idUser = req.session.user.id; // Mengambil user ID dari session
+
+  // Validasi input
+  if (!idUser || !PlaceId || !Rating || !Review.trim()) {
+    return res
+      .status(400)
+      .json({ message: "Invalid input. Please provide all required fields." });
+  }
+
+  const query =
+    "INSERT INTO review (Id_User, Id_Places, Review, Rating) VALUES (?, ?, ?, ?)";
+  db.query(query, [idUser, PlaceId, Review, Rating], (err, results) => {
+    if (err) {
+      console.error("Error inserting review:", err); // Logging error
+      return res.status(500).json({ message: "Error inserting review." });
+    }
+
+    res
+      .status(201)
+      .json({
+        message: "Review submitted successfully",
+        reviewId: results.insertId,
+      });
+  });
+});
+
 //========================== SERVER RUNNING =======================
 // check runing
 const PORT = process.env.PORT || 5000;
