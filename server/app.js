@@ -1671,7 +1671,7 @@ app.delete("/api/contact/delete/:id", (req, res) => {
   });
 });
 //=================================================================
-//========================== GEMINI LOGIC ==========================
+//========================== GEMINI LOGIC =========================
 // search by gemini
 app.get("/gemini", async (req, res) => {
   try {
@@ -1717,7 +1717,23 @@ app.get("/gemini", async (req, res) => {
   }
 });
 //sugesstion by gemini request by user
-
+//=================================================================
+//========================== Review Logic =========================
+app.get("/api/review/:id", (req, res) => {
+  const placeId = req.params.id;
+  const query = `
+    SELECT review.*, users.Username
+    FROM review
+    INNER JOIN users ON review.Id_User = users.Id_User
+    WHERE Id_Places = ?
+  `;
+  db.query(query, [placeId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
 //========================== SERVER RUNNING =======================
 // check runing
 const PORT = process.env.PORT || 5000;

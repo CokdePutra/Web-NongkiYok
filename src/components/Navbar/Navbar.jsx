@@ -51,8 +51,6 @@ const Navbar = ({ className }) => {
   const pathParts = location.pathname.split("/");
   const isDetailLocation =
     pathParts[1] === "DetailLocation" && !isNaN(pathParts[2]);
-
-  console.log(isDetailLocation);
   return (
     <div className="sticky top-0 w-full z-[999]">
       {/* Tambahkan kondisi untuk menyembunyikan navbar saat mobile menu terbuka */}

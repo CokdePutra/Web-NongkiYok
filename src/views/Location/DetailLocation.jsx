@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import "swiper/css";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -8,6 +10,63 @@ import "swiper/css/pagination";
 import "swiper/css/scrollbar";
 
 const DetailLocation = () => {
+  const baseURL = import.meta.env.VITE_REACT_API_URL;
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [data, setData] = useState({});
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/api/review/${id}`, {
+          withCredentials: true,
+        });
+        setReviews(response.data);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
+    };
+
+    fetchReviews();
+  }, [id]);
+
+  useEffect(() => {
+    const fetchPlaceData = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/api/get/places/${id}`, {
+          withCredentials: true,
+        });
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching place data:", error);
+      }
+    };
+
+    fetchPlaceData();
+  }, [id]);
+
+  const rupiah = (number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(number);
+  };
+
+  const renderRatingStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5 ? "★" : "";
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+    return (
+      <>
+        {"★".repeat(fullStars)}
+        {halfStar}
+        {"☆".repeat(emptyStars)}
+      </>
+    );
+  };
+
   return (
     <>
       <Navbar />
@@ -15,242 +74,113 @@ const DetailLocation = () => {
         {/* Image Section */}
         <div className="flex justify-center mb-8">
           <img
-            src="https://via.placeholder.com/600x400"
-            alt="Kopi Kenangan"
-            className="rounded-lg shadow-lg w-full md:w-2/3"
+            src={data.Image ? `../${data.Image}` : "../img/Card/image-ex.png"}
+            alt={data.Name}
+            className="rounded-lg shadow-lg max-w-4xl md:w-2/3"
           />
         </div>
 
         {/* Location Details */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold mb-2">Kopi Kenangan</h1>
-          <p className="text-xl text-yellow-400">AVG: Rp. 60.000</p>
+          <h1 className="text-5xl font-bold mb-2">
+            <a
+              href={data.Link}
+              target="_blank"
+              className="hover:text-color-yellow transition-colors duration-300 ease-in-out decoration-transparent hover:decoration-color-yellow cursor-pointer"
+            >
+              {data.Name}
+            </a>
+          </h1>
+          <p className="text-2xl text-yellow-400">
+            Average Price: {rupiah(data.AVG_Price)}
+          </p>
           <div className="info gap-1 mt-2">
-            <span className="inline-flex mt-1 mx-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
-              large
+            <span className="inline-flex mt-1 mx-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-md font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+              {data.Category}
             </span>
-            <span className="inline-flex mt-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
-              medium
+            <span className="inline-flex mt-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-md font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+              {data.Size}
             </span>
           </div>
         </div>
 
         {/* Description */}
-        <div className="text-gray-300 mb-12 text-start px-5 md:px-20 text-lg">
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Et
-            voluptatibus eos ipsum, voluptate cupiditate dolores mollitia quasi
-            sint eveniet dolorum excepturi beatae harum magnam fuga aut quis
-            maiores praesentium. Facere atque nobis assumenda magni dolore,
-            corporis consequuntur debitis impedit esse molestiae veritatis ea
-            eos nemo quae, ad at autem optio ducimus! Nostrum quas, expedita
-            quis dicta est aut quisquam saepe qui adipisci dolorum molestias
-            aliquam libero tempore quia eum esse nihil? Sunt eveniet neque iure
-            cumque suscipit amet officia assumenda at vero nulla aliquam esse
-            optio modi blanditiis, magni sequi. Pariatur consectetur minima ea
-            at a minus, nostrum ullam nam consequatur odit, obcaecati corporis
-            fugiat! Pariatur optio minus ducimus ea saepe. Natus nulla ipsum
-            suscipit aut. Nemo ipsum, aspernatur culpa tenetur illo, ex, eum
-            vero quis doloremque dicta nesciunt temporibus! Aperiam fugiat iure
-            optio! Minus magnam eos dolore officia? Molestiae dolorum cupiditate
-            iste iure eveniet enim accusamus laudantium vero, dolore dolor non
-            praesentium deleniti. Repellat aliquid ratione, illo debitis amet
-            vero soluta. Quas pariatur quisquam laudantium blanditiis nihil
-            vitae tenetur, omnis similique magnam molestias quam dicta quos
-            laborum quasi vero dolor mollitia ea ad aliquam sequi consequuntur?
-            Repellendus animi, exercitationem cum vero harum esse assumenda
-            eligendi natus eveniet hic tempore, rerum velit doloremque
-            consectetur sunt laudantium molestias soluta perspiciatis sequi.
-            Architecto harum tempora ut recusandae, beatae, fugit obcaecati
-            ipsam dignissimos a natus eveniet veritatis, dicta magnam illo amet
-            eius mollitia corporis cumque maiores. Natus aliquam atque, ipsa
-            aliquid a dignissimos voluptate illum fugit eveniet hic odit
-            nesciunt quasi fuga ut quisquam rerum culpa dolores asperiores
-            repellat voluptatem aut. Deleniti voluptas aliquam consequatur
-            sapiente eaque ullam similique est at, doloremque labore animi eius
-            cupiditate dolores officiis, molestiae quas in ad iusto eum, laborum
-            reprehenderit praesentium? Autem sapiente, quam consectetur eius
-            excepturi ex officiis repellendus exercitationem nisi, in illo
-            minima delectus quos.
-          </p>
+        <div className="text-gray-300 mb-12 text-start px-5 md:px-20 text-xl">
+          <p dangerouslySetInnerHTML={{ __html: data.Description }}></p>
+        </div>
+        <div className="flex justify-center">
+          <a
+            href="/homecard"
+            className="bg-color-yellow text-black py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:bg-color-gold-card hover:text-white hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-color-yellow mb-5"
+          >
+            Back
+          </a>
         </div>
 
-        {/* Review Section */}
+        {/* Reviews Section */}
         <div className="mb-10 px-5">
-          <h2 className="text-2xl font-bold mb-5">Location Review (5)</h2>
+          <h2 className="text-2xl font-bold mb-5">
+            Location Review ({reviews.length})
+          </h2>
           <Swiper
             modules={[Navigation, Pagination, Scrollbar, A11y]}
             spaceBetween={20}
-            slidesPerView={2} // Default tampilkan 2 slide
+            slidesPerView={2}
             breakpoints={{
               640: {
-                slidesPerView: 2, // Tampilkan 2 review untuk layar kecil
+                slidesPerView: 2,
               },
               768: {
-                slidesPerView: 3, // Tampilkan 3 review untuk layar medium
+                slidesPerView: 3,
               },
               1024: {
-                slidesPerView: 4, // Tampilkan 4 review untuk layar besar
+                slidesPerView: 4,
               },
             }}
-            navigation
             pagination={{ clickable: true }}
             scrollbar={{ draggable: true }}
             className="w-full"
           >
-            {/* Contoh Review */}
-            <SwiperSlide>
-              <div className="p-5 bg-gray-800 rounded-xl shadow-lg">
-                {/* Header dengan Nama dan Tanggal */}
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm font-medium text-gray-400">
-                    by zayuran
-                  </span>
-                  <span className="text-sm text-gray-400">13 Oct 2024</span>
-                </div>
+            {reviews.map((review) => (
+              <SwiperSlide key={review.Id}>
+                <div className="p-5 bg-gray-800 rounded-xl shadow-lg">
+                  {/* Header dengan Nama dan Tanggal */}
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-sm font-medium text-gray-400">
+                      by {review.Username}
+                    </span>
+                    <span className="text-sm text-gray-400">
+                      {new Date(review.created_at).toLocaleDateString("id-ID", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
 
-                {/* Rating */}
-                <div className="flex items-center mb-3">
-                  <span className="text-yellow-400">★★★★☆</span>
-                </div>
+                  {/* Rating */}
+                  <div className="flex items-center mb-3">
+                    <span className="text-yellow-400">
+                      {renderRatingStars(review.Rating)}
+                    </span>
+                  </div>
 
-                {/* Isi Review */}
-                <p className="text-gray-300 text-sm mb-2">
-                  Aliquam neque odio, ullamcorper vitae interdum a, dictum vitae
-                  diam. Donec convallis in arcu eu ornare. Nulla maximus, ante
-                  non ullamcorper ultrices, orci magna tempus neque...
-                </p>
+                  {/* Isi Review */}
+                  <p className="text-gray-300 text-sm mb-2">
+                    {review.Review.length > 100
+                      ? `${review.Review.substring(0, 100)}...`
+                      : review.Review}
+                  </p>
 
-                {/* Link untuk Lihat Lebih Banyak */}
-                <a href="#" className="text-yellow-400 text-sm">
-                  See More
-                </a>
-              </div>
-            </SwiperSlide>
-
-            {/* Slide Tambahan */}
-            <SwiperSlide>
-              <div className="p-5 bg-gray-800 rounded-xl shadow-lg">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm font-medium text-gray-400">
-                    by gmoons
-                  </span>
-                  <span className="text-sm text-gray-400">13 Oct 2024</span>
+                  {/* Link untuk Lihat Lebih Banyak */}
+                  <a href="#" className="text-yellow-400 text-sm">
+                    See More
+                  </a>
                 </div>
-                <div className="flex items-center mb-3">
-                  <span className="text-yellow-400">★★★★★</span>
-                </div>
-                <p className="text-gray-300 text-sm mb-2">
-                  Etiam arcu arcu, cursus ut dolor in, rutrum mollis est. Proin
-                  arcu turpis, sollicitudin quis maximus sit amet.
-                </p>
-                <a href="#" className="text-yellow-400 text-sm">
-                  See More
-                </a>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="p-5 bg-gray-800 rounded-xl shadow-lg">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm font-medium text-gray-400">
-                    by gmoons
-                  </span>
-                  <span className="text-sm text-gray-400">13 Oct 2024</span>
-                </div>
-                <div className="flex items-center mb-3">
-                  <span className="text-yellow-400">★★★★★</span>
-                </div>
-                <p className="text-gray-300 text-sm mb-2">
-                  Etiam arcu arcu, cursus ut dolor in, rutrum mollis est. Proin
-                  arcu turpis, sollicitudin quis maximus sit amet.
-                </p>
-                <a href="#" className="text-yellow-400 text-sm">
-                  See More
-                </a>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="p-5 bg-gray-800 rounded-xl shadow-lg">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm font-medium text-gray-400">
-                    by gmoons
-                  </span>
-                  <span className="text-sm text-gray-400">13 Oct 2024</span>
-                </div>
-                <div className="flex items-center mb-3">
-                  <span className="text-yellow-400">★★★★★</span>
-                </div>
-                <p className="text-gray-300 text-sm mb-2">
-                  Etiam arcu arcu, cursus ut dolor in, rutrum mollis est. Proin
-                  arcu turpis, sollicitudin quis maximus sit amet.
-                </p>
-                <a href="#" className="text-yellow-400 text-sm">
-                  See More
-                </a>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="p-5 bg-gray-800 rounded-xl shadow-lg">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm font-medium text-gray-400">
-                    by gmoons
-                  </span>
-                  <span className="text-sm text-gray-400">13 Oct 2024</span>
-                </div>
-                <div className="flex items-center mb-3">
-                  <span className="text-yellow-400">★★★★★</span>
-                </div>
-                <p className="text-gray-300 text-sm mb-2">
-                  Etiam arcu arcu, cursus ut dolor in, rutrum mollis est. Proin
-                  arcu turpis, sollicitudin quis maximus sit amet.
-                </p>
-                <a href="#" className="text-yellow-400 text-sm">
-                  See More
-                </a>
-              </div>
-            </SwiperSlide>
-            <SwiperSlide>
-              <div className="p-5 bg-gray-800 rounded-xl shadow-lg">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm font-medium text-gray-400">
-                    by gmoons
-                  </span>
-                  <span className="text-sm text-gray-400">13 Oct 2024</span>
-                </div>
-                <div className="flex items-center mb-3">
-                  <span className="text-yellow-400">★★★★★</span>
-                </div>
-                <p className="text-gray-300 text-sm mb-2">
-                  Etiam arcu arcu, cursus ut dolor in, rutrum mollis est. Proin
-                  arcu turpis, sollicitudin quis maximus sit amet.
-                </p>
-                <a href="#" className="text-yellow-400 text-sm">
-                  See More
-                </a>
-              </div>
-            </SwiperSlide>
+              </SwiperSlide>
+            ))}
           </Swiper>
         </div>
-        <img
-          src="../img/Login/Polygon2.png"
-          alt=""
-          className="absolute w-1/4 md:w-1/5 top-0 right-0 -z-10"
-        />
-        <img
-          src="../img/Login/Ellipse.png"
-          alt=""
-          className="absolute w-1/6 md:w-1/10 top-[5rem] left-[2rem] md:left-[4rem] -z-10"
-        />
-        <img
-          src="../img/Login/Ellipse.png"
-          alt=""
-          className="absolute w-1/6 md:w-1/10 bottom-[2rem] right-[2rem] md:right-[4rem] -z-10"
-        />
-        <img
-          src="../img/Login/Ellipse.png"
-          alt=""
-          className="absolute top-[132%] w-1/4 md:w-1/5 bottom-0 left-0 -z-10"
-        />
       </div>
     </>
   );
