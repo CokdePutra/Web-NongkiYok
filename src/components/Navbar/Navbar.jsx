@@ -48,6 +48,11 @@ const Navbar = ({ className }) => {
     location.pathname === "/Admin" || location.pathname === "/ListContact";
   const isuserPage = location.pathname === "/dashboard";
   const IsLocation = location.pathname === "/homecard";
+  const pathParts = location.pathname.split("/");
+  const isDetailLocation =
+    pathParts[1] === "DetailLocation" && !isNaN(pathParts[2]);
+
+  console.log(isDetailLocation);
   return (
     <div className="sticky top-0 w-full z-[999]">
       {/* Tambahkan kondisi untuk menyembunyikan navbar saat mobile menu terbuka */}
@@ -157,14 +162,24 @@ const Navbar = ({ className }) => {
                 <span>Guide Dashboard</span>
               </a>
             )}
-            {!IsLocation && (
+            {isDetailLocation ? (
               <a href="/homecard" className="flex items-center space-x-2">
                 <img
-                  src="./img/Card/AI.png"
+                  src="../img/Card/AI.png"
                   alt="AI"
                   className="h-7 w-7 object-cover"
                 />
               </a>
+            ) : (
+              !IsLocation && (
+                <a href="/homecard" className="flex items-center space-x-2">
+                  <img
+                    src="./img/Card/AI.png"
+                    alt="AI"
+                    className="h-7 w-7 object-cover"
+                  />
+                </a>
+              )
             )}
             {user ? (
               isDashboardPage &&

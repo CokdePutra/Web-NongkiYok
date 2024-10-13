@@ -37,7 +37,8 @@
     "react-leaflet": "^4.2.1",
     "react-quill": "^2.0.0",
     "react-router-dom": "^6.25.1",
-    "sweetalert2": "^11.14.1"
+    "sweetalert2": "^11.14.1",
+    "swiper": "^11.1.14"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

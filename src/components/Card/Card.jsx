@@ -117,7 +117,7 @@ const Card = ({
       </div>
       <h1 className="title kodchasan-bold text-2xl mt-1 text-white">
         <a
-          href={`/detail/places/${placeId}`}
+          href={`/DetailLocation/${placeId}`}
           className="inline-flex rounded-md text-white hover:text-color-gold-card transition duration-300 ease-in-out"
         >
           {title}
