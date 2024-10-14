@@ -236,7 +236,7 @@ const DetailLocation = () => {
           </h3>
           <Swiper
             modules={[Navigation, Pagination, Scrollbar, A11y]}
-            spaceBetween={20}
+            spaceBetween={15}
             slidesPerView={2}
             breakpoints={{
               640: {
@@ -250,18 +250,23 @@ const DetailLocation = () => {
               },
             }}
             pagination={{ clickable: true }}
-            scrollbar={{ draggable: true }}
             className="w-full"
           >
             {reviews.map((review) => (
               <SwiperSlide key={review.Id}>
-                <div className="p-5 bg-gray-800 rounded-xl shadow-lg">
+                <div className="px-4 pb-8 pt-3 bg-gray-800 rounded-xl shadow-lg overflow-hidden">
                   {/* Header dengan Nama dan Tanggal */}
+                  <div className="flex justify-end items-center mb-3">
+                    <box-icon
+                      name="dots-vertical-rounded"
+                      color="#edeff2"
+                    ></box-icon>
+                  </div>
                   <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm font-medium text-gray-400">
+                    <span className="text-md font-medium text-gray-400">
                       by {review.Username}
                     </span>
-                    <span className="text-sm text-gray-400">
+                    <span className="text-md text-gray-400">
                       {new Date(review.created_at).toLocaleDateString("en-ID", {
                         day: "2-digit",
                         month: "short",
@@ -271,23 +276,23 @@ const DetailLocation = () => {
                   </div>
 
                   {/* Rating */}
-                  <div className="flex items-center mb-3">
+                  <div className="flex items-center mb-3 text-lg">
                     <span className="text-yellow-400">
                       {renderRatingStars(review.Rating)}
                     </span>
                   </div>
 
                   {/* Isi Review */}
-                  <p className="text-gray-300 text-sm mb-2">
+                  <p className="text-gray-300 text-md mb-2">
                     {review.Review.length > 100
                       ? `${review.Review.substring(0, 100)}...`
                       : review.Review}
                   </p>
 
-                  {/* Link untuk Lihat Lebih Banyak */}
+                  {/* Link untuk Lihat Lebih Banyak
                   <a href="#" className="text-yellow-400 text-sm">
                     See More
-                  </a>
+                  </a> */}
                 </div>
               </SwiperSlide>
             ))}
