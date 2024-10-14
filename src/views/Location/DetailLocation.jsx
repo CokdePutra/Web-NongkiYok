@@ -102,6 +102,18 @@ const DetailLocation = () => {
     setSelectedRating(rating);
   };
 
+  const HandleClick = () => {
+    if (!isLoggedIn) {
+      Swal.fire({
+        title: "Error!",
+        text: "Please Login First to add review.",
+        icon: "error",
+      });
+    } else {
+      setIsPopupOpen(true);
+    }
+  };
+
   const handleReviewSubmit = async () => {
     if (selectedRating === 0 || UserReview.trim() === "") {
       Swal.fire({
@@ -125,7 +137,6 @@ const DetailLocation = () => {
         }
       );
 
-      // Menambahkan review baru ke state
       setReviews([
         ...reviews,
         {
@@ -134,7 +145,7 @@ const DetailLocation = () => {
           Review: UserReview,
           Username: "Your Username",
         },
-      ]); // Ganti dengan username yang sesuai
+      ]);
       setIsPopupOpen(false);
       setUserReview("");
       setSelectedRating(0);
@@ -205,7 +216,7 @@ const DetailLocation = () => {
             <h2 className="text-4xl font-bold">Location Review</h2>
             <button
               className="bg-green-700 text-white py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:bg-green-800 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700 inline-flex items-center justify-center"
-              onClick={() => setIsPopupOpen(true)}
+              onClick={() => HandleClick()}
             >
               <box-icon
                 name="news"
