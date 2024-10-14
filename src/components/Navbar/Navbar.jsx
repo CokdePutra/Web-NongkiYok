@@ -98,19 +98,22 @@ const Navbar = ({ className }) => {
               </span>
             )}
             <span className="border-l-2 border-white">
-              <a href="/" className="ml-3 flex items-center space-x-2">
-                <box-icon name="home" color="#ffffff"></box-icon>
+              <a
+                href="/"
+                className="ml-3 flex items-center space-x-2 hover:text-color-gold-card"
+              >
+                <box-icon name="home" color="currentColor"></box-icon>
                 <span>Home</span>
               </a>
             </span>
             <button
               onClick={toggleDropdown}
-              className="relative focus:outline-none flex items-center space-x-2"
+              className="relative focus:outline-none flex items-center space-x-2 hover:text-color-gold-card"
             >
-              <box-icon name="map-pin" color="#ffffff"></box-icon>
+              <box-icon name="map-pin" color="currentColor"></box-icon>
               <span>Location</span>
               {dropdownOpen && (
-                <div className="absolute mt-[130%] ml-[-100%] w-48 bg-gray-500 rounded-md shadow-lg z-10">
+                <div className="absolute mt-[130%] ml-[-100%] w-48 bg-gray-500 rounded-md shadow-lg z-10 ">
                   <a
                     href="/homecard"
                     className="block rounded-md px-4 py-2 text-white hover:bg-gray-400"
@@ -127,35 +130,47 @@ const Navbar = ({ className }) => {
               )}
             </button>
             {isAdminPage ? (
-              <a href="/ListContact" className="flex items-center space-x-2">
+              <a
+                href="/ListContact"
+                className="flex items-center space-x-2 hover:text-color-gold-card"
+              >
                 <box-icon
                   name="contact"
                   type="solid"
-                  color="#ffffff"
+                  color="currentColor"
                 ></box-icon>
                 <span>Response</span>
               </a>
             ) : isuserPage && user && user.role === "User" ? (
-              <a href="/GuideRequest" className="flex items-center space-x-2">
-                <box-icon name="user-plus" color="#ffffff"></box-icon>
+              <a
+                href="/GuideRequest"
+                className="flex items-center space-x-2 hover:text-color-gold-card"
+              >
+                <box-icon name="user-plus" color="currentColor"></box-icon>
                 <span>Daftar Guide</span>
               </a>
             ) : (
               !isuserPage &&
               !isAdminPage && (
-                <a href="/Contact" className="flex items-center space-x-2">
-                  <box-icon name="message-dots" color="#ffffff"></box-icon>
+                <a
+                  href="/Contact"
+                  className="flex items-center space-x-2 hover:text-color-gold-card"
+                >
+                  <box-icon name="message-dots" color="currentColor"></box-icon>
                   <span>Contact</span>
                 </a>
               )
             )}
 
             {isAdminPage && user && user.role === "Admin" && (
-              <a href="/Dashboard" className="flex items-center space-x-2">
+              <a
+                href="/Dashboard"
+                className="flex items-center space-x-2 hover:text-color-gold-card"
+              >
                 <box-icon
                   name="dashboard"
                   type="solid"
-                  color="#ffffff"
+                  color="currentColor"
                 ></box-icon>
                 <span>Guide</span>
               </a>

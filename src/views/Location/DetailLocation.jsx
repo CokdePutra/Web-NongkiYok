@@ -256,7 +256,7 @@ const DetailLocation = () => {
               <SwiperSlide key={review.Id}>
                 <div className="px-4 pb-8 pt-3 bg-gray-800 rounded-xl shadow-lg overflow-hidden">
                   {/* Header dengan Nama dan Tanggal */}
-                  <div className="flex justify-end items-center mb-3">
+                  <div className="flex justify-end items-center mb-3 cursor-pointer">
                     <box-icon
                       name="dots-vertical-rounded"
                       color="#edeff2"
