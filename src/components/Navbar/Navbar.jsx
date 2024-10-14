@@ -70,7 +70,7 @@ const Navbar = ({ className }) => {
           </a>
           {/* Hamburger Button for Mobile */}
           <button
-            className="block md:hidden text-white focus:outline-none hover:text-color-gold-card"
+            className="block lg:hidden text-white focus:outline-none hover:text-color-gold-card"
             onClick={toggleMobileMenu} // Saat ditekan, mobile menu akan muncul
           >
             {/* Icon Hamburger */}
@@ -91,7 +91,7 @@ const Navbar = ({ className }) => {
           </button>
 
           {/* Right Section (Hidden on mobile, visible on larger screens) */}
-          <div className="hidden md:flex items-center text-lg space-x-7 text-white jura-medium text">
+          <div className="hidden lg:flex items-center text-lg space-x-7 text-white jura-medium text">
             {user && (
               <span>
                 Hai, <strong className="capitalize">{user.name}</strong>
@@ -133,7 +133,7 @@ const Navbar = ({ className }) => {
                   type="solid"
                   color="#ffffff"
                 ></box-icon>
-                <span>Contact List</span>
+                <span>Response</span>
               </a>
             ) : isuserPage && user && user.role === "User" ? (
               <a href="/GuideRequest" className="flex items-center space-x-2">
@@ -157,7 +157,7 @@ const Navbar = ({ className }) => {
                   type="solid"
                   color="#ffffff"
                 ></box-icon>
-                <span>Guide Dashboard</span>
+                <span>Guide</span>
               </a>
             )}
             {isDetailLocation ? (
@@ -323,18 +323,32 @@ const Navbar = ({ className }) => {
               <span>Dashboard Guide</span>
             </a>
           )}
-          {!IsLocation && (
+          {isDetailLocation ? (
             <a
               href="/homecard"
               className="items-center flex py-2 px-4 border-b border-gray-700 hover:text-color-gold-card"
             >
               <img
-                src="./img/Card/AI.png"
+                src="../img/Card/AI.png"
                 alt="AI"
                 className="h-6 w-6 object-cover"
               />
               <p className=" text-wrap ms-2">Powerd by Gemini</p>
             </a>
+          ) : (
+            !IsLocation && (
+              <a
+                href="/homecard"
+                className="items-center flex py-2 px-4 border-b border-gray-700 hover:text-color-gold-card"
+              >
+                <img
+                  src="./img/Card/AI.png"
+                  alt="AI"
+                  className="h-6 w-6 object-cover"
+                />
+                <p className=" text-wrap ms-2">Powerd by Gemini</p>
+              </a>
+            )
           )}
           <div className="hover:text-color-gold-card">
             {user ? (
