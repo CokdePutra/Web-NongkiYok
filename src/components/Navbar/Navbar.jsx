@@ -114,10 +114,15 @@ const Navbar = ({ className }) => {
               onClick={toggleDropdown}
               className="relative focus:outline-none flex items-center space-x-2 "
             >
-              <div className="hover:text-color-gold-card">
-                <box-icon name="map-pin" color="currentColor"></box-icon>
+              <div className="flex items-center space-x-2 hover:text-color-gold-card">
+                <box-icon
+                  name="map-pin"
+                  color="currentColor"
+                  className="w-5 h-5"
+                ></box-icon>
                 <span>Location</span>
               </div>
+
               {dropdownOpen && (
                 <div className="absolute mt-[140%] ml-[-100%] w-48 bg-gray-500 rounded-md shadow-lg z-10">
                   <a
@@ -165,7 +170,7 @@ const Navbar = ({ className }) => {
                 onClick={toggleDropdownContact}
                 className="relative focus:outline-none flex items-center space-x-2"
               >
-                <div className="hover:text-color-gold-card">
+                <div className="flex items-center space-x-2 hover:text-color-gold-card">
                   <box-icon
                     name="contact"
                     type="solid"
