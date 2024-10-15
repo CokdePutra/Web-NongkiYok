@@ -159,6 +159,39 @@ const DetailLocation = () => {
     }
   };
 
+  const handleReport = async (reviewId) => {
+    const user_id = IdUser;
+    try {
+      // Tampilkan konfirmasi dengan Swal
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You sure want to report this review?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Report it!",
+      });
+
+      if (result.isConfirmed) {
+        const response = await axios.post(`${baseURL}/api/report-review`, {
+          reviewId,
+          user_id,
+        });
+        Swal.fire({
+          title: "Report Submitted!",
+          text: response.data.message,
+          icon: "success",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error Reporting Review",
+        text: "Error reporting review. Please try again later.",
+        icon: "error",
+      });
+    }
+  };
   return (
     <>
       <Navbar />
@@ -255,13 +288,18 @@ const DetailLocation = () => {
             {reviews.map((review) => (
               <SwiperSlide key={review.Id}>
                 <div className="px-4 pb-8 pt-3 bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                  {/* Header dengan Nama dan Tanggal */}
+                  {/* Icon untuk melaporkan review */}
                   <div className="flex justify-end items-center mb-3 cursor-pointer">
                     <box-icon
-                      name="dots-vertical-rounded"
+                      name="flag-alt"
+                      type="solid"
                       color="#edeff2"
+                      size="20px"
+                      onClick={() => handleReport(review.Id_Review)}
                     ></box-icon>
                   </div>
+
+                  {/* Info Pengguna dan Tanggal Review */}
                   <div className="flex justify-between items-center mb-3">
                     <span className="text-md font-medium text-gray-400">
                       by {review.Username}
@@ -275,7 +313,7 @@ const DetailLocation = () => {
                     </span>
                   </div>
 
-                  {/* Rating */}
+                  {/* Rating Review */}
                   <div className="flex items-center mb-3 text-lg">
                     <span className="text-yellow-400">
                       {renderRatingStars(review.Rating)}
@@ -289,10 +327,15 @@ const DetailLocation = () => {
                       : review.Review}
                   </p>
 
-                  {/* Link untuk Lihat Lebih Banyak
-                  <a href="#" className="text-yellow-400 text-sm">
-                    See More
-                  </a> */}
+                  {/* Link untuk Lihat Lebih Banyak jika review terlalu panjang */}
+                  {review.Review.length > 45 && (
+                    <a
+                      href={`/reviews/${review.Id}`}
+                      className="text-yellow-400 text-sm"
+                    >
+                      See More
+                    </a>
+                  )}
                 </div>
               </SwiperSlide>
             ))}
