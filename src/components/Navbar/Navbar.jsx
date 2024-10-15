@@ -48,6 +48,9 @@ const Navbar = ({ className }) => {
     location.pathname === "/Admin" || location.pathname === "/ListContact";
   const isuserPage = location.pathname === "/dashboard";
   const IsLocation = location.pathname === "/homecard";
+  const pathParts = location.pathname.split("/");
+  const isDetailLocation =
+    pathParts[1] === "DetailLocation" && !isNaN(pathParts[2]);
   return (
     <div className="sticky top-0 w-full z-[999]">
       {/* Tambahkan kondisi untuk menyembunyikan navbar saat mobile menu terbuka */}
@@ -67,7 +70,7 @@ const Navbar = ({ className }) => {
           </a>
           {/* Hamburger Button for Mobile */}
           <button
-            className="block md:hidden text-white focus:outline-none hover:text-color-gold-card"
+            className="block lg:hidden text-white focus:outline-none hover:text-color-gold-card"
             onClick={toggleMobileMenu} // Saat ditekan, mobile menu akan muncul
           >
             {/* Icon Hamburger */}
@@ -88,26 +91,29 @@ const Navbar = ({ className }) => {
           </button>
 
           {/* Right Section (Hidden on mobile, visible on larger screens) */}
-          <div className="hidden md:flex items-center text-lg space-x-7 text-white jura-medium text">
+          <div className="hidden lg:flex items-center text-lg space-x-7 text-white jura-medium text">
             {user && (
               <span>
                 Hai, <strong className="capitalize">{user.name}</strong>
               </span>
             )}
             <span className="border-l-2 border-white">
-              <a href="/" className="ml-3 flex items-center space-x-2">
-                <box-icon name="home" color="#ffffff"></box-icon>
+              <a
+                href="/"
+                className="ml-3 flex items-center space-x-2 hover:text-color-gold-card"
+              >
+                <box-icon name="home" color="currentColor"></box-icon>
                 <span>Home</span>
               </a>
             </span>
             <button
               onClick={toggleDropdown}
-              className="relative focus:outline-none flex items-center space-x-2"
+              className="relative focus:outline-none flex items-center space-x-2 hover:text-color-gold-card"
             >
-              <box-icon name="map-pin" color="#ffffff"></box-icon>
+              <box-icon name="map-pin" color="currentColor"></box-icon>
               <span>Location</span>
               {dropdownOpen && (
-                <div className="absolute mt-[130%] ml-[-100%] w-48 bg-gray-500 rounded-md shadow-lg z-10">
+                <div className="absolute mt-[130%] ml-[-100%] w-48 bg-gray-500 rounded-md shadow-lg z-10 ">
                   <a
                     href="/homecard"
                     className="block rounded-md px-4 py-2 text-white hover:bg-gray-400"
@@ -124,47 +130,69 @@ const Navbar = ({ className }) => {
               )}
             </button>
             {isAdminPage ? (
-              <a href="/ListContact" className="flex items-center space-x-2">
+              <a
+                href="/ListContact"
+                className="flex items-center space-x-2 hover:text-color-gold-card"
+              >
                 <box-icon
                   name="contact"
                   type="solid"
-                  color="#ffffff"
+                  color="currentColor"
                 ></box-icon>
-                <span>Contact List</span>
+                <span>Response</span>
               </a>
             ) : isuserPage && user && user.role === "User" ? (
-              <a href="/GuideRequest" className="flex items-center space-x-2">
-                <box-icon name="user-plus" color="#ffffff"></box-icon>
+              <a
+                href="/GuideRequest"
+                className="flex items-center space-x-2 hover:text-color-gold-card"
+              >
+                <box-icon name="user-plus" color="currentColor"></box-icon>
                 <span>Daftar Guide</span>
               </a>
             ) : (
               !isuserPage &&
               !isAdminPage && (
-                <a href="/Contact" className="flex items-center space-x-2">
-                  <box-icon name="message-dots" color="#ffffff"></box-icon>
+                <a
+                  href="/Contact"
+                  className="flex items-center space-x-2 hover:text-color-gold-card"
+                >
+                  <box-icon name="message-dots" color="currentColor"></box-icon>
                   <span>Contact</span>
                 </a>
               )
             )}
 
             {isAdminPage && user && user.role === "Admin" && (
-              <a href="/Dashboard" className="flex items-center space-x-2">
+              <a
+                href="/Dashboard"
+                className="flex items-center space-x-2 hover:text-color-gold-card"
+              >
                 <box-icon
                   name="dashboard"
                   type="solid"
-                  color="#ffffff"
+                  color="currentColor"
                 ></box-icon>
-                <span>Guide Dashboard</span>
+                <span>Guide</span>
               </a>
             )}
-            {!IsLocation && (
+            {isDetailLocation ? (
               <a href="/homecard" className="flex items-center space-x-2">
                 <img
-                  src="./img/Card/AI.png"
+                  src="../img/Card/AI.png"
                   alt="AI"
                   className="h-7 w-7 object-cover"
                 />
               </a>
+            ) : (
+              !IsLocation && (
+                <a href="/homecard" className="flex items-center space-x-2">
+                  <img
+                    src="./img/Card/AI.png"
+                    alt="AI"
+                    className="h-7 w-7 object-cover"
+                  />
+                </a>
+              )
             )}
             {user ? (
               isDashboardPage &&
@@ -310,18 +338,32 @@ const Navbar = ({ className }) => {
               <span>Dashboard Guide</span>
             </a>
           )}
-          {!IsLocation && (
+          {isDetailLocation ? (
             <a
               href="/homecard"
               className="items-center flex py-2 px-4 border-b border-gray-700 hover:text-color-gold-card"
             >
               <img
-                src="./img/Card/AI.png"
+                src="../img/Card/AI.png"
                 alt="AI"
                 className="h-6 w-6 object-cover"
               />
               <p className=" text-wrap ms-2">Powerd by Gemini</p>
             </a>
+          ) : (
+            !IsLocation && (
+              <a
+                href="/homecard"
+                className="items-center flex py-2 px-4 border-b border-gray-700 hover:text-color-gold-card"
+              >
+                <img
+                  src="./img/Card/AI.png"
+                  alt="AI"
+                  className="h-6 w-6 object-cover"
+                />
+                <p className=" text-wrap ms-2">Powerd by Gemini</p>
+              </a>
+            )
           )}
           <div className="hover:text-color-gold-card">
             {user ? (

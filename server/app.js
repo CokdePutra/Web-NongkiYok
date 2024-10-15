@@ -1671,7 +1671,7 @@ app.delete("/api/contact/delete/:id", (req, res) => {
   });
 });
 //=================================================================
-//========================== GEMINI LOGIC ==========================
+//========================== GEMINI LOGIC =========================
 // search by gemini
 app.get("/gemini", async (req, res) => {
   try {
@@ -1717,6 +1717,79 @@ app.get("/gemini", async (req, res) => {
   }
 });
 //sugesstion by gemini request by user
+//=================================================================
+//========================== Review Logic =========================
+// Endpoint untuk mendapatkan review berdasarkan ID tempat
+app.get("/api/review/:id", (req, res) => {
+  const placeId = req.params.id;
+  const query = `
+    SELECT review.*, users.Username
+    FROM review
+    INNER JOIN users ON review.Id_User = users.Id_User
+    WHERE Id_Places = ?
+  `;
+  db.query(query, [placeId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
+// Endpoint untuk menambahkan review
+app.post("/api/review/add", (req, res) => {
+  const { PlaceId, Rating, Review } = req.body;
+  const idUser = req.session.user.id; // Mengambil user ID dari session
+
+  // Validasi input
+  if (!idUser || !PlaceId || !Rating || !Review.trim()) {
+    return res
+      .status(400)
+      .json({ message: "Invalid input. Please provide all required fields." });
+  }
+
+  const query =
+    "INSERT INTO review (Id_User, Id_Places, Review, Rating) VALUES (?, ?, ?, ?)";
+  db.query(query, [idUser, PlaceId, Review, Rating], (err, results) => {
+    if (err) {
+      console.error("Error inserting review:", err); // Logging error
+      return res.status(500).json({ message: "Error inserting review." });
+    }
+
+    res.status(201).json({
+      message: "Review submitted successfully",
+      reviewId: results.insertId,
+    });
+  });
+});
+// Endpoint untuk melaporkan review
+app.post("/api/report-review", async (req, res) => {
+  const { reviewId, user_id } = req.body;
+
+  try {
+    // Masukkan laporan ke tabel report_reviews
+    const query = `
+      INSERT INTO report_reviews (Id_Review, Id_User, reported_at)
+      VALUES (?, ?, NOW())
+    `;
+
+    db.query(query, [reviewId, user_id], (err) => {
+      if (err) {
+        console.error("Error inserting review:", err); // Logging error
+        return res.status(500).json({ message: "Error inserting review." });
+      }
+
+      // Jika sukses
+      return res.status(200).json({
+        message: "Review has been reported successfully.",
+      });
+    });
+  } catch (error) {
+    console.error("Error reporting review: ", error);
+    return res.status(500).json({
+      message: "Failed to report review. Please try again later.",
+    });
+  }
+});
 
 //========================== SERVER RUNNING =======================
 // check runing

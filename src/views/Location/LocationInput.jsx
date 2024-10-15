@@ -3,6 +3,8 @@ import axios from "axios";
 import UserInput from "../../components/UserInput/UserInput";
 import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import ReactQuill from "react-quill"; // Import Quill
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
 
 const LocationInput = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
@@ -185,6 +187,12 @@ const LocationInput = () => {
       });
     }
   };
+  const handleDescriptionChange = (value) => {
+    setFormData({
+      ...formData,
+      description: value,
+    });
+  };
   return (
     <>
       <h2 className="text-3xl font-bold mb-4 text-center text-color-yellow kodchasan-bold mt-[4vh]">
@@ -359,17 +367,16 @@ const LocationInput = () => {
           </div>
         </div>
 
+        {/* Quill editor untuk deskripsi */}
         <div className="mb-4">
           <label className="block text-color-yellow jura-medium">
             Description
           </label>
-          <textarea
-            type="text"
-            id="description"
+          <ReactQuill
+            value={formData.description}
+            onChange={handleDescriptionChange}
             placeholder="Deskripsi singkat..."
-            name="description"
-            className="w-full px-3 py-2 border rounded-md ml-[-2px] bg-hover-button"
-            onChange={handleChange}
+            className="bg-hover-button"
           />
         </div>
         {error && <div className="text-red-500 mb-4">{error}</div>}

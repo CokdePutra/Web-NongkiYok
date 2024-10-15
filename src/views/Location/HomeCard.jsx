@@ -4,7 +4,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import Card from "../../components/Card/Card";
 import FloatingSearchBar from "../../components/Navbar/FloatingSearchBar";
 import InfoAlert from "../../components/alert/AlertsInfo";
-
+import DOMPurify from "dompurify";
 const HomeCard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [cards, setCards] = useState([]);
@@ -26,7 +26,7 @@ const HomeCard = () => {
         );
         setCards(response.data);
       } catch (error) {
-        console.error("Error fetching cards:", error);
+        console.error("Error fetching cards");
       }
     };
 
@@ -78,6 +78,17 @@ const HomeCard = () => {
       setLoadingAI(false);
     }
   };
+  const removeHtmlTags = (html) => {
+    const cleanHtml = DOMPurify.sanitize(html);
+    return cleanHtml.replace(/<[^>]*>/g, ""); // Menghapus semua tag HTML
+  };
+  const truncateDescription = (text, maxLength = 100) => {
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength);
+    }
+
+    return text;
+  };
 
   return (
     <>
@@ -99,7 +110,7 @@ const HomeCard = () => {
             key={index}
             title={card.Name}
             imgSrc={card.Image ? `./${card.Image}` : "./img/Card/image-ex.png"}
-            description={card.Description}
+            description={truncateDescription(removeHtmlTags(card.Description))}
             link={card.Link}
             price={card.AVG_Price}
             category={card.Category}

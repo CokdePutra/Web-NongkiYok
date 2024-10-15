@@ -25,7 +25,9 @@ const Card = ({
         const sessionResponse = await axios.get(`${baseURL}/api/session`, {
           withCredentials: true,
         });
-        console.log(sessionResponse);
+        sessionResponse
+          ? console.log("User is logged in")
+          : console.log("User is not logged in");
         setIsLoggedIn(true); // User is logged in
 
         // If the user is logged in, fetch the favorite status
@@ -40,7 +42,7 @@ const Card = ({
         if (error.response && error.response.status === 401) {
           setIsLoggedIn(false); // User is not logged in
         } else {
-          console.error("Error fetching favorite status", error);
+          console.error("Error fetching favorite status");
         }
       }
     };
@@ -113,7 +115,14 @@ const Card = ({
           {size}
         </span>
       </div>
-      <h1 className="title kodchasan-bold text-2xl mt-1 text-white">{title}</h1>
+      <h1 className="title kodchasan-bold text-2xl mt-1 text-white">
+        <a
+          href={`/DetailLocation/${placeId}`}
+          className="inline-flex rounded-md text-white hover:text-color-gold-card transition duration-300 ease-in-out"
+        >
+          {title}
+        </a>
+      </h1>
       <p className="description text-gray-300 mt-2">{description}</p>
       <div className="flex justify-between mt-4 h-auto">
         <div className="icon-money flex items-center">

@@ -19,7 +19,7 @@ import LocationInput from "./views/Location/LocationInput";
 import EditLocation from "./views/Location/EditLocation";
 import HomeCard from "./views/Location/HomeCard";
 import MapComponent from "./views/Location/MapComponent";
-
+import DetailLocation from "./views/Location/DetailLocation";
 function App() {
   return (
     <>
@@ -40,6 +40,7 @@ function App() {
           <Route path="/verify-email/:email" element={<VerifyEmail />} />
           <Route path="/reset-pw" element={<Resetpw />} />
           <Route path="/VerifyOTP" element={<VerifyOTP />} />
+          <Route path="/DetailLocation/:id" element={<DetailLocation />} />
         </Routes>
       </Router>
     </>
