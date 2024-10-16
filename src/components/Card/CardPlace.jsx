@@ -7,7 +7,7 @@ const CardPlace = ({ src, title, desc }) => {
     drop-shadow-2xl border-2 justify-center"
     >
       <div className="w-16 h-16 rounded-lg flex items-center justify-center mb-4">
-        <img src={src} alt="Heart Icon" className="w-10 h-auto" />
+        <img src={src} alt={desc} className="w-10 h-auto" />
       </div>
       <h1 className="text-2xl md:text-3xl mb-2 kodchasan-bold text-center">
         {title}

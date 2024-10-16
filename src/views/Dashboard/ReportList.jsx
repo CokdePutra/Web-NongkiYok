@@ -32,7 +32,7 @@ const ReportList = () => {
   useEffect(() => {
     const fetchTotalMessages = async () => {
       try {
-        const response = await axios.get(`${baseURL}/api/messages`, {
+        const response = await axios.get(`${baseURL}/ReportReview`, {
           withCredentials: true,
         });
         setTotalMessages(response.data);
@@ -48,9 +48,9 @@ const ReportList = () => {
       <Navbar />
       <div className="flex justify-center">
         <CardPlace
-          src={"./img/Card/Users.png"}
+          src={"./img/Card/Flag.png"}
           title={totalMessages.total}
-          desc={"Total Messages"}
+          desc={"Total Report"}
         />
       </div>
       <ReportReview />

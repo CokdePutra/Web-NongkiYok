@@ -1782,6 +1782,16 @@ app.get("/api/ReportReview", (req, res) => {
     res.json(results);
   });
 });
+// count all review
+app.get("/ReportReview", (req, res) => {
+  const query = "SELECT COUNT(*) as total FROM report_reviews";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results[0]);
+  });
+});
 // Endpoint untuk melaporkan review
 app.post("/api/report-review", async (req, res) => {
   const { reviewId, user_id } = req.body;
