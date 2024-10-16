@@ -49,7 +49,9 @@ const Navbar = ({ className }) => {
   const isDashboardPage =
     location.pathname === "/dashboard" || location.pathname === "/Admin";
   const isAdminPage =
-    location.pathname === "/Admin" || location.pathname === "/ListContact";
+    location.pathname === "/Admin" ||
+    location.pathname === "/ListContact" ||
+    location.pathname === "/Report";
   const isuserPage = location.pathname === "/dashboard";
   const IsLocation = location.pathname === "/homecard";
   const pathParts = location.pathname.split("/");
