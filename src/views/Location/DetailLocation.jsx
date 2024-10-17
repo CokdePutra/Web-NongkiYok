@@ -45,7 +45,7 @@ const DetailLocation = () => {
     return (totalRating / reviews.length).toFixed(1);
   };
 
-  const AerageRating = calculateAverageRating();
+  const AverageRating = calculateAverageRating();
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -271,9 +271,9 @@ const DetailLocation = () => {
             </button>
           </div>
           <h3 className="text-2xl font-bold mb-5">
-            {AerageRating} / 5{" "}
+            {AverageRating} / 5{" "}
             <span className="text-yellow-400">
-              {renderRatingStars(AerageRating)}
+              {renderRatingStars(AverageRating)}
             </span>{" "}
             ({reviews.length})
           </h3>

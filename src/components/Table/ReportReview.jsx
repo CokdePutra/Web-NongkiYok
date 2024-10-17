@@ -121,6 +121,19 @@ const ReportReview = () => {
       }
     }
   };
+  const renderRatingStars = (rating) => {
+    const fullStars = Math.floor(rating);
+    const halfStar = rating % 1 >= 0.5 ? "★" : "";
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+    return (
+      <>
+        {"★".repeat(fullStars)}
+        {halfStar}
+        {"☆".repeat(emptyStars)}
+      </>
+    );
+  };
   return (
     <div className="container mx-auto p-4 rounded mb-4 max-w-screen-xl">
       <div className="flex items-center justify-between mb-4">
@@ -134,6 +147,7 @@ const ReportReview = () => {
                 <th className="w-40 px-4 py-2">Date</th>
                 <th className="w-40 px-4 py-2">Place Name</th>
                 <th className="w-64 px-4 py-2">Review By</th>
+                <th className="w-64 px-4 py-2">Rating by reviewer</th>
                 <th className="w-64 px-4 py-2">Review Content</th>
                 <th className="w-40 px-4 py-2">Reporter Name</th>
                 <th className="w-40 px-4 py-2">Actions</th>
@@ -150,6 +164,9 @@ const ReportReview = () => {
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
                     {report.ReviewBy}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap text-yellow-400">
+                    {renderRatingStars(report.Rating)}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
                     {report.ReviewContent}

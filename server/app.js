@@ -1766,6 +1766,7 @@ app.get("/api/ReportReview", (req, res) => {
   const query = `
       SELECT 
       report_reviews.*,
+      review.Rating AS Rating,
       places.Name AS PlaceName,
       users.Username AS ReviewBy, 
       review.Review AS ReviewContent,  
