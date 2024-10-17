@@ -1832,6 +1832,33 @@ app.delete("/api/ClearListReview/:id", (req, res) => {
     res.status(200).send("Report deleted successfully");
   });
 });
+// Endpoint untuk menghapus review
+app.delete("/api/DeleteReview/:id", (req, res) => {
+  const reportId = req.params.id;
+  const query = "SELECT Id_Review FROM report_reviews WHERE Id_Report = ?";
+  db.query(query, [reportId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    if (results.length === 0) {
+      return res.status(404).send("Report not found");
+    }
+    const reviewId = results[0].Id_Review;
+    const query1 = "DELETE FROM review WHERE Id_Review = ?";
+    db.query(query1, [reviewId], (err, results) => {
+      if (err) {
+        return res.status(500).send(err);
+      }
+      const query2 = "DELETE FROM report_reviews WHERE Id_Review = ?";
+      db.query(query2, [reviewId], (err, results) => {
+        if (err) {
+          return res.status(500).send(err);
+        }
+        res.status(200).send("Review and report deleted successfully");
+      });
+    });
+  });
+});
 //========================== SERVER RUNNING =======================
 // check runing
 const PORT = process.env.PORT || 5000;
