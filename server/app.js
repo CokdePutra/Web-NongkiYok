@@ -1821,7 +1821,17 @@ app.post("/api/report-review", async (req, res) => {
     });
   }
 });
-
+// Endpoint untuk menghapus review dari list report
+app.delete("/api/ClearListReview/:id", (req, res) => {
+  const reportId = req.params.id;
+  const query = "DELETE FROM report_reviews WHERE Id_Report = ?";
+  db.query(query, [reportId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(200).send("Report deleted successfully");
+  });
+});
 //========================== SERVER RUNNING =======================
 // check runing
 const PORT = process.env.PORT || 5000;

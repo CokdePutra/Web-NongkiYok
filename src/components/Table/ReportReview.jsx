@@ -43,7 +43,45 @@ const ReportReview = () => {
 
     fetchReports();
   }, []);
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Ignore this report it will not be deleted, but only clear from the list.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Ignore it!",
+    });
 
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(`${baseURL}/api/ClearListReview/${id}`, {
+          withCredentials: true,
+        });
+        Swal.fire({
+          title: "Success!",
+          text: "Report has been ignored and cleared from the list.",
+          icon: "success",
+          timer: 3000,
+          timerProgressBar: true,
+          confirmButtonText: "Okay",
+        }).then((result) => {
+          if (result.dismiss === Swal.DismissReason.timer) {
+            console.log("I was closed by the timer");
+            window.location.reload();
+          }
+          window.location.reload();
+        });
+      } catch (error) {
+        Swal.fire({
+          title: "Faild!",
+          text: "Failed to ignore the report: " + error,
+          icon: "error",
+        });
+      }
+    }
+  };
   return (
     <div className="container mx-auto p-4 rounded mb-4 max-w-screen-xl">
       <div className="flex items-center justify-between mb-4">
@@ -81,7 +119,10 @@ const ReportReview = () => {
                     {report.ReporterName}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap text-sm leading-5 font-medium">
-                    <button className="text-white-600 hover:text-indigo-900 mr-2 bg-yellow-500 text-white py-1 px-4 rounded">
+                    <button
+                      className="text-white-600 hover:text-indigo-900 mr-2 bg-yellow-500 text-white py-1 px-4 rounded"
+                      onClick={() => handleDelete(report.Id_Report)}
+                    >
                       Ignore
                     </button>
                     <button className="text-white-600 hover:text-indigo-900 bg-red-500 text-white py-1 px-4 rounded">
