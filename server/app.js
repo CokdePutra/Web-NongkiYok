@@ -28,10 +28,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   session({
-    secret: process.env.JWT_SECRET, // Gantilah 'your-secret-key' dengan kunci rahasia yang lebih kuat
-    resave: false, // Apakah session akan disimpan kembali walaupun tidak ada perubahan
-    saveUninitialized: true, // Apakah session baru yang belum diinisialisasi akan disimpan
-    cookie: { secure: false }, // Gunakan secure: true saat menggunakan HTTPS
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // ganti true saat menggunakan HTTPS
   })
 );
 
