@@ -12,6 +12,7 @@ import VerifyOTP from "./views/Credential/VerifyOTP";
 //dashboard
 import DashboardAdmin from "./views/Dashboard/DashboardAdmin";
 import ContactList from "./views/Dashboard/ContactList";
+import ReportList from "./views/Dashboard/ReportList";
 import Dashboard from "./views/Dashboard/Dashboard";
 import GuideRequest from "./views/Dashboard/GuideRequest";
 //Location
@@ -41,6 +42,7 @@ function App() {
           <Route path="/reset-pw" element={<Resetpw />} />
           <Route path="/VerifyOTP" element={<VerifyOTP />} />
           <Route path="/DetailLocation/:id" element={<DetailLocation />} />
+          <Route path="/Report" element={<ReportList />} />
         </Routes>
       </Router>
     </>

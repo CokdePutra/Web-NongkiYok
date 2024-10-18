@@ -1761,6 +1761,38 @@ app.post("/api/review/add", (req, res) => {
     });
   });
 });
+// Endpoint untuk menampilkan report review
+app.get("/api/ReportReview", (req, res) => {
+  const query = `
+      SELECT 
+      report_reviews.*,
+      review.Rating AS Rating,
+      places.Name AS PlaceName,
+      users.Username AS ReviewBy, 
+      review.Review AS ReviewContent,  
+      reporter.Username AS ReporterName
+    FROM report_reviews
+    INNER JOIN review ON report_reviews.Id_Review = review.Id_Review
+    INNER JOIN users ON review.Id_User = users.Id_User
+    INNER JOIN places ON review.Id_Places = places.Id_Places 
+    INNER JOIN users AS reporter ON report_reviews.Id_User = reporter.Id_User`;
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
+// count all review
+app.get("/ReportReview", (req, res) => {
+  const query = "SELECT COUNT(*) as total FROM report_reviews";
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results[0]);
+  });
+});
 // Endpoint untuk melaporkan review
 app.post("/api/report-review", async (req, res) => {
   const { reviewId, user_id } = req.body;
@@ -1790,7 +1822,44 @@ app.post("/api/report-review", async (req, res) => {
     });
   }
 });
-
+// Endpoint untuk menghapus review dari list report
+app.delete("/api/ClearListReview/:id", (req, res) => {
+  const reportId = req.params.id;
+  const query = "DELETE FROM report_reviews WHERE Id_Report = ?";
+  db.query(query, [reportId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(200).send("Report deleted successfully");
+  });
+});
+// Endpoint untuk menghapus review
+app.delete("/api/DeleteReview/:id", (req, res) => {
+  const reportId = req.params.id;
+  const query = "SELECT Id_Review FROM report_reviews WHERE Id_Report = ?";
+  db.query(query, [reportId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    if (results.length === 0) {
+      return res.status(404).send("Report not found");
+    }
+    const reviewId = results[0].Id_Review;
+    const query1 = "DELETE FROM review WHERE Id_Review = ?";
+    db.query(query1, [reviewId], (err, results) => {
+      if (err) {
+        return res.status(500).send(err);
+      }
+      const query2 = "DELETE FROM report_reviews WHERE Id_Review = ?";
+      db.query(query2, [reviewId], (err, results) => {
+        if (err) {
+          return res.status(500).send(err);
+        }
+        res.status(200).send("Review and report deleted successfully");
+      });
+    });
+  });
+});
 //========================== SERVER RUNNING =======================
 // check runing
 const PORT = process.env.PORT || 5000;

@@ -5,12 +5,16 @@ import { useLocation } from "react-router-dom";
 const Navbar = ({ className }) => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownContactOpen, setDropdownContactOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // State untuk mobile menu
   const [user, setUser] = useState(null);
   const location = useLocation();
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
+  };
+  const toggleDropdownContact = () => {
+    setDropdownContactOpen(!dropdownContactOpen);
   };
 
   const toggleMobileMenu = () => {
@@ -45,7 +49,9 @@ const Navbar = ({ className }) => {
   const isDashboardPage =
     location.pathname === "/dashboard" || location.pathname === "/Admin";
   const isAdminPage =
-    location.pathname === "/Admin" || location.pathname === "/ListContact";
+    location.pathname === "/Admin" ||
+    location.pathname === "/ListContact" ||
+    location.pathname === "/Report";
   const isuserPage = location.pathname === "/dashboard";
   const IsLocation = location.pathname === "/homecard";
   const pathParts = location.pathname.split("/");
@@ -108,39 +114,101 @@ const Navbar = ({ className }) => {
             </span>
             <button
               onClick={toggleDropdown}
-              className="relative focus:outline-none flex items-center space-x-2 hover:text-color-gold-card"
+              className="relative focus:outline-none flex items-center space-x-2 "
             >
-              <box-icon name="map-pin" color="currentColor"></box-icon>
-              <span>Location</span>
+              <div className="flex items-center space-x-2 hover:text-color-gold-card">
+                <box-icon
+                  name="map-pin"
+                  color="currentColor"
+                  className="w-5 h-5"
+                ></box-icon>
+                <span>Location</span>
+              </div>
+
               {dropdownOpen && (
-                <div className="absolute mt-[130%] ml-[-100%] w-48 bg-gray-500 rounded-md shadow-lg z-10 ">
+                <div className="absolute mt-[140%] ml-[-100%] w-48 bg-gray-500 rounded-md shadow-lg z-10">
                   <a
                     href="/homecard"
-                    className="block rounded-md px-4 py-2 text-white hover:bg-gray-400"
+                    className="flex items-center space-x-2 rounded-md px-4 py-2 text-white hover:bg-gray-400"
                   >
-                    List Location
+                    <box-icon
+                      name="map"
+                      type="solid"
+                      color="#ffffff"
+                      className="w-5 h-5"
+                    ></box-icon>
+                    <span>List Location</span>
                   </a>
                   <a
                     href="/map"
-                    className="block rounded-md px-4 py-2 text-white hover:bg-gray-400"
+                    className="flex items-center space-x-2 rounded-md px-4 py-2 text-white hover:bg-gray-400"
                   >
-                    Map
+                    <box-icon
+                      name="map-alt"
+                      type="solid"
+                      color="#ffffff"
+                      className="w-5 h-5"
+                    ></box-icon>
+                    <span>Map</span>
                   </a>
                 </div>
               )}
             </button>
-            {isAdminPage ? (
+            {isAdminPage && user && user.role === "Admin" && (
               <a
-                href="/ListContact"
+                href="/Dashboard"
                 className="flex items-center space-x-2 hover:text-color-gold-card"
               >
                 <box-icon
-                  name="contact"
+                  name="dashboard"
                   type="solid"
                   color="currentColor"
                 ></box-icon>
-                <span>Response</span>
+                <span>Guide</span>
               </a>
+            )}
+            {isAdminPage ? (
+              <button
+                onClick={toggleDropdownContact}
+                className="relative focus:outline-none flex items-center space-x-2"
+              >
+                <div className="flex items-center space-x-2 hover:text-color-gold-card">
+                  <box-icon
+                    name="contact"
+                    type="solid"
+                    color="currentColor"
+                  ></box-icon>
+                  <span>Response</span>
+                </div>
+                {dropdownContactOpen && (
+                  <div className="absolute mt-[125%] ml-[-100%] w-48 bg-gray-500 rounded-md shadow-lg z-10">
+                    <a
+                      href="/ListContact"
+                      className="flex items-center space-x-2 rounded-md px-4 py-2 text-white hover:bg-gray-400"
+                    >
+                      <box-icon
+                        name="chat"
+                        type="solid"
+                        color="currentColor"
+                        className="w-5 h-5"
+                      ></box-icon>
+                      <span>List Contact</span>
+                    </a>
+                    <a
+                      href="/Report"
+                      className="flex items-center space-x-2 rounded-md px-4 py-2 text-white hover:bg-gray-400"
+                    >
+                      <box-icon
+                        name="flag-alt"
+                        type="solid"
+                        color="currentColor"
+                        className="w-5 h-5"
+                      ></box-icon>
+                      <span>Report</span>
+                    </a>
+                  </div>
+                )}
+              </button>
             ) : isuserPage && user && user.role === "User" ? (
               <a
                 href="/GuideRequest"
@@ -160,20 +228,6 @@ const Navbar = ({ className }) => {
                   <span>Contact</span>
                 </a>
               )
-            )}
-
-            {isAdminPage && user && user.role === "Admin" && (
-              <a
-                href="/Dashboard"
-                className="flex items-center space-x-2 hover:text-color-gold-card"
-              >
-                <box-icon
-                  name="dashboard"
-                  type="solid"
-                  color="currentColor"
-                ></box-icon>
-                <span>Guide</span>
-              </a>
             )}
             {isDetailLocation ? (
               <a href="/homecard" className="flex items-center space-x-2">
@@ -268,7 +322,7 @@ const Navbar = ({ className }) => {
             href="/"
             className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2"
           >
-            <box-icon name="home" color="#ffffff"></box-icon>
+            <box-icon name="home" color="currentColor"></box-icon>
             <span>Home</span>
           </a>
           <button
@@ -276,7 +330,7 @@ const Navbar = ({ className }) => {
             className="relative focus:outline-none w-full text-left"
           >
             <p className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2">
-              <box-icon name="map-pin" color="#ffffff"></box-icon>
+              <box-icon name="map-pin" color="currentColor"></box-icon>
               <span>Location</span>
             </p>
             {dropdownOpen && (
@@ -297,19 +351,41 @@ const Navbar = ({ className }) => {
             )}
           </button>
           {isAdminPage ? (
-            <a
-              href="/ListContact"
-              className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2"
+            <button
+              onClick={toggleDropdownContact}
+              className="relative focus:outline-none w-full text-left"
             >
-              <box-icon name="contact" type="solid" color="#ffffff"></box-icon>
-              <span>Contact List</span>
-            </a>
+              <p className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2">
+                <box-icon
+                  name="contact"
+                  type="solid"
+                  color="currentColor"
+                ></box-icon>
+                <span>Location</span>
+              </p>
+              {dropdownContactOpen && (
+                <div className="mt-3 w-full bg-color-primary text-white">
+                  <a
+                    href="/ListContact"
+                    className="flex items-center space-x-2 rounded-md px-4 py-2 text-white hover:bg-gray-400"
+                  >
+                    <span>List Contact</span>
+                  </a>
+                  <a
+                    href="/map"
+                    className="flex items-center space-x-2 rounded-md px-4 py-2 text-white hover:bg-gray-400"
+                  >
+                    <span>Report</span>
+                  </a>
+                </div>
+              )}
+            </button>
           ) : isuserPage && user && user.role === "User" ? (
             <a
               href="/GuideRequest"
               className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2"
             >
-              <box-icon name="user-plus" color="#ffffff"></box-icon>
+              <box-icon name="user-plus" color="currentColor"></box-icon>
               <span>Daftar Guide</span>
             </a>
           ) : (
@@ -319,7 +395,7 @@ const Navbar = ({ className }) => {
                 href="/Contact"
                 className="py-2 px-4 border-b border-gray-700 hover:text-color-gold-card flex items-center space-x-2"
               >
-                <box-icon name="message-dots" color="#ffffff"></box-icon>
+                <box-icon name="message-dots" color="currentColor"></box-icon>
                 <span>Contact</span>
               </a>
             )
@@ -333,7 +409,7 @@ const Navbar = ({ className }) => {
               <box-icon
                 name="dashboard"
                 type="solid"
-                color="#ffffff"
+                color="currentColor"
               ></box-icon>
               <span>Dashboard Guide</span>
             </a>

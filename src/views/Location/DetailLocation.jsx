@@ -45,7 +45,7 @@ const DetailLocation = () => {
     return (totalRating / reviews.length).toFixed(1);
   };
 
-  const AerageRating = calculateAverageRating();
+  const AverageRating = calculateAverageRating();
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -106,14 +106,24 @@ const DetailLocation = () => {
     if (!isLoggedIn) {
       Swal.fire({
         title: "Error!",
-        text: "Please Login First to add review.",
+        text: "Please login first to add review.",
         icon: "error",
       });
     } else {
       setIsPopupOpen(true);
     }
   };
-
+  const HandleClickReport = (reviewId) => {
+    if (!isLoggedIn) {
+      Swal.fire({
+        title: "Error!",
+        text: "Please login first to report a review.",
+        icon: "error",
+      });
+    } else {
+      handleReport(reviewId);
+    }
+  };
   const handleReviewSubmit = async () => {
     if (selectedRating === 0 || UserReview.trim() === "") {
       Swal.fire({
@@ -187,7 +197,7 @@ const DetailLocation = () => {
     } catch (error) {
       Swal.fire({
         title: "Error Reporting Review",
-        text: "Error reporting review. Please try again later.",
+        text: "Error reporting the review. Please try again later.",
         icon: "error",
       });
     }
@@ -201,7 +211,7 @@ const DetailLocation = () => {
           <img
             src={data.Image ? `../${data.Image}` : "../img/Card/image-ex.png"}
             alt={data.Name}
-            className="rounded-lg shadow-lg max-w-4xl md:w-2/3"
+            className="rounded-lg shadow-lg max-w-=3xl md:w-3/4"
           />
         </div>
 
@@ -261,9 +271,9 @@ const DetailLocation = () => {
             </button>
           </div>
           <h3 className="text-2xl font-bold mb-5">
-            {AerageRating} / 5{" "}
+            {AverageRating} / 5{" "}
             <span className="text-yellow-400">
-              {renderRatingStars(AerageRating)}
+              {renderRatingStars(AverageRating)}
             </span>{" "}
             ({reviews.length})
           </h3>
@@ -295,7 +305,7 @@ const DetailLocation = () => {
                       type="solid"
                       color="#edeff2"
                       size="20px"
-                      onClick={() => handleReport(review.Id_Review)}
+                      onClick={() => HandleClickReport(review.Id_Review)}
                     ></box-icon>
                   </div>
 
