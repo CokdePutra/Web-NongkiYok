@@ -1770,12 +1770,15 @@ app.get("/api/ReportReview", (req, res) => {
       places.Name AS PlaceName,
       users.Username AS ReviewBy, 
       review.Review AS ReviewContent,  
-      reporter.Username AS ReporterName
+      reporter.Username AS ReporterName,
+      COUNT(report_reviews.Id_Review) AS report_count
     FROM report_reviews
     INNER JOIN review ON report_reviews.Id_Review = review.Id_Review
     INNER JOIN users ON review.Id_User = users.Id_User
     INNER JOIN places ON review.Id_Places = places.Id_Places 
-    INNER JOIN users AS reporter ON report_reviews.Id_User = reporter.Id_User`;
+    INNER JOIN users AS reporter ON report_reviews.Id_User = reporter.Id_User
+    GROUP BY report_reviews.Id_Review
+    ORDER BY report_count DESC`;
   db.query(query, (err, results) => {
     if (err) {
       return res.status(500).send(err);
