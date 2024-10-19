@@ -1828,7 +1828,7 @@ app.post("/api/report-review", async (req, res) => {
 // Endpoint untuk menghapus review dari list report
 app.delete("/api/ClearListReview/:id", (req, res) => {
   const reportId = req.params.id;
-  const query = "DELETE FROM report_reviews WHERE Id_Report = ?";
+  const query = "DELETE FROM report_reviews WHERE Id_Review = ?";
   db.query(query, [reportId], (err, results) => {
     if (err) {
       return res.status(500).send(err);

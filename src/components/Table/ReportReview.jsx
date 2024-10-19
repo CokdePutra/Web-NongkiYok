@@ -181,7 +181,7 @@ const ReportReview = () => {
                   <td className="px-4 py-2 whitespace-nowrap text-sm leading-5 font-medium">
                     <button
                       className="text-white-600 hover:text-indigo-900 mr-2 bg-yellow-500 text-white py-1 px-4 rounded"
-                      onClick={() => handleIgnore(report.Id_Report)}
+                      onClick={() => handleIgnore(report.Id_Review)}
                     >
                       Ignore
                     </button>
