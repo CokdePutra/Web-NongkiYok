@@ -15,7 +15,7 @@ import nodemailer from "nodemailer";
 dotenv.config();
 
 const app = express();
-const saltRounds = 10;
+const saltRounds = process.env.SALTS_ROUNDS;
 
 // Configure CORS
 const corsOptions = {
