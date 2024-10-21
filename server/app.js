@@ -15,7 +15,7 @@ import nodemailer from "nodemailer";
 dotenv.config();
 
 const app = express();
-const saltRounds = 10;
+const saltRounds = process.env.SALTS_ROUNDS;
 
 // Configure CORS
 const corsOptions = {
@@ -1770,12 +1770,15 @@ app.get("/api/ReportReview", (req, res) => {
       places.Name AS PlaceName,
       users.Username AS ReviewBy, 
       review.Review AS ReviewContent,  
-      reporter.Username AS ReporterName
+      reporter.Username AS ReporterName,
+      COUNT(report_reviews.Id_Review) AS report_count
     FROM report_reviews
     INNER JOIN review ON report_reviews.Id_Review = review.Id_Review
     INNER JOIN users ON review.Id_User = users.Id_User
     INNER JOIN places ON review.Id_Places = places.Id_Places 
-    INNER JOIN users AS reporter ON report_reviews.Id_User = reporter.Id_User`;
+    INNER JOIN users AS reporter ON report_reviews.Id_User = reporter.Id_User
+    GROUP BY report_reviews.Id_Review
+    ORDER BY report_count DESC`;
   db.query(query, (err, results) => {
     if (err) {
       return res.status(500).send(err);
@@ -1825,7 +1828,7 @@ app.post("/api/report-review", async (req, res) => {
 // Endpoint untuk menghapus review dari list report
 app.delete("/api/ClearListReview/:id", (req, res) => {
   const reportId = req.params.id;
-  const query = "DELETE FROM report_reviews WHERE Id_Report = ?";
+  const query = "DELETE FROM report_reviews WHERE Id_Review = ?";
   db.query(query, [reportId], (err, results) => {
     if (err) {
       return res.status(500).send(err);
