@@ -17,6 +17,16 @@ const HomeCard = () => {
   const [criteria, setCriteria] = useState(""); // State untuk menyimpan kriteria
   const [loadingAI, setLoadingAI] = useState(false);
   const [alert, setAlert] = useState(false);
+  const [serverTime, setServerTime] = useState(null);
+  // Fungsi untuk mengambil waktu dari server
+  const fetchServerTime = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/server-time`);
+      setServerTime(new Date(response.data.currentTime)); // Simpan waktu dari server
+    } catch (error) {
+      console.error("Error fetching server time", error);
+    }
+  };
   // Fetch data ketika halaman dimuat atau ada perubahan pada state filter
   useEffect(() => {
     const fetchCards = async () => {
@@ -29,10 +39,9 @@ const HomeCard = () => {
         console.error("Error fetching cards");
       }
     };
-
+    fetchServerTime();
     fetchCards();
   }, [sortOrder, selectedSize, baseURL, selectedCategory]);
-
   // Fungsi untuk meng-handle pencarian
   const handleSearchResults = (results) => {
     if (results.length === 0) {
@@ -89,7 +98,25 @@ const HomeCard = () => {
 
     return text;
   };
+  // Fungsi untuk mengecek apakah tempat buka atau tutup berdasarkan waktu server
+  const checkIsOpen = (openTime, closeTime) => {
+    if (!serverTime) return false; // Jika belum ada serverTime, return false
+    const currentTime = serverTime;
+    const open = new Date(`1970-01-01T${openTime}Z`);
+    const close = new Date(`1970-01-01T${closeTime}Z`);
 
+    // Jika close lebih kecil dari open, berarti tutup setelah tengah malam
+    if (close < open) {
+      if (currentTime >= open || currentTime < close) {
+        return true;
+      }
+    } else {
+      if (currentTime >= open && currentTime < close) {
+        return true;
+      }
+    }
+    return false;
+  };
   return (
     <>
       <Navbar />
@@ -115,6 +142,7 @@ const HomeCard = () => {
             price={card.AVG_Price}
             category={card.Category}
             size={card.Size}
+            isOpen={checkIsOpen(card.Open, card.Close)}
           />
         ))}
       </div>

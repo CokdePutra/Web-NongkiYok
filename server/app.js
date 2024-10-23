@@ -1869,6 +1869,11 @@ const PORT = process.env.PORT || 5000;
 app.get("/", (req, res) => {
   res.send("Server running with ExpressJS");
 });
+app.get("/server-time", (req, res) => {
+  const currentTime = new Date();
+  res.json({ currentTime });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port: http://localhost:${PORT}`);
 });
