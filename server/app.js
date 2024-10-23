@@ -1030,6 +1030,8 @@ app.post("/api/places", upload.single("image"), (req, res) => {
     latitude,
     googleMapsLink,
     description,
+    Open,
+    Close,
   } = req.body;
 
   // Validasi untuk latitude dan longitude
@@ -1064,8 +1066,8 @@ app.post("/api/places", upload.single("image"), (req, res) => {
 
       // No duplicate found, proceed with the insertion
       const insertQuery = `
-      INSERT INTO places (name, AVG_Price, Size, Category, Longtitude, Latitude, Link, Description, Image, Id_User)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO places (name, AVG_Price, Size, Category, Longtitude, Latitude, Link, Description, Image, Id_User, Open, Close)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
       db.query(
         insertQuery,
@@ -1080,6 +1082,8 @@ app.post("/api/places", upload.single("image"), (req, res) => {
           description,
           image,
           userId,
+          Open,
+          Close,
         ],
         (err, results) => {
           if (err) {
@@ -1124,6 +1128,8 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
     Latitude,
     Link,
     Description,
+    Open,
+    Close,
     Img_old, // The old image path
   } = req.body;
 
@@ -1167,7 +1173,7 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
       // Update the place
       const updateQuery = `
         UPDATE places 
-        SET name = ?, AVG_Price = ?, Size = ?, Category = ?, Latitude = ?, Longtitude = ?, Link = ?, Description = ?, Image = ? 
+        SET name = ?, AVG_Price = ?, Size = ?, Category = ?, Latitude = ?, Longtitude = ?, Link = ?, Description = ?, Image = ?, Open = ?, Close = ? 
         WHERE Id_Places = ? AND Id_User = ?
       `;
 
@@ -1183,6 +1189,8 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
           Link,
           Description,
           image,
+          Open,
+          Close,
           placeId,
           userId,
         ],

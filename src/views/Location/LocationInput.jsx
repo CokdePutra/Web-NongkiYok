@@ -20,6 +20,8 @@ const LocationInput = () => {
     googleMapsLink: "",
     description: "",
     latlong: "",
+    Open: "",
+    Close: "",
   });
   const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
@@ -267,6 +269,36 @@ const LocationInput = () => {
               <option value="Medium">Medium</option>
               <option value="Large">Large</option>
             </select>
+          </div>
+        </div>
+        <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 ">
+          <div className="w-full">
+            <label className="block text-color-yellow jura-medium">
+              Open Time
+            </label>
+            <UserInput
+              type="time"
+              id="openTime"
+              name="Open"
+              className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+              value={formData.Open}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="w-full flex items-center space-x-3">
+            <div className="flex-grow">
+              <label className="block text-color-yellow jura-medium">
+                Close Time
+              </label>
+              <UserInput
+                type="time"
+                id="closeTime"
+                name="Close"
+                className="w-full px-3 py-2 border rounded-md ml-[-2px]"
+                value={formData.Close}
+                onChange={handleChange}
+              />
+            </div>
           </div>
         </div>
         {/* Input untuk Latitude dan Longitude dengan ikon Current Location di sebelahnya */}

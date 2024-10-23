@@ -57,8 +57,19 @@ const TableDashboard = () => {
     const cleanHtml = DOMPurify.sanitize(html);
     return cleanHtml.replace(/<[^>]*>/g, ""); // Menghapus semua tag HTML
   };
-  const truncateDescription = (text, maxLength = 150) => {
+  const truncateDescription = (text, maxLength = 100) => {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+  };
+  const simplifyTime = (time24h) => {
+    const [hour, minute] = time24h.split(":");
+
+    let hour12 = parseInt(hour, 10);
+    const period = hour12 >= 12 ? " PM" : " AM";
+
+    // Konversi dari format 24 jam ke format 12 jam
+    hour12 = hour12 % 12 || 12; // Jika 0 atau 12, kita set jadi 12
+
+    return `${hour12}${period}`;
   };
   return (
     <div className="container mx-auto p-4 rounded mb-4 max-w-screen-xl">
@@ -82,6 +93,7 @@ const TableDashboard = () => {
                 <th className="w-36 px-4 py-2">Harga</th>
                 <th className="w-28 px-4 py-2">Latitude</th>
                 <th className="w-28 px-4 py-2">Longitude</th>
+                <th className="w-28 px-4 py-2">Open Time</th>
                 <th className="w-28 px-4 py-2">Gambar</th>
                 <th className="w-28 px-4 py-2">Lokasi</th>
                 <th className="w-24 px-4 py-2">Aksi</th>
@@ -90,7 +102,11 @@ const TableDashboard = () => {
             <tbody className="bg-white divide-y text-center divide-gray-200">
               {places.map((place) => (
                 <tr key={place.id}>
-                  <td className="px-4 py-2 whitespace-nowrap">{place.Name}</td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    <a href={`/DetailLocation/${place.Id_Places}`}>
+                      {place.Name}
+                    </a>
+                  </td>
                   <td className="px-4 py-2 whitespace-nowrap">
                     {place.Category}
                   </td>
@@ -106,6 +122,9 @@ const TableDashboard = () => {
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
                     {place.Longtitude}
+                  </td>
+                  <td className="px-4 py-2 whitespace-nowrap">
+                    {simplifyTime(place.Open)} - {simplifyTime(place.Close)}
                   </td>
                   <td className="px-4 py-2 whitespace-nowrap">
                     {place.Image ? (

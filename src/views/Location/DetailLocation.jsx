@@ -20,7 +20,7 @@ const DetailLocation = () => {
   const [selectedRating, setSelectedRating] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [IdUser, setIdUser] = useState(null);
-
+  const [serverTime, setServerTime] = useState(null);
   useEffect(() => {
     axios
       .get(`${baseURL}/api/session`, { withCredentials: true })
@@ -46,7 +46,14 @@ const DetailLocation = () => {
   };
 
   const AverageRating = calculateAverageRating();
-
+  const fetchServerTime = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/server-time`);
+      setServerTime(new Date(response.data.currentTime)); // Simpan waktu dari server
+    } catch (error) {
+      console.error("Error fetching server time", error);
+    }
+  };
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -73,7 +80,7 @@ const DetailLocation = () => {
         console.error("Error fetching place data:", error);
       }
     };
-
+    fetchServerTime();
     fetchPlaceData();
   }, [id]);
 
@@ -202,6 +209,37 @@ const DetailLocation = () => {
       });
     }
   };
+  const checkIsOpen = (openTime, closeTime) => {
+    if (!serverTime) return false; // Jika belum ada serverTime, return false
+    const currentTime = serverTime;
+    const open = new Date(`1970-01-01T${openTime}Z`);
+    const close = new Date(`1970-01-01T${closeTime}Z`);
+    // Jika close lebih kecil dari open, berarti tutup setelah tengah malam
+    if (close < open) {
+      if (currentTime >= open || currentTime < close) {
+        return true;
+      }
+    } else {
+      if (currentTime >= open && currentTime < close) {
+        return true;
+      }
+    }
+    return;
+  };
+  const isOpen = checkIsOpen(data.Open, data.Close);
+  const simplifyTime = (time24h) => {
+    if (!time24h || typeof time24h !== "string") {
+      return "Invalid time format";
+    }
+
+    const [hour, minute] = time24h.split(":");
+    let hour12 = parseInt(hour, 10);
+    const period = hour12 >= 12 ? " PM" : " AM";
+    hour12 = hour12 % 12 || 12;
+
+    return `${hour12}${period}`;
+  };
+
   return (
     <>
       <Navbar />
@@ -237,6 +275,29 @@ const DetailLocation = () => {
               {data.Size}
             </span>
           </div>
+          {isOpen ? (
+            <span className="inline-flex items-center justify-start rounded-md bg-green-700 px-2 py-1 text-md font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20 mt-4">
+              <box-icon
+                name="time-five"
+                color="#FCBC36"
+                type="solid"
+                className="mr-1"
+                size="20px"
+              ></box-icon>
+              &nbsp;Open until {simplifyTime(data.Close)}
+            </span>
+          ) : (
+            <span className="inline-flex items-center justify-center rounded-md bg-red-700 px-4 py-1 text-md font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20 mt-4">
+              <box-icon
+                name="time-five"
+                color="#FCBC36"
+                type="solid"
+                className="mr-1"
+                size="20px"
+              ></box-icon>
+              &nbsp;Close and Open at {simplifyTime(data.Open)}
+            </span>
+          )}
         </div>
 
         {/* Description */}
