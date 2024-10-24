@@ -115,7 +115,7 @@ const Card = ({
         <span className="inline-flex items-center justify-center rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
           {size}
         </span>
-        {!isOpen ? (
+        {isOpen ? (
           <span className="inline-flex items-center justify-center rounded-md bg-green-700 px-2 py-1 text-xs font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20">
             <box-icon
               name="time-five"
