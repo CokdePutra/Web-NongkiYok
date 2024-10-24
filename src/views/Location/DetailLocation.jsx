@@ -275,7 +275,7 @@ const DetailLocation = () => {
               {data.Size}
             </span>
           </div>
-          {isOpen ? (
+          {!isOpen ? (
             <span className="inline-flex items-center justify-start rounded-md bg-green-700 px-2 py-1 text-md font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20 mt-4">
               <box-icon
                 name="time-five"

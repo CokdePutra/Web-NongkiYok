@@ -100,12 +100,11 @@ const HomeCard = () => {
   };
   // Fungsi untuk mengecek apakah tempat buka atau tutup berdasarkan waktu server
   const checkIsOpen = (openTime, closeTime) => {
-    if (!serverTime) return false; // Jika belum ada serverTime, return false
+    if (!serverTime) return falseW;
     const currentTime = serverTime;
     const open = new Date(`1970-01-01T${openTime}Z`);
     const close = new Date(`1970-01-01T${closeTime}Z`);
-
-    // Jika close lebih kecil dari open, berarti tutup setelah tengah malam
+    console.log(currentTime, open, close);
     if (close < open) {
       if (currentTime >= open || currentTime < close) {
         return true;
