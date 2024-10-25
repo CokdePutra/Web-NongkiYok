@@ -255,18 +255,15 @@ const MapComponent = () => {
                 </div>
                 <hr className="border-t-2 border-gray-300 mb-2 mt-3" />
                 <div className="flex justify-between items-center h-auto">
-                  {/* Rating di sisi kiri */}
                   <div className="flex items-center">
                     {renderRatingStars(averageRatings[location.Id_Places])}
                     <span className="ml-1 text-sm">
                       ({averageRatings[location.Id_Places]})
                     </span>
                   </div>
-
-                  {/* Detail di sisi kanan */}
                   <div className="flex justify-end">
                     <a
-                      href=""
+                      href={`/DetailLocation/${location.Id_Places}`}
                       className="!text-blue-800 hover:text-gray-500 font-semibold transition duration-300 ease-in-out transform hover:scale-105 rounded-lg flex items-center w-auto"
                     >
                       <box-icon

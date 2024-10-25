@@ -135,7 +135,7 @@ const Card = ({
               className="mr-1"
               size="20px"
             ></box-icon>
-            &nbsp;Close
+            &nbsp;Closed
           </span>
         )}
       </div>

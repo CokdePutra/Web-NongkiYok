@@ -304,7 +304,7 @@ const DetailLocation = () => {
             </span>
           </div>
           {isOpen ? (
-            <span className="inline-flex items-center justify-start rounded-md bg-green-700 px-2 py-1 text-md font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20 mt-4">
+            <span className="inline-flex items-center justify-start rounded-md bg-green-700 px-2 py-2 text-lg font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20 mt-4">
               <box-icon
                 name="time-five"
                 color="#FCBC36"
@@ -315,7 +315,7 @@ const DetailLocation = () => {
               &nbsp;Open until {simplifyTime(data.Close)}
             </span>
           ) : (
-            <span className="inline-flex items-center justify-center rounded-md bg-red-700 px-4 py-1 text-md font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20 mt-4">
+            <span className="inline-flex items-center justify-center rounded-md bg-red-700 px-4 py-2 text-lg font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20 mt-4">
               <box-icon
                 name="time-five"
                 color="#FCBC36"
@@ -323,7 +323,8 @@ const DetailLocation = () => {
                 className="mr-1"
                 size="20px"
               ></box-icon>
-              &nbsp;Close and Open at {simplifyTime(data.Open)}
+              &nbsp;Close and will be <strong>&nbsp;Open&nbsp;</strong> tomorrow
+              at&nbsp; <strong> {simplifyTime(data.Open)}</strong>
             </span>
           )}
         </div>
