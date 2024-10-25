@@ -169,6 +169,7 @@ const MapComponent = () => {
       <MapContainer
         center={position}
         zoom={13}
+        zoomControl={false}
         className="absolute top-0 left-0 right-0 bottom-0 z-0"
       >
         <TileLayer

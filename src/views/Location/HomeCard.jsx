@@ -350,11 +350,11 @@ const HomeCard = () => {
                 </button>
                 <button
                   className={`px-4 py-2 text-sm rounded-full border-2 border-color-yellow hover:bg-color-yellow hover:text-black ${
-                    selectedCategory === "Restaurant"
+                    selectedCategory === "Resto"
                       ? "bg-color-yellow text-black"
                       : "text-black"
                   }`}
-                  onClick={() => handleCategoryChange("Restaurant")}
+                  onClick={() => handleCategoryChange("Resto")}
                 >
                   Restaurant
                 </button>
