@@ -36,7 +36,7 @@ const Hero = () => {
               </a>
             </div>
           </div>
-          <div class="right w-1/2 flex flex-col justify-center h-screen mx-10 p-4">
+          <div class="right w-1/2  flex-col justify-center h-screen mx-10 p-4 hidden md:flex">
             <div className="">
               <img
                 src="./img/Hero/Polygon-1.png"
