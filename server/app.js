@@ -1756,6 +1756,21 @@ app.get("/api/review/:id", (req, res) => {
     res.json(results);
   });
 });
+// endpoint to get all review
+app.get("/api/allreview", (req, res) => {
+  const query = `
+    SELECT review.*, users.Username, places.Name AS PlaceName
+    FROM review
+    INNER JOIN users ON review.Id_User = users.Id_User
+    INNER JOIN places ON review.Id_Places = places.Id_Places
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
 // Endpoint untuk menambahkan review
 app.post("/api/review/add", (req, res) => {
   const { PlaceId, Rating, Review } = req.body;
