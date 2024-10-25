@@ -20,7 +20,7 @@ const DetailLocation = () => {
   const [selectedRating, setSelectedRating] = useState(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [IdUser, setIdUser] = useState(null);
-
+  const [serverTime, setServerTime] = useState(null);
   useEffect(() => {
     axios
       .get(`${baseURL}/api/session`, { withCredentials: true })
@@ -46,7 +46,14 @@ const DetailLocation = () => {
   };
 
   const AverageRating = calculateAverageRating();
-
+  const fetchServerTime = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/server-time`);
+      setServerTime(new Date(response.data.currentTime)); // Simpan waktu dari server
+    } catch (error) {
+      console.error("Error fetching server time", error);
+    }
+  };
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -73,7 +80,7 @@ const DetailLocation = () => {
         console.error("Error fetching place data:", error);
       }
     };
-
+    fetchServerTime();
     fetchPlaceData();
   }, [id]);
 
@@ -202,6 +209,65 @@ const DetailLocation = () => {
       });
     }
   };
+  // Fungsi untuk mengecek apakah tempat buka atau tutup berdasarkan waktu server
+  const checkIsOpen = (openTime, closeTime) => {
+    if (!serverTime) return false;
+
+    // Ambil jam, menit, dan detik dari serverTime
+    const currentTime = new Date(serverTime);
+    const currentHours = currentTime.getHours();
+    const currentMinutes = currentTime.getMinutes();
+    const currentSeconds = currentTime.getSeconds();
+
+    // Parsing openTime dan closeTime sebagai waktu tanpa 'Z' (zona waktu UTC)
+    const open = new Date(`1970-01-01T${openTime}`);
+    const close = new Date(`1970-01-01T${closeTime}`);
+
+    // Konversi waktu server menjadi objek Date pada tanggal 1970-01-01 untuk perbandingan
+    const currentParsed = new Date(
+      `1970-01-01T${currentHours.toString().padStart(2, "0")}:${currentMinutes
+        .toString()
+        .padStart(2, "0")}:${currentSeconds.toString().padStart(2, "0")}`
+    );
+
+    console.log(
+      "Parsed Server Time :",
+      currentParsed,
+      "Open Time :",
+      open,
+      "Close Time :",
+      close
+    );
+
+    // Jika close time lebih awal dari open time (lewat tengah malam)
+    if (close < open) {
+      // Buka dari openTime hingga 23:59:59 atau dari 00:00:00 hingga closeTime
+      if (currentParsed >= open || currentParsed < close) {
+        return true;
+      }
+    } else {
+      // Buka dalam interval normal
+      if (currentParsed >= open && currentParsed < close) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+  const isOpen = checkIsOpen(data.Open, data.Close);
+  const simplifyTime = (time24h) => {
+    if (!time24h || typeof time24h !== "string") {
+      return "Invalid time format";
+    }
+
+    const [hour, minute] = time24h.split(":");
+    let hour12 = parseInt(hour, 10);
+    const period = hour12 >= 12 ? " PM" : " AM";
+    hour12 = hour12 % 12 || 12;
+
+    return `${hour12}${period}`;
+  };
+
   return (
     <>
       <Navbar />
@@ -237,6 +303,30 @@ const DetailLocation = () => {
               {data.Size}
             </span>
           </div>
+          {isOpen ? (
+            <span className="inline-flex items-center justify-start rounded-md bg-green-700 px-2 py-2 text-lg font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20 mt-4">
+              <box-icon
+                name="time-five"
+                color="#FCBC36"
+                type="solid"
+                className="mr-1"
+                size="20px"
+              ></box-icon>
+              &nbsp;Open until {simplifyTime(data.Close)}
+            </span>
+          ) : (
+            <span className="inline-flex items-center justify-center rounded-md bg-red-700 px-4 py-2 text-lg font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20 mt-4">
+              <box-icon
+                name="time-five"
+                color="#FCBC36"
+                type="solid"
+                className="mr-1"
+                size="20px"
+              ></box-icon>
+              &nbsp;Close and will be <strong>&nbsp;Open&nbsp;</strong> tomorrow
+              at&nbsp; <strong> {simplifyTime(data.Open)}</strong>
+            </span>
+          )}
         </div>
 
         {/* Description */}

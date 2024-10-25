@@ -12,6 +12,7 @@ const Card = ({
   price,
   category,
   size,
+  isOpen,
 }) => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [isFavorited, setIsFavorited] = useState(false);
@@ -107,13 +108,36 @@ const Card = ({
         alt="img-card"
         className="rounded-t-lg w-full h-48 object-cover"
       />
-      <div className="info gap-1 mt-2">
-        <span className="inline-flex mt-1 mx-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+      <div className="info flex gap-2 mt-2">
+        <span className="inline-flex items-center justify-center rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
           {category}
         </span>
-        <span className="inline-flex mt-1 items-center self-start rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+        <span className="inline-flex items-center justify-center rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
           {size}
         </span>
+        {isOpen ? (
+          <span className="inline-flex items-center justify-center rounded-md bg-green-700 px-2 py-1 text-xs font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20">
+            <box-icon
+              name="time-five"
+              color="#FCBC36"
+              type="solid"
+              className="mr-1"
+              size="20px"
+            ></box-icon>
+            &nbsp;Open
+          </span>
+        ) : (
+          <span className="inline-flex items-center justify-center rounded-md bg-red-700 px-2 py-1 text-xs font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20">
+            <box-icon
+              name="time-five"
+              color="#FCBC36"
+              type="solid"
+              className="mr-1"
+              size="20px"
+            ></box-icon>
+            &nbsp;Closed
+          </span>
+        )}
       </div>
       <h1 className="title kodchasan-bold text-2xl mt-1 text-white">
         <a

@@ -5,6 +5,7 @@ import Card from "../../components/Card/Card";
 import FloatingSearchBar from "../../components/Navbar/FloatingSearchBar";
 import InfoAlert from "../../components/alert/AlertsInfo";
 import DOMPurify from "dompurify";
+import { data } from "autoprefixer";
 const HomeCard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [cards, setCards] = useState([]);
@@ -17,6 +18,16 @@ const HomeCard = () => {
   const [criteria, setCriteria] = useState(""); // State untuk menyimpan kriteria
   const [loadingAI, setLoadingAI] = useState(false);
   const [alert, setAlert] = useState(false);
+  const [serverTime, setServerTime] = useState(null);
+  // Fungsi untuk mengambil waktu dari server
+  const fetchServerTime = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/server-time`);
+      setServerTime(new Date(response.data.currentTime)); // Simpan waktu dari server
+    } catch (error) {
+      console.error("Error fetching server time", error);
+    }
+  };
   // Fetch data ketika halaman dimuat atau ada perubahan pada state filter
   useEffect(() => {
     const fetchCards = async () => {
@@ -29,10 +40,9 @@ const HomeCard = () => {
         console.error("Error fetching cards");
       }
     };
-
+    fetchServerTime();
     fetchCards();
   }, [sortOrder, selectedSize, baseURL, selectedCategory]);
-
   // Fungsi untuk meng-handle pencarian
   const handleSearchResults = (results) => {
     if (results.length === 0) {
@@ -90,6 +100,53 @@ const HomeCard = () => {
     return text;
   };
 
+  // Fungsi untuk mengecek apakah tempat buka atau tutup berdasarkan waktu server
+  const checkIsOpen = (openTime, closeTime) => {
+    if (!serverTime) return false;
+
+    // Ambil jam, menit, dan detik dari serverTime
+    const currentTime = new Date(serverTime);
+    const currentHours = currentTime.getHours();
+    const currentMinutes = currentTime.getMinutes();
+    const currentSeconds = currentTime.getSeconds();
+
+    // Parsing openTime dan closeTime sebagai waktu tanpa 'Z' (zona waktu UTC)
+    const open = new Date(`1970-01-01T${openTime}`);
+    const close = new Date(`1970-01-01T${closeTime}`);
+
+    // Konversi waktu server menjadi objek Date pada tanggal 1970-01-01 untuk perbandingan
+    const currentParsed = new Date(
+      `1970-01-01T${currentHours.toString().padStart(2, "0")}:${currentMinutes
+        .toString()
+        .padStart(2, "0")}:${currentSeconds.toString().padStart(2, "0")}`
+    );
+
+    console.log(
+      "Parsed Server Time :",
+      currentParsed,
+      "Open Time :",
+      open,
+      "Close Time :",
+      close
+    );
+
+    // Jika close time lebih awal dari open time (lewat tengah malam)
+    if (close < open) {
+      // Buka dari openTime hingga 23:59:59 atau dari 00:00:00 hingga closeTime
+      if (currentParsed >= open || currentParsed < close) {
+        return true;
+      }
+    } else {
+      // Buka dalam interval normal
+      if (currentParsed >= open && currentParsed < close) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  console.log();
   return (
     <>
       <Navbar />
@@ -115,6 +172,7 @@ const HomeCard = () => {
             price={card.AVG_Price}
             category={card.Category}
             size={card.Size}
+            isOpen={checkIsOpen(card.Open, card.Close)}
           />
         ))}
       </div>
@@ -292,11 +350,11 @@ const HomeCard = () => {
                 </button>
                 <button
                   className={`px-4 py-2 text-sm rounded-full border-2 border-color-yellow hover:bg-color-yellow hover:text-black ${
-                    selectedCategory === "Restaurant"
+                    selectedCategory === "Resto"
                       ? "bg-color-yellow text-black"
                       : "text-black"
                   }`}
-                  onClick={() => handleCategoryChange("Restaurant")}
+                  onClick={() => handleCategoryChange("Resto")}
                 >
                   Restaurant
                 </button>

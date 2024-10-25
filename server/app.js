@@ -133,24 +133,15 @@ let model = genAI.getGenerativeModel({
   },
 });
 // config model for add place by gemini
-let modeladd = genAI.getGenerativeModel({
-  model: "gemini-1.5-pro",
+let modeldescription = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
   generationConfig: {
-    responseMimeType: "application/json",
+    responseMimeType: "application/json", // Mime type untuk JSON
     responseSchema: {
-      type: FunctionDeclarationSchemaType.ARRAY,
-      items: {
-        type: FunctionDeclarationSchemaType.OBJECT,
-        properties: {
-          Name: {
-            type: FunctionDeclarationSchemaType.STRING,
-          },
-          Latitude: {
-            type: FunctionDeclarationSchemaType.STRING,
-          },
-          Longtitude: {
-            type: FunctionDeclarationSchemaType.STRING,
-          },
+      type: "object", // Pastikan hanya ada satu object dalam response
+      properties: {
+        Description: {
+          type: "string", // Properti Description adalah string (bisa berisi banyak paragraf)
         },
       },
     },
@@ -1030,6 +1021,8 @@ app.post("/api/places", upload.single("image"), (req, res) => {
     latitude,
     googleMapsLink,
     description,
+    Open,
+    Close,
   } = req.body;
 
   // Validasi untuk latitude dan longitude
@@ -1064,8 +1057,8 @@ app.post("/api/places", upload.single("image"), (req, res) => {
 
       // No duplicate found, proceed with the insertion
       const insertQuery = `
-      INSERT INTO places (name, AVG_Price, Size, Category, Longtitude, Latitude, Link, Description, Image, Id_User)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO places (name, AVG_Price, Size, Category, Longtitude, Latitude, Link, Description, Image, Id_User, Open, Close)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
       db.query(
         insertQuery,
@@ -1080,6 +1073,8 @@ app.post("/api/places", upload.single("image"), (req, res) => {
           description,
           image,
           userId,
+          Open,
+          Close,
         ],
         (err, results) => {
           if (err) {
@@ -1124,6 +1119,8 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
     Latitude,
     Link,
     Description,
+    Open,
+    Close,
     Img_old, // The old image path
   } = req.body;
 
@@ -1167,7 +1164,7 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
       // Update the place
       const updateQuery = `
         UPDATE places 
-        SET name = ?, AVG_Price = ?, Size = ?, Category = ?, Latitude = ?, Longtitude = ?, Link = ?, Description = ?, Image = ? 
+        SET name = ?, AVG_Price = ?, Size = ?, Category = ?, Latitude = ?, Longtitude = ?, Link = ?, Description = ?, Image = ?, Open = ?, Close = ? 
         WHERE Id_Places = ? AND Id_User = ?
       `;
 
@@ -1183,6 +1180,8 @@ app.put("/api/places/update/:id", upload.single("image"), (req, res) => {
           Link,
           Description,
           image,
+          Open,
+          Close,
           placeId,
           userId,
         ],
@@ -1716,7 +1715,29 @@ app.get("/gemini", async (req, res) => {
     res.status(500).json({ error: "Failed to generate content" });
   }
 });
-//sugesstion by gemini request by user
+//make description by gemini
+app.get("/gemini/description", async (req, res) => {
+  try {
+    const prompt = `
+Kembangkan kalimat berikut: "Kafe modern dengan kursi di dalam & luar ruangan yang menawarkan brunch khas Australia, serta koktail." 
+  dengan menyertakan tempat bernama "Sisterfields Cafe" 
+  dan buatkan menjadi 3 paragraf dengan masing masing paragraf minimal 20 kalimat. Jika kalimat tersebut kurang untuk dikembangkan, 
+  tambahkan informasi relevan dari internet yang diperlukan 
+  agar deskripsi lebih lengkap dan komprehensif.
+    `;
+
+    const result = await modeldescription.generateContent(prompt);
+    const geminiResponseText = result.response.text();
+    const geminiResponse = JSON.parse(geminiResponseText);
+    res.json(geminiResponse);
+  } catch (error) {
+    console.error("Error generating description:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to generate description" });
+  }
+});
+
 //=================================================================
 //========================== Review Logic =========================
 // Endpoint untuk mendapatkan review berdasarkan ID tempat
@@ -1729,6 +1750,21 @@ app.get("/api/review/:id", (req, res) => {
     WHERE Id_Places = ?
   `;
   db.query(query, [placeId], (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.json(results);
+  });
+});
+// endpoint to get all review
+app.get("/api/allreview", (req, res) => {
+  const query = `
+    SELECT review.*, users.Username, places.Name AS PlaceName
+    FROM review
+    INNER JOIN users ON review.Id_User = users.Id_User
+    INNER JOIN places ON review.Id_Places = places.Id_Places
+  `;
+  db.query(query, (err, results) => {
     if (err) {
       return res.status(500).send(err);
     }
@@ -1869,6 +1905,11 @@ const PORT = process.env.PORT || 5000;
 app.get("/", (req, res) => {
   res.send("Server running with ExpressJS");
 });
+app.get("/server-time", (req, res) => {
+  const currentTime = new Date();
+  res.json({ currentTime });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port: http://localhost:${PORT}`);
 });
