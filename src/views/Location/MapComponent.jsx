@@ -47,7 +47,15 @@ const MapComponent = () => {
     -8.670984102338322, 115.21225631025192,
   ]); // Default position
   const [userPosition, setUserPosition] = useState(null); // Store user's position
-
+  const [serverTime, setServerTime] = useState(null);
+  const fetchServerTime = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/server-time`);
+      setServerTime(new Date(response.data.currentTime)); // Simpan waktu dari server
+    } catch (error) {
+      console.error("Error fetching server time", error);
+    }
+  };
   useEffect(() => {
     // Attempt to get user's current location
     if (navigator.geolocation) {
@@ -78,7 +86,7 @@ const MapComponent = () => {
         console.error("Error fetching locations:", error);
       }
     };
-
+    fetchServerTime();
     fetchLocations();
   }, []);
 
@@ -93,7 +101,50 @@ const MapComponent = () => {
     }
     return 0; // Default return value if price doesn't match any condition
   };
+  const checkIsOpen = (openTime, closeTime) => {
+    if (!serverTime) return false;
 
+    // Ambil jam, menit, dan detik dari serverTime
+    const currentTime = new Date(serverTime);
+    const currentHours = currentTime.getHours();
+    const currentMinutes = currentTime.getMinutes();
+    const currentSeconds = currentTime.getSeconds();
+
+    // Parsing openTime dan closeTime sebagai waktu tanpa 'Z' (zona waktu UTC)
+    const open = new Date(`1970-01-01T${openTime}`);
+    const close = new Date(`1970-01-01T${closeTime}`);
+
+    // Konversi waktu server menjadi objek Date pada tanggal 1970-01-01 untuk perbandingan
+    const currentParsed = new Date(
+      `1970-01-01T${currentHours.toString().padStart(2, "0")}:${currentMinutes
+        .toString()
+        .padStart(2, "0")}:${currentSeconds.toString().padStart(2, "0")}`
+    );
+
+    console.log(
+      "Parsed Server Time :",
+      currentParsed,
+      "Open Time :",
+      open,
+      "Close Time :",
+      close
+    );
+
+    // Jika close time lebih awal dari open time (lewat tengah malam)
+    if (close < open) {
+      // Buka dari openTime hingga 23:59:59 atau dari 00:00:00 hingga closeTime
+      if (currentParsed >= open || currentParsed < close) {
+        return true;
+      }
+    } else {
+      // Buka dalam interval normal
+      if (currentParsed >= open && currentParsed < close) {
+        return true;
+      }
+    }
+
+    return false;
+  };
   return (
     <div className="relative h-screen w-screen">
       <div className="absolute top-0 left-0 right-0 z-10">
@@ -156,12 +207,37 @@ const MapComponent = () => {
                     )}
                   </div>
                 </div>
-                <span className="inline-flex mt-1 ms-auto items-center self-end rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-black ring-1 ring-inset ring-yellow-600/20">
-                  {location.Category}
-                </span>
-                <span className="inline-flex mt-1 ms-1 items-center self-end rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-black ring-1 ring-inset ring-yellow-600/20">
-                  {location.Size}
-                </span>
+                <div className="info flex gap-2 mt-2">
+                  <span className="inline-flex items-center justify-center rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+                    {location.Category}
+                  </span>
+                  <span className="inline-flex items-center justify-center rounded-md bg-color-yellow px-2 py-1 text-xs font-medium text-yellow-800 ring-1 ring-inset ring-yellow-600/20">
+                    {location.Size}
+                  </span>
+                  {checkIsOpen(location.Open, location.Close) ? (
+                    <span className="inline-flex items-center justify-center rounded-md bg-green-700 px-2 py-1 text-xs font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20">
+                      <box-icon
+                        name="time-five"
+                        color="#FCBC36"
+                        type="solid"
+                        className="mr-1"
+                        size="20px"
+                      ></box-icon>
+                      &nbsp;Open
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center justify-center rounded-md bg-red-700 px-2 py-1 text-xs font-medium text-yellow-400 ring-1 ring-inset ring-yellow-600/20">
+                      <box-icon
+                        name="time-five"
+                        color="#FCBC36"
+                        type="solid"
+                        className="mr-1"
+                        size="20px"
+                      ></box-icon>
+                      &nbsp;Close
+                    </span>
+                  )}
+                </div>
               </div>
             </Popup>
           </Marker>
