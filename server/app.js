@@ -133,24 +133,15 @@ let model = genAI.getGenerativeModel({
   },
 });
 // config model for add place by gemini
-let modeladd = genAI.getGenerativeModel({
-  model: "gemini-1.5-pro",
+let modeldescription = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
   generationConfig: {
-    responseMimeType: "application/json",
+    responseMimeType: "application/json", // Mime type untuk JSON
     responseSchema: {
-      type: FunctionDeclarationSchemaType.ARRAY,
-      items: {
-        type: FunctionDeclarationSchemaType.OBJECT,
-        properties: {
-          Name: {
-            type: FunctionDeclarationSchemaType.STRING,
-          },
-          Latitude: {
-            type: FunctionDeclarationSchemaType.STRING,
-          },
-          Longtitude: {
-            type: FunctionDeclarationSchemaType.STRING,
-          },
+      type: "object", // Pastikan hanya ada satu object dalam response
+      properties: {
+        Description: {
+          type: "string", // Properti Description adalah string (bisa berisi banyak paragraf)
         },
       },
     },
@@ -1724,7 +1715,29 @@ app.get("/gemini", async (req, res) => {
     res.status(500).json({ error: "Failed to generate content" });
   }
 });
-//sugesstion by gemini request by user
+//make description by gemini
+app.get("/gemini/description", async (req, res) => {
+  try {
+    const prompt = `
+Kembangkan kalimat berikut: "Kafe modern dengan kursi di dalam & luar ruangan yang menawarkan brunch khas Australia, serta koktail." 
+  dengan menyertakan tempat bernama "Sisterfields Cafe" 
+  dan buatkan menjadi 3 paragraf dengan masing masing paragraf minimal 20 kalimat. Jika kalimat tersebut kurang untuk dikembangkan, 
+  tambahkan informasi relevan dari internet yang diperlukan 
+  agar deskripsi lebih lengkap dan komprehensif.
+    `;
+
+    const result = await modeldescription.generateContent(prompt);
+    const geminiResponseText = result.response.text();
+    const geminiResponse = JSON.parse(geminiResponseText);
+    res.json(geminiResponse);
+  } catch (error) {
+    console.error("Error generating description:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Failed to generate description" });
+  }
+});
+
 //=================================================================
 //========================== Review Logic =========================
 // Endpoint untuk mendapatkan review berdasarkan ID tempat
