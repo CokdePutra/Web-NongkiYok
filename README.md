@@ -63,12 +63,12 @@ Username : Kanha
 All password :
 
 ```bash
-admin#1234
+Password : admin#1234
 ```
 
 ## Important Note
 
-Remember to import the sql file with the name "nongki-yok-testing.sql", and rename .env.example to .env to create environment variables. and adjust the configuration needed in the env file.
+Remember to import the sql file with the name "nongki-yok.sql", and rename .env.example to .env to create environment variables. and adjust the configuration needed in the env file.
 
 ## Tech Stack
 
