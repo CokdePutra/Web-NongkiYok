@@ -14,7 +14,16 @@ const Dashboard = () => {
   const [userRole, setUserRole] = useState(null);
   const [cards, setCards] = useState([]);
   const navigate = useNavigate();
-
+  const [serverTime, setServerTime] = useState(null);
+  // Fungsi untuk mengambil waktu dari server
+  const fetchServerTime = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/server-time`);
+      setServerTime(new Date(response.data.currentTime)); // Simpan waktu dari server
+    } catch (error) {
+      console.error("Error fetching server time", error);
+    }
+  };
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
@@ -48,7 +57,7 @@ const Dashboard = () => {
           console.error("Error fetching favorite places", error);
         }
       };
-
+      fetchServerTime();
       fetchFavorites();
     }
 
@@ -115,6 +124,50 @@ const Dashboard = () => {
   const truncateDescription = (text, maxLength = 150) => {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
   };
+  const checkIsOpen = (openTime, closeTime) => {
+    if (!serverTime) return false;
+
+    // Ambil jam, menit, dan detik dari serverTime
+    const currentTime = new Date(serverTime);
+    const currentHours = currentTime.getHours();
+    const currentMinutes = currentTime.getMinutes();
+    const currentSeconds = currentTime.getSeconds();
+
+    // Parsing openTime dan closeTime sebagai waktu tanpa 'Z' (zona waktu UTC)
+    const open = new Date(`1970-01-01T${openTime}`);
+    const close = new Date(`1970-01-01T${closeTime}`);
+
+    // Konversi waktu server menjadi objek Date pada tanggal 1970-01-01 untuk perbandingan
+    const currentParsed = new Date(
+      `1970-01-01T${currentHours.toString().padStart(2, "0")}:${currentMinutes
+        .toString()
+        .padStart(2, "0")}:${currentSeconds.toString().padStart(2, "0")}`
+    );
+
+    console.log(
+      "Parsed Server Time :",
+      currentParsed,
+      "Open Time :",
+      open,
+      "Close Time :",
+      close
+    );
+
+    // Jika close time lebih awal dari open time (lewat tengah malam)
+    if (close < open) {
+      // Buka dari openTime hingga 23:59:59 atau dari 00:00:00 hingga closeTime
+      if (currentParsed >= open || currentParsed < close) {
+        return true;
+      }
+    } else {
+      // Buka dalam interval normal
+      if (currentParsed >= open && currentParsed < close) {
+        return true;
+      }
+    }
+
+    return false;
+  };
   return (
     <>
       <Navbar />
@@ -165,6 +218,7 @@ const Dashboard = () => {
                     truncateDescription(card.Description)
                   )}
                   link={card.Link}
+                  isOpen={checkIsOpen(card.Open, card.Close)}
                   price={card.AVG_Price}
                   category={card.Category}
                   size={card.Size}
