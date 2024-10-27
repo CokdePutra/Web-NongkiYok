@@ -323,7 +323,7 @@ const DetailLocation = () => {
                 className="mr-1"
                 size="20px"
               ></box-icon>
-              &nbsp;Close and will be <strong>&nbsp;Open&nbsp;</strong> tomorrow
+              &nbsp;Close and will be <strong>&nbsp;Open&nbsp;</strong> again
               at&nbsp; <strong> {simplifyTime(data.Open)}</strong>
             </span>
           )}
