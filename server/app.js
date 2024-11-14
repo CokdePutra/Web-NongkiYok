@@ -113,7 +113,7 @@ app.get("/send-test-email", async (req, res) => {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 // config model for get place by gemini
 let model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
+  model: "gemini-1.5-flash-8b",
   generationConfig: {
     responseMimeType: "application/json",
     responseSchema: {
@@ -134,7 +134,7 @@ let model = genAI.getGenerativeModel({
 });
 // config model for add place by gemini
 let modeldescription = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
+  model: "gemini-1.5-flash-8b",
   generationConfig: {
     responseMimeType: "application/json", // Mime type untuk JSON
     responseSchema: {
