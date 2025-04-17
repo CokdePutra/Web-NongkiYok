@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Navbar from "../components/Navbar/Navbar";
-
+import Footer from "../components/Navbar/Footer";
 const Contact = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [name, setName] = useState("");
@@ -136,6 +136,7 @@ const Contact = () => {
           </form>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

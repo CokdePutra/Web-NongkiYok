@@ -6,6 +6,7 @@ import FloatingSearchBar from "../../components/Navbar/FloatingSearchBar";
 import InfoAlert from "../../components/alert/AlertsInfo";
 import DOMPurify from "dompurify";
 import { data } from "autoprefixer";
+import Footer from "../../components/Navbar/Footer";
 const HomeCard = () => {
   const baseURL = import.meta.env.VITE_REACT_API_URL;
   const [cards, setCards] = useState([]);
@@ -353,6 +354,7 @@ const HomeCard = () => {
           </div>
         </div>
       )}
+      <Footer />
     </>
   );
 };

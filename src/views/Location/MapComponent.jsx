@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import Navbar from "../../components/Navbar/Navbar";
 import axios from "axios";
-
 // Fix Leaflet's default icon issue
 delete L.Icon.Default.prototype._getIconUrl;
 
