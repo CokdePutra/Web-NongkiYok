@@ -378,55 +378,60 @@ const DetailLocation = () => {
           >
             {reviews.map((review) => (
               <SwiperSlide key={review.Id}>
-                <div className="px-4 pb-8 pt-3 bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                  {/* Icon untuk melaporkan review */}
-                  <div className="flex justify-end items-center mb-3 cursor-pointer">
-                    <box-icon
-                      name="flag-alt"
-                      type="solid"
-                      color="#edeff2"
-                      size="20px"
-                      onClick={() => HandleClickReport(review.Id_Review)}
-                    ></box-icon>
+                <div className="h-full">
+                  <div className="flex flex-col justify-between h-full px-4 pb-8 pt-3 bg-gray-800 rounded-xl shadow-lg overflow-hidden min-h-[260px]">
+                    {/* Icon untuk melaporkan review */}
+                    <div className="flex justify-end items-center mb-3 cursor-pointer">
+                      <box-icon
+                        name="flag-alt"
+                        type="solid"
+                        color="#edeff2"
+                        size="20px"
+                        onClick={() => HandleClickReport(review.Id_Review)}
+                      ></box-icon>
+                    </div>
+
+                    {/* Info Pengguna dan Tanggal Review */}
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-md font-medium text-gray-400">
+                        by {review.Username}
+                      </span>
+                      <span className="text-md text-gray-400">
+                        {new Date(review.created_at).toLocaleDateString(
+                          "en-ID",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          }
+                        )}
+                      </span>
+                    </div>
+
+                    {/* Rating Review */}
+                    <div className="flex items-center mb-3 text-lg">
+                      <span className="text-yellow-400">
+                        {renderRatingStars(review.Rating)}
+                      </span>
+                    </div>
+
+                    {/* Isi Review */}
+                    <p className="text-gray-300 text-md mb-2 flex-1">
+                      {review.Review.length > 100
+                        ? `${review.Review.substring(0, 100)}...`
+                        : review.Review}
+                    </p>
+
+                    {/* Link untuk Lihat Lebih Banyak */}
+                    {review.Review.length > 45 && (
+                      <a
+                        href={`/reviews/${review.Id}`}
+                        className="text-yellow-400 text-sm"
+                      >
+                        See More
+                      </a>
+                    )}
                   </div>
-
-                  {/* Info Pengguna dan Tanggal Review */}
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-md font-medium text-gray-400">
-                      by {review.Username}
-                    </span>
-                    <span className="text-md text-gray-400">
-                      {new Date(review.created_at).toLocaleDateString("en-ID", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </div>
-
-                  {/* Rating Review */}
-                  <div className="flex items-center mb-3 text-lg">
-                    <span className="text-yellow-400">
-                      {renderRatingStars(review.Rating)}
-                    </span>
-                  </div>
-
-                  {/* Isi Review */}
-                  <p className="text-gray-300 text-md mb-2">
-                    {review.Review.length > 100
-                      ? `${review.Review.substring(0, 100)}...`
-                      : review.Review}
-                  </p>
-
-                  {/* Link untuk Lihat Lebih Banyak jika review terlalu panjang */}
-                  {review.Review.length > 45 && (
-                    <a
-                      href={`/reviews/${review.Id}`}
-                      className="text-yellow-400 text-sm"
-                    >
-                      See More
-                    </a>
-                  )}
                 </div>
               </SwiperSlide>
             ))}
