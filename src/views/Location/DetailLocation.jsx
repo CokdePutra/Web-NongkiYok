@@ -230,15 +230,6 @@ const DetailLocation = () => {
         .padStart(2, "0")}:${currentSeconds.toString().padStart(2, "0")}`
     );
 
-    console.log(
-      "Parsed Server Time :",
-      currentParsed,
-      "Open Time :",
-      open,
-      "Close Time :",
-      close
-    );
-
     // Jika close time lebih awal dari open time (lewat tengah malam)
     if (close < open) {
       // Buka dari openTime hingga 23:59:59 atau dari 00:00:00 hingga closeTime
