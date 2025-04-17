@@ -25,7 +25,7 @@ const HomeCard = () => {
       const response = await axios.get(`${baseURL}/server-time`);
       setServerTime(new Date(response.data.currentTime)); // Simpan waktu dari server
     } catch (error) {
-      console.error("Error fetching server time", error);
+      console.error("Error fetching server time");
     }
   };
   // Fetch data ketika halaman dimuat atau ada perubahan pada state filter
@@ -83,7 +83,7 @@ const HomeCard = () => {
       setCards(response.data);
       setIsPopupOpen(false);
     } catch (error) {
-      console.error("Error fetching cards with criteria:", error);
+      console.error("Error fetching cards with criteria:");
     } finally {
       setLoadingAI(false);
     }
@@ -121,15 +121,6 @@ const HomeCard = () => {
         .padStart(2, "0")}:${currentSeconds.toString().padStart(2, "0")}`
     );
 
-    console.log(
-      "Parsed Server Time :",
-      currentParsed,
-      "Open Time :",
-      open,
-      "Close Time :",
-      close
-    );
-
     // Jika close time lebih awal dari open time (lewat tengah malam)
     if (close < open) {
       // Buka dari openTime hingga 23:59:59 atau dari 00:00:00 hingga closeTime
@@ -146,7 +137,6 @@ const HomeCard = () => {
     return false;
   };
 
-  console.log();
   return (
     <>
       <Navbar />

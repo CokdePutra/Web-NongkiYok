@@ -988,10 +988,9 @@ app.post("/logout", (req, res) => {
 });
 // Route untuk mendapatkan data session
 app.get("/api/session", (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).send("Not logged in");
+  if (req.session.user) {
+    res.json(req.session.user);
   }
-  res.json(req.session.user);
 });
 //=========================================================
 // =================== PLACES ALL LOGIC ===================
